@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <include layout="@layout/custom_toolbar"/>
+
+    <Button
+        android:id="@+id/parcelas_button"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:drawableLeft="@drawable/ic_parcelas"
+        android:paddingTop="30dp"
+        android:text="Parcelas"
+        android:textColor="@android:color/white"/>
+
+    <Button
+        android:id="@+id/reservas_button"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/rounded_button"
+        android:drawableLeft="@drawable/ic_reservas"
+        android:paddingTop="30dp"
+        android:text="Reservas"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

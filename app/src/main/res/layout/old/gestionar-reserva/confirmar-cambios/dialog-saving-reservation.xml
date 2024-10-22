@@ -1,0 +1,22 @@
+<!-- app/src/main/res/layout/dialog_saving_reservation.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@android:color/white">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="GUARDANDO RESERVA..."
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center" />
+</LinearLayout>
