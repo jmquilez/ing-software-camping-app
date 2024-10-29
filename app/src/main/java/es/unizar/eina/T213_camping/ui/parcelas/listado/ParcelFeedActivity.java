@@ -3,6 +3,7 @@ package es.unizar.eina.T213_camping.ui.parcelas.listado;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
@@ -65,6 +67,7 @@ public class ParcelFeedActivity extends BaseActivity {
     private void setupViewModel() {
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
         parcelaViewModel.getAllParcelas().observe(this, parcelas -> {
+            Log.i("LIVEDATA_UPDATED, PARCELAS", parcelas.toString());
             parcelList = parcelas;
             sortParcels();
         });
@@ -78,9 +81,21 @@ public class ParcelFeedActivity extends BaseActivity {
     }
 
     private void setupSortingButtons() {
-        findViewById(R.id.parcel_sort_id_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_ID));
-        findViewById(R.id.parcel_sort_occupants_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_MAX_OCCUPANTS));
-        findViewById(R.id.parcel_sort_price_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_EUR_PERSONA));
+        findViewById(R.id.parcel_sort_id_button).setOnClickListener(v -> {
+            currentSortingCriteria = ParcelConstants.SORT_ID;
+            // parcelAdapter.updateSortingCriteria(currentSortingCriteria);
+            sortParcels();
+        });
+        findViewById(R.id.parcel_sort_occupants_button).setOnClickListener(v -> {
+            currentSortingCriteria = ParcelConstants.SORT_MAX_OCCUPANTS;
+            // parcelAdapter.updateSortingCriteria(currentSortingCriteria);
+            sortParcels();
+        });
+        findViewById(R.id.parcel_sort_price_button).setOnClickListener(v -> {
+            currentSortingCriteria = ParcelConstants.SORT_EUR_PERSONA;
+            // parcelAdapter.updateSortingCriteria(currentSortingCriteria);
+            sortParcels();
+        });
     }
 
     private void setupCreateParcelButton() {
@@ -100,11 +115,6 @@ public class ParcelFeedActivity extends BaseActivity {
         );
     }
 
-    private void sortParcels(String criteria) {
-        currentSortingCriteria = criteria;
-        sortParcels();
-    }
-
     private void sortParcels() {
         if (parcelList != null) {
             Comparator<Parcela> comparator;
@@ -116,9 +126,17 @@ public class ParcelFeedActivity extends BaseActivity {
                 comparator = Comparator.comparing(Parcela::getNombre);
             }
 
-            // TODO: revise that it works properly => IT DOESN'T SEEM TO
-            parcelList.sort(comparator);
-            parcelAdapter.submitList(parcelList);
+            List<Parcela> sortedList = new ArrayList<>(parcelList);
+            sortedList.sort(comparator);
+
+            for (Parcela p: sortedList) {
+                Log.d("PARCEL_X", String.valueOf(p.getMaxOcupantes()));
+            }
+
+            parcelAdapter.updateSortingCriteria(currentSortingCriteria);
+            Log.d("PARCEL_LIST", parcelList.toString());
+            parcelAdapter.submitList(sortedList);
+            parcelList = sortedList;
         }
     }
 
@@ -159,7 +177,7 @@ public class ParcelFeedActivity extends BaseActivity {
             loadingDialog.dismiss();
             
             // Force refresh the list after operation
-            refreshParcelList();
+            // refreshParcelList();
         }, 2000);
     }
 
@@ -183,7 +201,7 @@ public class ParcelFeedActivity extends BaseActivity {
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
         parcelaViewModel.update(parcela);
-        refreshParcelList();
+        // refreshParcelList();
         // TODO: conditional?
         DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", R.drawable.ic_update_success);
     }

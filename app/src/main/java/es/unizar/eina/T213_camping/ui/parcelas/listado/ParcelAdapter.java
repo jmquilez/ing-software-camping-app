@@ -83,4 +83,10 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
             return areItemsTheSame(oldItem, newItem);
         }
     }
+
+    public void updateSortingCriteria(String newSortingCriteria) {
+        this.sortingCriteria = newSortingCriteria;
+        // notifyDataSetChanged(); // Force refresh of all items => DEPRECATED
+        notifyItemRangeChanged(0, getItemCount());
+    }
 }
