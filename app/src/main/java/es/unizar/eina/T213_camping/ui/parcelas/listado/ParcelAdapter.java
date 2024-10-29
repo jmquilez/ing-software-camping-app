@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 
 public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder> {

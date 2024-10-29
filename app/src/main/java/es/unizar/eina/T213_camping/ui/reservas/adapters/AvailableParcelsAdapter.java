@@ -19,8 +19,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 
 public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParcelsAdapter.ViewHolder> {
     private Context context;
@@ -52,7 +52,7 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
 
     @Override
     public void submitList(List<Parcela> list) {
-        if (list != null) {
+        if (list != null && addedParcels != null) {
             List<Parcela> filteredList = list.stream()
                     .filter(parcela -> addedParcels.stream()
                             .noneMatch(added -> added.getParcela().getNombre().equals(parcela.getNombre())))

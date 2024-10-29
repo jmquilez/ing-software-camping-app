@@ -37,6 +37,8 @@
             android:exported="false"/>
         <activity android:name=".ui.reservas.creacion.CreateReservationActivity"
             android:exported="false"/>
+        <activity android:name=".ui.parcelas.creacion.CreateParcelActivity"
+            android:exported="false"/>
         <activity android:name=".ui.reservas.creacion.NewParcelSelectionActivity"
             android:exported="false"/>
         <!-- Add other activities as needed -->

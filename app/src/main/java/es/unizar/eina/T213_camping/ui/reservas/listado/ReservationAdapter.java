@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Reserva;
+import es.unizar.eina.T213_camping.database.models.Reserva;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
 public class ReservationAdapter extends ListAdapter<Reserva, ReservationAdapter.ViewHolder> {

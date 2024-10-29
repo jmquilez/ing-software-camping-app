@@ -1,11 +1,11 @@
-package es.unizar.eina.T213_camping.db.daos;
+package es.unizar.eina.T213_camping.database.daos;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 
 import java.util.List;
 
-import es.unizar.eina.T213_camping.db.models.Reserva;
+import es.unizar.eina.T213_camping.database.models.Reserva;
 
 @Dao
 public interface ReservaDao {

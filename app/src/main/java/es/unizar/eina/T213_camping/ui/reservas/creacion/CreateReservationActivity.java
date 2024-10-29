@@ -10,7 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import com.google.android.material.textfield.TextInputEditText;
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
-import es.unizar.eina.T213_camping.utils.src.DateUtils;
+import es.unizar.eina.T213_camping.utils.DateUtils;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
 public class CreateReservationActivity extends BaseActivity {

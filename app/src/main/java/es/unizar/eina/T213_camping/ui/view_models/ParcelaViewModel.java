@@ -7,9 +7,9 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
-import es.unizar.eina.T213_camping.db.repositories.ParcelaRepository;
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.repositories.ParcelaRepository;
 
 public class ParcelaViewModel extends AndroidViewModel {
 

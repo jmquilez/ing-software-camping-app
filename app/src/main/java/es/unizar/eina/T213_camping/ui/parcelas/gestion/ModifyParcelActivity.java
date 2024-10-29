@@ -6,8 +6,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.utils.src.ParcelUtils;
-import es.unizar.eina.T213_camping.utils.src.DialogUtils;
+import es.unizar.eina.T213_camping.utils.ParcelUtils;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 

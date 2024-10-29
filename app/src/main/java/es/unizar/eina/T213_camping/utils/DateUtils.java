@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.utils.src;
+package es.unizar.eina.T213_camping.utils;
 
 import android.app.DatePickerDialog;
 import android.content.Context;

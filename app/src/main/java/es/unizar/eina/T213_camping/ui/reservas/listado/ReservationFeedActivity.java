@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Reserva;
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaReservada;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.Reserva;
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 import es.unizar.eina.T213_camping.ui.reservas.listado.ReservationAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.creacion.CreateReservationActivity;
@@ -27,7 +27,7 @@ import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaReservadaViewModel;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
-import es.unizar.eina.T213_camping.utils.src.DialogUtils;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
 import es.unizar.eina.T213_camping.ui.reservas.gestion.ModifyReservationActivity;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 
@@ -83,6 +83,7 @@ public class ReservationFeedActivity extends BaseActivity {
     }
 
     private void setupSortingButtons() {
+        // TODO: sorting buttons array?
         findViewById(R.id.sort_reservations_by_client_name_button).setOnClickListener(v -> sortReservations(ReservationConstants.SORT_CLIENT_NAME));
         findViewById(R.id.sort_reservations_by_client_phone_button).setOnClickListener(v -> sortReservations(ReservationConstants.SORT_CLIENT_PHONE));
         findViewById(R.id.sort_reservations_by_entry_date_button).setOnClickListener(v -> sortReservations(ReservationConstants.SORT_ENTRY_DATE));

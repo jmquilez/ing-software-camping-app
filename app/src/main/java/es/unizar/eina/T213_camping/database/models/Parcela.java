@@ -1,11 +1,13 @@
-package es.unizar.eina.T213_camping.db.models;
+package es.unizar.eina.T213_camping.database.models;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+
 @Entity(tableName = "parcela")
-public class Parcela {
+public class Parcela implements Serializable {
 
     @PrimaryKey
     @NonNull

@@ -1,9 +1,9 @@
-package es.unizar.eina.T213_camping.db.daos;
+package es.unizar.eina.T213_camping.database.daos;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy; // Import the new class
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy; // Import the new class
 
 import java.util.List;
 

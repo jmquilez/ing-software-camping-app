@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import es.unizar.eina.T213_camping.db.models.Reserva;
-import es.unizar.eina.T213_camping.db.repositories.ReservaRepository;
+import es.unizar.eina.T213_camping.database.models.Reserva;
+import es.unizar.eina.T213_camping.database.repositories.ReservaRepository;
 
 public class ReservaViewModel extends AndroidViewModel {
 

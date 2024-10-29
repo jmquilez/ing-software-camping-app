@@ -1,4 +1,10 @@
 <resources>
     <color name="primary_dark">#FFBB86FC</color>
     <color name="accent_dark">#FF03DAC5</color>
+    <color name="card_background_light">#383838</color>
+    <color name="card_background_dark">#2C2C2C</color>
+    <color name="glass_background_light">#26FFFFFF</color>
+    <color name="glass_stroke_light">#33FFFFFF</color>
+    <color name="dialog_background_light">#2C3548</color>
+    <color name="dialog_background_dark">#1A1F2B</color>
 </resources>

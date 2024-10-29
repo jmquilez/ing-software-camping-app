@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 
 public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParcelsAdapter.ViewHolder> {
     private Context context;

@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.reservas.adapters.AvailableParcelsAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.adapters.AddedParcelsAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel; // Change to ParcelaViewModel
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
-import es.unizar.eina.T213_camping.utils.src.ReservationUtils;
+import es.unizar.eina.T213_camping.utils.ReservationUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 
 public class ParcelSelectionActivity extends BaseActivity {

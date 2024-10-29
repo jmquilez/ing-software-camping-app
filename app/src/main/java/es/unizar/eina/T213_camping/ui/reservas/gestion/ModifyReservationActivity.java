@@ -12,11 +12,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
-import es.unizar.eina.T213_camping.db.models.ParcelaReservada;
-import es.unizar.eina.T213_camping.utils.src.DateUtils;
-import es.unizar.eina.T213_camping.utils.src.ReservationUtils;
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
+import es.unizar.eina.T213_camping.utils.DateUtils;
+import es.unizar.eina.T213_camping.utils.ReservationUtils;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaReservadaViewModel;
 import es.unizar.eina.T213_camping.R;

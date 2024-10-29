@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.utils.src;
+package es.unizar.eina.T213_camping.utils;
 
 import android.content.Context;
 import android.view.View;

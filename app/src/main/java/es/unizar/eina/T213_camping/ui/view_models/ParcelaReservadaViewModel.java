@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-import es.unizar.eina.T213_camping.db.models.ParcelaReservada;
-import es.unizar.eina.T213_camping.db.repositories.ParcelaReservadaRepository;
+import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
+import es.unizar.eina.T213_camping.database.repositories.ParcelaReservadaRepository;
 
 public class ParcelaReservadaViewModel extends AndroidViewModel {
 

@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.db.models;
+package es.unizar.eina.T213_camping.database.models;
 
 import androidx.room.Embedded;
 

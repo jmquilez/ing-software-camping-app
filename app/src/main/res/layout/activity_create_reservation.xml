@@ -14,19 +14,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="CREAR RESERVA"
-                android:textSize="24sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
+                android:layout_marginBottom="24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datos del cliente"
+                android:textStyle="bold"
+                android:textSize="16sp"
                 android:layout_marginBottom="16dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:hint="Nombre del cliente">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -39,6 +54,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
                 android:hint="Teléfono del cliente">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -48,30 +64,46 @@
                     android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fechas de la estancia"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Fecha de entrada:"
-                android:layout_marginTop="16dp"/>
+                android:text="Fecha de entrada"
+                android:layout_marginBottom="8dp"/>
 
             <Button
                 android:id="@+id/create_reservation_check_in_date_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Seleccionar fecha de entrada"
+                android:layout_marginBottom="16dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Fecha de salida:"
-                android:layout_marginTop="16dp"/>
+                android:text="Fecha de salida"
+                android:layout_marginBottom="8dp"/>
 
             <Button
                 android:id="@+id/create_reservation_check_out_date_picker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Seleccionar fecha de salida"
+                android:layout_marginBottom="24dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
             <TextView
@@ -79,14 +111,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/holo_red_light"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="32dp"/>
 
             <Button
                 android:id="@+id/create_reservation_next_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="SIGUIENTE"
-                android:layout_marginTop="24dp"/>
+                android:backgroundTint="@color/green"
+                android:textColor="@android:color/white"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

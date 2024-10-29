@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Objects;
 
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.listado.ParcelAdapter;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 import es.unizar.eina.T213_camping.ui.parcelas.gestion.ModifyParcelActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.creacion.CreateParcelActivity;
-import es.unizar.eina.T213_camping.utils.src.DialogUtils;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
 
 public class ParcelFeedActivity extends BaseActivity {
 
@@ -49,7 +49,8 @@ public class ParcelFeedActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+
+        // NOTE: execute later (parcelAdapter hasn't even been created yet)
         setupViewModel();
         setupRecyclerView();
         setupSortingButtons();
@@ -115,7 +116,7 @@ public class ParcelFeedActivity extends BaseActivity {
                 comparator = Comparator.comparing(Parcela::getNombre);
             }
 
-            // TODO: revise that it works properly
+            // TODO: revise that it works properly => IT DOESN'T SEEM TO
             parcelList.sort(comparator);
             parcelAdapter.submitList(parcelList);
         }
@@ -156,6 +157,9 @@ public class ParcelFeedActivity extends BaseActivity {
                     break;
             }
             loadingDialog.dismiss();
+            
+            // Force refresh the list after operation
+            refreshParcelList();
         }, 2000);
     }
 
@@ -167,6 +171,7 @@ public class ParcelFeedActivity extends BaseActivity {
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
         parcelaViewModel.insert(parcela);
+        // TODO: conditional?
         DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
     }
 
@@ -178,6 +183,8 @@ public class ParcelFeedActivity extends BaseActivity {
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
         parcelaViewModel.update(parcela);
+        refreshParcelList();
+        // TODO: conditional?
         DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", R.drawable.ic_update_success);
     }
 
@@ -188,5 +195,14 @@ public class ParcelFeedActivity extends BaseActivity {
         intent.putExtra(ParcelConstants.PRICE_PER_PERSON, parcela.getEurPorPersona());
         intent.putExtra(ParcelConstants.DESCRIPTION, parcela.getDescripcion());
         parcelLauncher.launch(intent);
+    }
+
+    private void refreshParcelList() {
+        parcelaViewModel.getAllParcelas().observe(this, parcelas -> {
+            if (parcelas != null) {
+                parcelList = parcelas;
+                sortParcels();
+            }
+        });
     }
 }

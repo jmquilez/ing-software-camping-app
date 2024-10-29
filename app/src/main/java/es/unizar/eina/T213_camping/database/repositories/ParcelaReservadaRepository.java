@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.db.repositories;
+package es.unizar.eina.T213_camping.database.repositories;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import es.unizar.eina.T213_camping.db.AppDatabase;
-import es.unizar.eina.T213_camping.db.daos.ParcelaReservadaDao;
-import es.unizar.eina.T213_camping.db.models.ParcelaReservada;
+import es.unizar.eina.T213_camping.database.AppDatabase;
+import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
+import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 
 public class ParcelaReservadaRepository {
 

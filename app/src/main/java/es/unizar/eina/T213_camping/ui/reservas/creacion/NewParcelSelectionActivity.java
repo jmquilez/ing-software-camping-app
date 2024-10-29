@@ -13,14 +13,14 @@ import java.util.List;
 import java.util.Objects;
 
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.reservas.adapters.AvailableParcelsAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.adapters.AddedParcelsAdapter;
-import es.unizar.eina.T213_camping.utils.src.DialogUtils;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 
 public class NewParcelSelectionActivity extends BaseActivity {
 

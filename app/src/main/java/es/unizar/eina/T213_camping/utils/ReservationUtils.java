@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.utils.src;
+package es.unizar.eina.T213_camping.utils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.db.models.ParcelaOccupancy;
-import es.unizar.eina.T213_camping.db.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.db;
+package es.unizar.eina.T213_camping.database;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -10,13 +10,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import es.unizar.eina.T213_camping.db.daos.ParcelaDao;
-import es.unizar.eina.T213_camping.db.daos.ParcelaReservadaDao;
-import es.unizar.eina.T213_camping.db.daos.ReservaDao;
-import es.unizar.eina.T213_camping.db.models.Parcela;
-import es.unizar.eina.T213_camping.db.models.ParcelaReservada;
-import es.unizar.eina.T213_camping.db.models.Reserva;
+import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
+import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
+import es.unizar.eina.T213_camping.database.daos.ReservaDao;
+import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
+import es.unizar.eina.T213_camping.database.models.Reserva;
 
+// TODO: CHANGE TO CAMPINGAPPDATABASE
 @Database(entities = {Parcela.class, Reserva.class, ParcelaReservada.class}, version = 1, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
 

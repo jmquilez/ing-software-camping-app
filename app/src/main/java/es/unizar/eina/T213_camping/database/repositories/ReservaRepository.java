@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.db.repositories;
+package es.unizar.eina.T213_camping.database.repositories;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
@@ -9,9 +9,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ExecutionException;
 
-import es.unizar.eina.T213_camping.db.AppDatabase;
-import es.unizar.eina.T213_camping.db.daos.ReservaDao;
-import es.unizar.eina.T213_camping.db.models.Reserva;
+import es.unizar.eina.T213_camping.database.AppDatabase;
+import es.unizar.eina.T213_camping.database.daos.ReservaDao;
+import es.unizar.eina.T213_camping.database.models.Reserva;
 
 public class ReservaRepository {
 
@@ -44,7 +44,8 @@ public class ReservaRepository {
 
     // Retrieve all reservas
     public LiveData<List<Reserva>> getAllReservas() {
-        return mAllReservas;
+        // TODO, CHANGE
+        return mReservaDao.getAllReservas();
     }
 
     // Update a reserva

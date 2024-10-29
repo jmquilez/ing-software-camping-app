@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.utils.src.ParcelUtils;
+import es.unizar.eina.T213_camping.utils.ParcelUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 
@@ -25,10 +25,10 @@ public class CreateParcelActivity extends BaseActivity {
         maxOccupantsInput = findViewById(R.id.create_parcel_max_occupants_input);
         pricePerPersonInput = findViewById(R.id.create_parcel_price_input);
         descriptionInput = findViewById(R.id.create_parcel_description_input);
-        Button createParcelButton = findViewById(R.id.create_parcel_submit_button);
+        Button confirmParcelButton = findViewById(R.id.create_parcel_submit_button);
         errorMessage = findViewById(R.id.create_parcel_error_message);
 
-        createParcelButton.setOnClickListener(v -> createParcel());
+        confirmParcelButton.setOnClickListener(v -> createParcel());
 
         setButtonVisibility("back", true);
         setButtonVisibility("home", true);

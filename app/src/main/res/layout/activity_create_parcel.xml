@@ -30,11 +30,25 @@
                 android:text="CREAR PARCELA"
                 android:textSize="24sp"
                 android:textStyle="bold"
+                android:layout_marginBottom="24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Información básica"
+                android:textStyle="bold"
                 android:layout_marginBottom="16dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:hint="Nombre de parcela">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -44,9 +58,23 @@
                     android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capacidad y precio"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:hint="Máximo de ocupantes">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -59,6 +87,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
                 android:hint="Precio/persona (€)">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -68,9 +97,23 @@
                     android:inputType="numberDecimal"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Detalles adicionales"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
                 android:hint="Descripción">
 
                 <com.google.android.material.textfield.TextInputEditText
