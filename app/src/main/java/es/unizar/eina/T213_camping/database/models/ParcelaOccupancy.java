@@ -1,11 +1,13 @@
 package es.unizar.eina.T213_camping.database.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.Embedded;
 
-import java.io.Serializable;
 import java.util.Objects;
 
-public class ParcelaOccupancy implements Serializable {
+public class ParcelaOccupancy implements Parcelable {
     @Embedded
     private Parcela parcela;
     public int numOcupantes;
@@ -13,6 +15,36 @@ public class ParcelaOccupancy implements Serializable {
     public ParcelaOccupancy(Parcela parcela, int numOcupantes) {
         this.parcela = parcela;
         this.numOcupantes = numOcupantes;
+    }
+
+    // Parcelable constructor
+    protected ParcelaOccupancy(Parcel in) {
+        parcela = in.readParcelable(Parcela.class.getClassLoader());
+        numOcupantes = in.readInt();
+    }
+
+    // Parcelable CREATOR
+    public static final Creator<ParcelaOccupancy> CREATOR = new Creator<ParcelaOccupancy>() {
+        @Override
+        public ParcelaOccupancy createFromParcel(Parcel in) {
+            return new ParcelaOccupancy(in);
+        }
+
+        @Override
+        public ParcelaOccupancy[] newArray(int size) {
+            return new ParcelaOccupancy[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(parcela, flags);
+        dest.writeInt(numOcupantes);
     }
 
     public Parcela getParcela() {

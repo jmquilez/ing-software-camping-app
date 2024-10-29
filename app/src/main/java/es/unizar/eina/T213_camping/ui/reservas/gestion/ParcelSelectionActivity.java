@@ -82,7 +82,8 @@ public class ParcelSelectionActivity extends BaseActivity {
 
     private void loadReservationData() {
         reservationId = getIntent().getLongExtra(ReservationConstants.RESERVATION_ID, 0L);
-        addedParcels = (ArrayList<ParcelaOccupancy>) getIntent().getSerializableExtra(ReservationConstants.SELECTED_PARCELS); // Change to List<Parcela>
+        // addedParcels = (ArrayList<ParcelaOccupancy>) getIntent().getSerializableExtra(ReservationConstants.SELECTED_PARCELS); // Change to List<Parcela>
+        addedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
         if (addedParcels == null) {
             addedParcels = new ArrayList<>();
         }
@@ -90,6 +91,7 @@ public class ParcelSelectionActivity extends BaseActivity {
 
         // Call the method to get parcelas not linked to the specific reservation ID
         parcelaViewModel.getParcelasNotLinkedToReservation(reservationId).observe(this, availableParcelas -> {
+            // TODO, CHECK: good to observe here?
             availableParcelsAdapter.submitList(availableParcelas);
         });
     }

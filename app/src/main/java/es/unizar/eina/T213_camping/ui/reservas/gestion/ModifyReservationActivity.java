@@ -91,7 +91,12 @@ public class ModifyReservationActivity extends BaseActivity {
         clientPhone = getIntent().getStringExtra("CLIENT_PHONE");
         entryDate = getIntent().getStringExtra("ENTRY_DATE"); // Get entry date
         departureDate = getIntent().getStringExtra("DEPARTURE_DATE"); // Get departure date
-        selectedParcels = (List<ParcelaOccupancy>) getIntent().getSerializableExtra(ReservationConstants.SELECTED_PARCELS);
+        selectedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+
+        // NOTE: shouldn't happen
+        if (selectedParcels == null) {
+            selectedParcels = new ArrayList<>();
+        }
 
         // Set data to inputs
         clientNameInput.setText(clientName);
@@ -161,7 +166,8 @@ public class ModifyReservationActivity extends BaseActivity {
             // TODO: transform dates strings into actual date types
             intent.putExtra(ReservationConstants.ENTRY_DATE, checkInDatePicker.getText().toString());
             intent.putExtra(ReservationConstants.DEPARTURE_DATE, checkOutDatePicker.getText().toString());
-            intent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
+            // intent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
+            intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
             parcelSelectionLauncher.launch(intent);
         }
     }

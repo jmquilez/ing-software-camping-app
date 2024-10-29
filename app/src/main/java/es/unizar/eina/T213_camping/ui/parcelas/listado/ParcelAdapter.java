@@ -1,6 +1,7 @@
 package es.unizar.eina.T213_camping.ui.parcelas.listado;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
     }
 
     public ParcelAdapter(Context context, String sortingCriteria, OnParcelClickListener listener) {
+        // TODO: pass parcelDiff as parameter
         super(new ParcelDiff());
         this.context = context;
         this.sortingCriteria = sortingCriteria;
@@ -34,6 +36,7 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Log.i("CREATING VIEW_HOLDER", "ok");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_parcel, parent, false);
         return new ViewHolder(view);
     }
@@ -42,6 +45,8 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Parcela parcela = getItem(position);
         holder.itemParcelName.setText(parcela.getNombre());
+
+        Log.w("PARCEL_ADAPTER", "onBindViewHolder, maxOcupantes parcela: " + parcela.getMaxOcupantes());
 
         switch (sortingCriteria) {
             case ParcelConstants.SORT_ID:
@@ -73,20 +78,30 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
     }
 
     public static class ParcelDiff extends DiffUtil.ItemCallback<Parcela> {
+        // TODO: compare by reference? => NO
+        // KEY: See https://jermainedilao.medium.com/demystifying-diffutil-itemcallback-class-8c0201cc69b1
         @Override
         public boolean areItemsTheSame(@NonNull Parcela oldItem, @NonNull Parcela newItem) {
+            Log.d("ARE_ITEMS_THE_SAME", "maxOld: " + oldItem.getMaxOcupantes() + ", maxNew: " + newItem.getMaxOcupantes() + ", areEquals: " + oldItem.equals(newItem));
             return oldItem.getNombre().equals(newItem.getNombre());
         }
 
+        /* TODO, CHECK: with a wrong implementation of "areContentsTheSame", the ViewHolder is not properly
+         *   updated but in the next iteration (next time an update is made by the user) it seems like the
+         *   system has indeed recorded the changes, why? Looks like it caches the "newItem" as the "oldItem"
+         *   for the next time that "areContentsTheSame" is called, no matter whether the last call to
+         *   "areContentsTheSame" returned true or false (no matter whether the ViewHolder was re-rendered or not).
+         *   Make diagram. */
         @Override
         public boolean areContentsTheSame(@NonNull Parcela oldItem, @NonNull Parcela newItem) {
-            return areItemsTheSame(oldItem, newItem);
+            Log.d("ARE_CONTENTS_THE_SAME", "maxOld: " + oldItem.getMaxOcupantes() + ", maxNew: " + newItem.getMaxOcupantes() + ", areEquals: " + oldItem.equals(newItem));
+            return oldItem.equals(newItem);
         }
     }
 
     public void updateSortingCriteria(String newSortingCriteria) {
+        // TODO: when modifying a single Parcela, just call "notifyItemChanged(i)"
         this.sortingCriteria = newSortingCriteria;
-        // notifyDataSetChanged(); // Force refresh of all items => DEPRECATED
         notifyItemRangeChanged(0, getItemCount());
     }
 }

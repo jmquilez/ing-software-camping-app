@@ -70,6 +70,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
         availableParcelsRecyclerView.setAdapter(availableParcelsAdapter);
 
         parcelaViewModel.getAvailableParcelas().observe(this, parcelas -> {
+            // TODO, CHECK: good to observe here?
             availableParcelsAdapter.submitList(parcelas);
         });
 
@@ -88,6 +89,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
     }
 
     private void confirmReservation() {
+        // TODO: merge with ReservationUtils.confirmReservation
         DialogUtils.showConfirmationDialog(
             this, "CONFIRMAR RESERVA",
             "¿Está seguro de que desea confirmar la reserva?",
@@ -95,7 +97,9 @@ public class NewParcelSelectionActivity extends BaseActivity {
             () -> {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtras(Objects.requireNonNull(getIntent().getExtras()));
-                resultIntent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(addedParcels));
+                // resultIntent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(addedParcels));
+                // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
+                resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(addedParcels));
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_INSERT);
                 setResult(RESULT_OK, resultIntent);
                 finish();

@@ -80,7 +80,12 @@ public class ReservationAdapter extends ListAdapter<Reserva, ReservationAdapter.
 
         @Override
         public boolean areContentsTheSame(@NonNull Reserva oldItem, @NonNull Reserva newItem) {
-            return areItemsTheSame(oldItem, newItem);
+            return oldItem.equals(newItem);
         }
+    }
+
+    public void updateSortingCriteria(String newSortingCriteria) {
+        this.sortingCriteria = newSortingCriteria;
+        notifyItemRangeChanged(0, getItemCount());
     }
 }

@@ -31,7 +31,6 @@ import es.unizar.eina.T213_camping.utils.DialogUtils;
 public class ParcelFeedActivity extends BaseActivity {
 
     private ParcelaViewModel parcelaViewModel;
-    private RecyclerView parcelRecyclerView;
     private ParcelAdapter parcelAdapter;
     private List<Parcela> parcelList;
     private String currentSortingCriteria = ParcelConstants.SORT_ID;
@@ -74,28 +73,16 @@ public class ParcelFeedActivity extends BaseActivity {
     }
 
     private void setupRecyclerView() {
-        parcelRecyclerView = findViewById(R.id.parcel_list_recycler_view);
+        RecyclerView parcelRecyclerView = findViewById(R.id.parcel_list_recycler_view);
         parcelAdapter = new ParcelAdapter(this, currentSortingCriteria, this::onParcelClick);
         parcelRecyclerView.setAdapter(parcelAdapter);
         parcelRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void setupSortingButtons() {
-        findViewById(R.id.parcel_sort_id_button).setOnClickListener(v -> {
-            currentSortingCriteria = ParcelConstants.SORT_ID;
-            // parcelAdapter.updateSortingCriteria(currentSortingCriteria);
-            sortParcels();
-        });
-        findViewById(R.id.parcel_sort_occupants_button).setOnClickListener(v -> {
-            currentSortingCriteria = ParcelConstants.SORT_MAX_OCCUPANTS;
-            // parcelAdapter.updateSortingCriteria(currentSortingCriteria);
-            sortParcels();
-        });
-        findViewById(R.id.parcel_sort_price_button).setOnClickListener(v -> {
-            currentSortingCriteria = ParcelConstants.SORT_EUR_PERSONA;
-            // parcelAdapter.updateSortingCriteria(currentSortingCriteria);
-            sortParcels();
-        });
+        findViewById(R.id.parcel_sort_id_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_ID));
+        findViewById(R.id.parcel_sort_occupants_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_MAX_OCCUPANTS));
+        findViewById(R.id.parcel_sort_price_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_EUR_PERSONA));
     }
 
     private void setupCreateParcelButton() {
@@ -115,6 +102,11 @@ public class ParcelFeedActivity extends BaseActivity {
         );
     }
 
+    private void sortParcels(String criteria) {
+        currentSortingCriteria = criteria;
+        sortParcels();
+    }
+
     private void sortParcels() {
         if (parcelList != null) {
             Comparator<Parcela> comparator;
@@ -129,13 +121,9 @@ public class ParcelFeedActivity extends BaseActivity {
             List<Parcela> sortedList = new ArrayList<>(parcelList);
             sortedList.sort(comparator);
 
-            for (Parcela p: sortedList) {
-                Log.d("PARCEL_X", String.valueOf(p.getMaxOcupantes()));
-            }
-
-            parcelAdapter.updateSortingCriteria(currentSortingCriteria);
-            Log.d("PARCEL_LIST", parcelList.toString());
+            // NOTE: See https://stackoverflow.com/questions/49726385/listadapter-not-updating-item-in-recyclerview
             parcelAdapter.submitList(sortedList);
+            parcelAdapter.updateSortingCriteria(currentSortingCriteria);
             parcelList = sortedList;
         }
     }
@@ -175,16 +163,13 @@ public class ParcelFeedActivity extends BaseActivity {
                     break;
             }
             loadingDialog.dismiss();
-            
-            // Force refresh the list after operation
-            // refreshParcelList();
         }, 2000);
     }
 
     private void insertParcel(Bundle extras) {
         Parcela parcela = new Parcela(
-            extras.getString(ParcelConstants.PARCEL_NAME),
-            extras.getString(ParcelConstants.DESCRIPTION),
+                Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
+                Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
             extras.getInt(ParcelConstants.MAX_OCCUPANTS),
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
@@ -195,13 +180,12 @@ public class ParcelFeedActivity extends BaseActivity {
 
     private void updateParcel(Bundle extras) {
         Parcela parcela = new Parcela(
-            extras.getString(ParcelConstants.PARCEL_NAME),
-            extras.getString(ParcelConstants.DESCRIPTION),
+                Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
+                Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
             extras.getInt(ParcelConstants.MAX_OCCUPANTS),
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
         parcelaViewModel.update(parcela);
-        // refreshParcelList();
         // TODO: conditional?
         DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", R.drawable.ic_update_success);
     }
@@ -213,14 +197,5 @@ public class ParcelFeedActivity extends BaseActivity {
         intent.putExtra(ParcelConstants.PRICE_PER_PERSON, parcela.getEurPorPersona());
         intent.putExtra(ParcelConstants.DESCRIPTION, parcela.getDescripcion());
         parcelLauncher.launch(intent);
-    }
-
-    private void refreshParcelList() {
-        parcelaViewModel.getAllParcelas().observe(this, parcelas -> {
-            if (parcelas != null) {
-                parcelList = parcelas;
-                sortParcels();
-            }
-        });
     }
 }

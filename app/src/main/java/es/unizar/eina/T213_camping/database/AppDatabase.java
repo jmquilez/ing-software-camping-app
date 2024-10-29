@@ -54,12 +54,12 @@ public abstract class AppDatabase extends RoomDatabase {
                 // Insert initial Parcelas
                 Parcela parcela1 = new Parcela("Parcela A",
                         "Primera parcela con capacidad para 4 personas.",
-                        4, 25);
+                        4, 25.0);
                 parcelaDao.insert(parcela1);
 
                 Parcela parcela2 = new Parcela("Parcela B",
                         "Segunda parcela con capacidad para 6 personas.",
-                        6, 30);
+                        6, 30.0);
                 parcelaDao.insert(parcela2);
 
                 // Insert initial Reservas

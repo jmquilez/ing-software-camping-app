@@ -24,14 +24,19 @@ import androidx.room.Index;
 public class ParcelaReservada {
 
     @NonNull
+    @ColumnInfo(name = "parcelaNombre")
     private String parcelaNombre;
+
     @NonNull
-    private long reservaId;
+    @ColumnInfo(name = "reservaId")
+    private Long reservaId;
+
     @NonNull
-    private int numOcupantes;
+    @ColumnInfo(name = "numOcupantes")
+    private Integer numOcupantes;
 
     // Constructor
-    public ParcelaReservada(String parcelaNombre, long reservaId, int numOcupantes) {
+    public ParcelaReservada(@NonNull String parcelaNombre, @NonNull Long reservaId, @NonNull Integer numOcupantes) {
         this.parcelaNombre = parcelaNombre;
         this.reservaId = reservaId;
         this.numOcupantes = numOcupantes;
@@ -39,6 +44,7 @@ public class ParcelaReservada {
 
     // Getters and Setters
 
+    @NonNull
     public String getParcelaNombre() {
         return parcelaNombre;
     }
@@ -48,7 +54,7 @@ public class ParcelaReservada {
         this.parcelaNombre = parcelaNombre;
     }*/
 
-    public long getReservaId() {
+    public Long getReservaId() {
         return reservaId;
     }
 
@@ -57,11 +63,11 @@ public class ParcelaReservada {
         this.reservaId = reservaId;
     }*/
 
-    public int getNumOcupantes() {
+    public Integer getNumOcupantes() {
         return numOcupantes;
     }
 
-    public void setNumOcupantes(int numOcupantes) {
+    public void setNumOcupantes(Integer numOcupantes) {
         this.numOcupantes = numOcupantes;
     }
 }

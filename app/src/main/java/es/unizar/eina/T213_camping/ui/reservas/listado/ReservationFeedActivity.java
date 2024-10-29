@@ -70,6 +70,10 @@ public class ReservationFeedActivity extends BaseActivity {
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
         parcelaReservadaViewModel = new ViewModelProvider(this).get(ParcelaReservadaViewModel.class);
         reservaViewModel.getAllReservas().observe(this, reservations -> {
+            /* TODO: in case a Reserva only gets its associated ParcelaReservada's updated,
+             *  will this observer callback be triggered? Shouldn't be a problem, since we re-fetch
+             *  the corresponding rows from "ParcelaReservada" every time we launch a "Reserva"
+             *  modification Intent */
             reservationList = reservations;
             sortReservations();
         });
@@ -122,13 +126,19 @@ public class ReservationFeedActivity extends BaseActivity {
                 comparator = Comparator.comparing(Reserva::getNombreCliente);
             }
 
-            reservationList.sort(comparator);
-            reservationAdapter.submitList(reservationList);
+            List<Reserva> sortedList = new ArrayList<>(reservationList);
+            sortedList.sort(comparator);
+
+            // NOTE: See https://stackoverflow.com/questions/49726385/listadapter-not-updating-item-in-recyclerview
+            reservationAdapter.submitList(sortedList);
+            reservationAdapter.updateSortingCriteria(currentSortingCriteria);
+            reservationList = sortedList;
         }
     }
 
     private void handleReservationResult(Intent data) {
         Bundle extras = data.getExtras();
+        ArrayList<ParcelaOccupancy> selectedParcels = data.getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
         assert extras != null;
         String operationType = extras.getString(ReservationConstants.OPERATION_TYPE);
         long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
@@ -148,10 +158,10 @@ public class ReservationFeedActivity extends BaseActivity {
         new android.os.Handler().postDelayed(() -> {
             switch (operationType) {
                 case ReservationConstants.OPERATION_INSERT:
-                    insertReservation(extras);
+                    insertReservation(extras, selectedParcels);
                     break;
                 case ReservationConstants.OPERATION_UPDATE:
-                    updateReservation(extras);
+                    updateReservation(extras, selectedParcels);
                     break;
                 case ReservationConstants.OPERATION_DELETE:
                     reservaViewModel.deleteById(reservationId);
@@ -176,16 +186,15 @@ public class ReservationFeedActivity extends BaseActivity {
         DialogUtils.showSuccessDialog(this, "Cliente notificado con éxito.", R.drawable.ic_notify_success);
     }
 
-    private void insertReservation(Bundle extras) {
+    private void insertReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
         Reserva reservation = new Reserva(
-            extras.getString(ReservationConstants.CLIENT_NAME),
-            extras.getString(ReservationConstants.ENTRY_DATE),
-            extras.getString(ReservationConstants.DEPARTURE_DATE),
-            extras.getString(ReservationConstants.CLIENT_PHONE)
+                Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
+                Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)),
+                Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)),
+                Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE))
         );
-        long reservationId = reservaViewModel.insert(reservation);
 
-        ArrayList<ParcelaOccupancy> selectedParcels = (ArrayList<ParcelaOccupancy>) extras.getSerializable(ReservationConstants.SELECTED_PARCELS);
+        assert selectedParcels != null;
         for (ParcelaOccupancy parcelaOccupancy : selectedParcels) {
             ParcelaReservada parcelaReservada = new ParcelaReservada(
                 parcelaOccupancy.getParcela().getNombre(),
@@ -197,18 +206,22 @@ public class ReservationFeedActivity extends BaseActivity {
         DialogUtils.showSuccessDialog(this, "Reserva creada con éxito.", R.drawable.ic_create_success);
     }
 
-    private void updateReservation(Bundle extras) {
+    private void updateReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
         long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
         Reserva updatedReservation = new Reserva(
-            extras.getString(ReservationConstants.CLIENT_NAME),
-            extras.getString(ReservationConstants.ENTRY_DATE),
-            extras.getString(ReservationConstants.DEPARTURE_DATE),
-            extras.getString(ReservationConstants.CLIENT_PHONE)
+                Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
+                Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)),
+                Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)),
+                Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE))
         );
+
+        // NOTE: revise if the reserva has actually changed? But be careful, because we might have
+        // to trigger a reupdate of the RecyclerView's UI
         reservaViewModel.update(updatedReservation);
 
         // Update ParcelasReservadas
-        ArrayList<ParcelaOccupancy> selectedParcels = (ArrayList<ParcelaOccupancy>) extras.getSerializable(ReservationConstants.SELECTED_PARCELS);
+        // ArrayList<ParcelaOccupancy> selectedParcels = (ArrayList<ParcelaOccupancy>) extras.getSerializable(ReservationConstants.SELECTED_PARCELS);
+        assert selectedParcels != null;
         List<ParcelaReservada> parcelasReservadas = selectedParcels.stream()
             .map(po -> new ParcelaReservada(po.getParcela().getNombre(), reservationId, po.getOccupancy()))
             .collect(Collectors.toList());
@@ -224,13 +237,14 @@ public class ReservationFeedActivity extends BaseActivity {
         intent.putExtra(ReservationConstants.CLIENT_PHONE, reserva.getTelefonoCliente());
         intent.putExtra(ReservationConstants.ENTRY_DATE, reserva.getFechaEntrada());
         intent.putExtra(ReservationConstants.DEPARTURE_DATE, reserva.getFechaSalida());
-        
-        parcelaViewModel.getParcelasByReservationId(reserva.getId()).observe(this, parcelasOccupancy -> {
-            /*List<ParcelaOccupancy> parcelaOccupancies = parcelas.stream()
-                .map(p -> new ParcelaOccupancy(p.getParcela(), p.getNumOcupantes()))
-                .collect(Collectors.toList());*/
-            intent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(parcelasOccupancy));
-            reservationLauncher.launch(intent);
-        });
+
+        // KEY: do NOT observe the "ParcelaReservada"'s here, since a new intent will be launched
+        // every time they are updated (and we don't want that)
+        List<ParcelaOccupancy> parcelasReservadas = parcelaViewModel.getParcelasByReservationId(reserva.getId()).getValue();
+        if (parcelasReservadas == null) {
+            parcelasReservadas = new ArrayList<>();
+        }
+        intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(parcelasReservadas));
+        reservationLauncher.launch(intent);
     }
 }

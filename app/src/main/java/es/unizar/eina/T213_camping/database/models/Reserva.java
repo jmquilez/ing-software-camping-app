@@ -1,6 +1,7 @@
 package es.unizar.eina.T213_camping.database.models;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -8,21 +9,28 @@ import androidx.room.PrimaryKey;
 public class Reserva {
 
     @PrimaryKey(autoGenerate = true)
-    @NonNull
+    @ColumnInfo(name = "id")
     private long id;
 
     // TODO: convert to actual date types
     @NonNull
+    @ColumnInfo(name = "nombreCliente")
     private String nombreCliente;
+
     @NonNull
+    @ColumnInfo(name = "fechaEntrada")
     private String fechaEntrada;
+
     @NonNull
+    @ColumnInfo(name = "fechaSalida")
     private String fechaSalida;
+
     @NonNull
+    @ColumnInfo(name = "telefonoCliente")
     private String telefonoCliente;
 
     // Constructor
-    public Reserva(String nombreCliente, String fechaEntrada, String fechaSalida, String telefonoCliente) {
+    public Reserva(@NonNull String nombreCliente, @NonNull String fechaEntrada, @NonNull String fechaSalida, @NonNull String telefonoCliente) {
         this.nombreCliente = nombreCliente;
         this.fechaEntrada = fechaEntrada;
         this.fechaSalida = fechaSalida;
@@ -38,35 +46,47 @@ public class Reserva {
 
     // NOTE: the id is immutable, it cannot be set
 
+    @NonNull
     public String getNombreCliente() {
         return nombreCliente;
     }
 
-    public void setNombreCliente(String nombreCliente) {
+    public void setNombreCliente(@NonNull String nombreCliente) {
         this.nombreCliente = nombreCliente;
     }
 
+    @NonNull
     public String getFechaEntrada() {
         return fechaEntrada;
     }
 
-    public void setFechaEntrada(String fechaEntrada) {
+    public void setFechaEntrada(@NonNull String fechaEntrada) {
         this.fechaEntrada = fechaEntrada;
     }
 
+    @NonNull
     public String getFechaSalida() {
         return fechaSalida;
     }
 
-    public void setFechaSalida(String fechaSalida) {
+    public void setFechaSalida(@NonNull String fechaSalida) {
         this.fechaSalida = fechaSalida;
     }
 
+    @NonNull
     public String getTelefonoCliente() {
         return telefonoCliente;
     }
 
-    public void setTelefonoCliente(String telefonoCliente) {
+    public void setTelefonoCliente(@NonNull String telefonoCliente) {
         this.telefonoCliente = telefonoCliente;
+    }
+
+    public boolean equals(Reserva other) {
+        return this.nombreCliente.equals(other.nombreCliente) &&
+                this.fechaEntrada.equals(other.fechaEntrada) &&
+                this.fechaSalida.equals(other.fechaSalida) &&
+                this.telefonoCliente.equals(other.telefonoCliente) &&
+                this.id == other.id;
     }
 }

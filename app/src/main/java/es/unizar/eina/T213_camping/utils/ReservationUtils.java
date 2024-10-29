@@ -5,6 +5,8 @@ import static android.app.Activity.RESULT_OK;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
@@ -37,7 +39,7 @@ public class ReservationUtils {
 
     public static void confirmReservation(BaseActivity activity, long reservationId, String clientName,
                                           String clientPhone, String entryDate, String departureDate,
-                                          List<ParcelaOccupancy> selectedParcels) {
+                                          @NonNull List<ParcelaOccupancy> selectedParcels) {
         DialogUtils.showConfirmationDialog(
             activity,
             "Confirmar cambios",
@@ -50,7 +52,9 @@ public class ReservationUtils {
                 resultIntent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhone);
                 resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate);
                 resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate);
-                resultIntent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
+                // resultIntent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
+                // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
+                resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_UPDATE);
                 
                 activity.setResult(RESULT_OK, resultIntent);
