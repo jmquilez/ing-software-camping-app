@@ -1,6 +1,7 @@
 package es.unizar.eina.T213_camping.ui.reservas.adapters;
 
 import android.app.Dialog;
+import android.util.Log;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,20 +22,23 @@ import java.util.stream.Collectors;
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
 public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParcelsAdapter.ViewHolder> {
     private Context context;
     private List<ParcelaOccupancy> addedParcels;
-    private OnParcelAddedListener onParcelAddedListener;
+    private OnParcelSelectionChangedListener onParcelAddedListener;
 
-    public interface OnParcelAddedListener {
-        void onParcelAdded(List<ParcelaOccupancy> updatedList);
+    public interface OnParcelSelectionChangedListener {
+        void onParcelSelectionChanged(List<ParcelaOccupancy> updatedAddedParcelsList,
+                           List<Parcela> updatedAvailableParcelsList, String whoCalled);
     }
 
-    public AvailableParcelsAdapter(Context context, List<ParcelaOccupancy> addedParcels, OnParcelAddedListener listener) {
+    public AvailableParcelsAdapter(Context context, List<ParcelaOccupancy> addedParcels, OnParcelSelectionChangedListener listener) {
         super(DIFF_CALLBACK);
         this.context = context;
-        this.addedParcels = addedParcels;
+        // KEY: create a new ArrayList ref, since the underlying `addedParcels` is unmodifiable
+        this.addedParcels = addedParcels == null ? new ArrayList<>() : new ArrayList<>(addedParcels);
         this.onParcelAddedListener = listener;
     }
 
@@ -46,11 +50,12 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
 
         @Override
         public boolean areContentsTheSame(@NonNull Parcela oldItem, @NonNull Parcela newItem) {
-            return areItemsTheSame(oldItem, newItem);
+            return oldItem.equals(newItem);
+            // return areItemsTheSame(oldItem, newItem);
         }
     };
 
-    @Override
+    /*@Override
     public void submitList(List<Parcela> list) {
         if (list != null && addedParcels != null) {
             List<Parcela> filteredList = list.stream()
@@ -59,9 +64,9 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
                     .collect(Collectors.toList());
             super.submitList(filteredList);
         } else {
-            super.submitList(null);
+            super.submitList(list);
         }
-    }
+    }*/
 
     @NonNull
     @Override
@@ -75,6 +80,10 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
         Parcela parcel = getItem(position);
         holder.parcelName.setText(parcel.getNombre());
         holder.addButton.setOnClickListener(v -> showParcelDetailsDialog(parcel));
+    }
+
+    public void updateAddedParcels(List<ParcelaOccupancy> addedParcels) {
+        this.addedParcels = new ArrayList<>(addedParcels);
     }
 
     private void showParcelDetailsDialog(Parcela parcel) {
@@ -93,12 +102,18 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
 
         removeButton.setVisibility(View.GONE); // Hide remove button for available parcels
 
+        // KEY: create a new list ref (getCurrentList() is unmodifiable)
+        List<Parcela> currentList = new ArrayList<>(getCurrentList());
+
+        Log.i("CURRENTLY_AVAILABLE_PARCELS_LIST", currentList.toString());
+
         confirmButton.setOnClickListener(v -> {
+            currentList.remove(parcel);
             ParcelaOccupancy newBookedParcel = new ParcelaOccupancy(parcel, occupantsPicker.getValue());
-            addedParcels.add(newBookedParcel);
-            onParcelAddedListener.onParcelAdded(new ArrayList<>(addedParcels));
+            addedParcels.add(0, newBookedParcel); // NOTE: add first so the user can see the changes directly
+            onParcelAddedListener.onParcelSelectionChanged(addedParcels, currentList, ReservationConstants.AVAILABLE_PARCELS_ADAPTER_CALLED);
             dialog.dismiss();
-            submitList(getCurrentList()); // Refresh the list to remove the added parcel
+            submitList(currentList); // Refresh the list to remove the added parcel
         });
 
         dialog.show();

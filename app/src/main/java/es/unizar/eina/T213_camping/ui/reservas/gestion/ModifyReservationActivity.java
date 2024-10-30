@@ -3,6 +3,7 @@ package es.unizar.eina.T213_camping.ui.reservas.gestion;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -63,7 +64,7 @@ public class ModifyReservationActivity extends BaseActivity {
 
         setupViews();
         setupViewModels();
-        loadReservationData();
+        loadReservationData(); // KEY: done before setting listeners (ensure that all data is loaded properly)
         setupListeners();
         setupParcelSelectionLauncher();
 
@@ -93,7 +94,9 @@ public class ModifyReservationActivity extends BaseActivity {
         departureDate = getIntent().getStringExtra("DEPARTURE_DATE"); // Get departure date
         selectedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
 
-        // NOTE: shouldn't happen
+        Log.i("SELECTED_PARCELS", selectedParcels != null ? selectedParcels.toString() : "null");
+
+        // NOTE: shouldn't happen (all Reservas MUST have at list one ParcelaReservada => TODO, enforce checks)
         if (selectedParcels == null) {
             selectedParcels = new ArrayList<>();
         }

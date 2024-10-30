@@ -28,6 +28,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
     private AvailableParcelsAdapter availableParcelsAdapter;
     private AddedParcelsAdapter addedParcelsAdapter;
     private List<ParcelaOccupancy> addedParcels;
+    private List<Parcela> availableParcels;
 
     private ParcelaViewModel parcelaViewModel;
 
@@ -66,18 +67,21 @@ public class NewParcelSelectionActivity extends BaseActivity {
 
     private void setupRecyclerViews() {
         availableParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateAddedParcels);
+        availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateParcelSelection);
         availableParcelsRecyclerView.setAdapter(availableParcelsAdapter);
 
         parcelaViewModel.getAvailableParcelas().observe(this, parcelas -> {
             // TODO, CHECK: good to observe here?
-            availableParcelsAdapter.submitList(parcelas);
+
+            availableParcels = parcelas;
+            availableParcelsAdapter.submitList(availableParcels);
+
+            addedParcelsAdapter = new AddedParcelsAdapter(this, availableParcels, this::updateParcelSelection);
+            addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
+            addedParcelsAdapter.submitList(addedParcels);
         });
 
         addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        addedParcelsAdapter = new AddedParcelsAdapter(this, this::updateAddedParcels);
-        addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
-        addedParcelsAdapter.submitList(addedParcels);
     }
 
     private void setupListeners() {
@@ -107,9 +111,31 @@ public class NewParcelSelectionActivity extends BaseActivity {
         );
     }
 
-    public void updateAddedParcels(List<ParcelaOccupancy> updatedList) {
-        addedParcels = new ArrayList<>(updatedList);
-        addedParcelsAdapter.submitList(addedParcels);
-        availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
+    // No multiple inheritance in Java :(
+    public void updateParcelSelection(List<ParcelaOccupancy> updatedAddedParcelsList,
+                                      List<Parcela> updatedAvailableParcelsList, String whoCalled) { // Change to List<Parcela>
+
+        addedParcels = updatedAddedParcelsList;
+        availableParcels = updatedAvailableParcelsList;
+
+        // DONE: avoid calling the object that has called us first
+        switch (whoCalled) {
+            case ReservationConstants.ADDED_PARCELS_ADAPTER_CALLED:
+                availableParcelsAdapter.updateAddedParcels(addedParcels);
+                availableParcelsAdapter.submitList(availableParcels, () -> {
+                    availableParcelsRecyclerView.scrollToPosition(0);
+                });
+                break;
+            case ReservationConstants.AVAILABLE_PARCELS_ADAPTER_CALLED:
+                addedParcelsAdapter.updateAvailableParcels(availableParcels);
+                addedParcelsAdapter.submitList(new ArrayList<>(addedParcels), () -> {
+                    addedParcelsRecyclerView.scrollToPosition(0);
+                });
+                break;
+            default:
+                break;
+        }
+
+        // availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
     }
 }

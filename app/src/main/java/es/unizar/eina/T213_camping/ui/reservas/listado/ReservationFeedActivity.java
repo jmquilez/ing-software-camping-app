@@ -3,9 +3,11 @@ package es.unizar.eina.T213_camping.ui.reservas.listado;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -238,13 +240,20 @@ public class ReservationFeedActivity extends BaseActivity {
         intent.putExtra(ReservationConstants.ENTRY_DATE, reserva.getFechaEntrada());
         intent.putExtra(ReservationConstants.DEPARTURE_DATE, reserva.getFechaSalida());
 
-        // KEY: do NOT observe the "ParcelaReservada"'s here, since a new intent will be launched
-        // every time they are updated (and we don't want that)
-        List<ParcelaOccupancy> parcelasReservadas = parcelaViewModel.getParcelasByReservationId(reserva.getId()).getValue();
-        if (parcelasReservadas == null) {
-            parcelasReservadas = new ArrayList<>();
-        }
-        intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(parcelasReservadas));
-        reservationLauncher.launch(intent);
+        // NOTE: See https://www.youtube.com/watch?v=ESM3NwSqJFo
+        LiveData<List<ParcelaOccupancy>> parcelasReservadasLiveData = parcelaViewModel.getParcelasByReservationId(reserva.getId());
+        parcelasReservadasLiveData.observe(this, parcelasReservadas -> {
+            if (parcelasReservadas == null) {
+                parcelasReservadas = new ArrayList<>();
+            }
+            Log.i("PUT_PARCELABLE_ARRAY_EXTRA", "parcelasReservadas: " + parcelasReservadas);
+            intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(parcelasReservadas));
+            reservationLauncher.launch(intent);
+            // KEY: remove all observers handled by the current lifecycle owner (this activity)
+            //      from `parcelaViewModel.getParcelasByReservationId` (we'll just retrieve the data once)
+            parcelasReservadasLiveData.removeObservers(this);
+        });
+
+
     }
 }

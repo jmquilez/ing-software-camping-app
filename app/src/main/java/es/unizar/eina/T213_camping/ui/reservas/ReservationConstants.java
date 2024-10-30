@@ -20,4 +20,7 @@ public class ReservationConstants {
     public static final String ENTRY_DATE = "ENTRY_DATE";
     public static final String DEPARTURE_DATE = "DEPARTURE_DATE";
     public static final String SELECTED_PARCELS = "SELECTED_PARCELS";
+
+    public static final String ADDED_PARCELS_ADAPTER_CALLED = "ADDED_PARCELS_ADAPTER_CALLED";
+    public static final String AVAILABLE_PARCELS_ADAPTER_CALLED = "AVAILABLE_PARCELS_ADAPTER_CALLED";
 }

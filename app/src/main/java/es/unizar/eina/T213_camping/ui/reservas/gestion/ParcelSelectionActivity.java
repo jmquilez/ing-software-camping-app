@@ -2,6 +2,7 @@ package es.unizar.eina.T213_camping.ui.reservas.gestion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import androidx.lifecycle.ViewModelProvider;
@@ -26,9 +27,9 @@ public class ParcelSelectionActivity extends BaseActivity {
     private AvailableParcelsAdapter availableParcelsAdapter;
     private AddedParcelsAdapter addedParcelsAdapter;
     private List<ParcelaOccupancy> addedParcels; // Change to List<Parcela>
+    private List<Parcela> availableParcels;
 
     private ParcelaViewModel parcelaViewModel; // Change to ParcelaViewModel
-    private ReservaViewModel reservaViewModel;
 
     private long reservationId;
 
@@ -50,8 +51,7 @@ public class ParcelSelectionActivity extends BaseActivity {
 
         setupViews();
         setupViewModels();
-        setupRecyclerViews();
-        loadReservationData();
+        setupRecyclerViewsAndData();
         setupListeners();
 
         setButtonVisibility("back", true);
@@ -67,33 +67,36 @@ public class ParcelSelectionActivity extends BaseActivity {
 
     private void setupViewModels() {
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class); // Change to ParcelaViewModel
-        reservaViewModel = new ViewModelProvider(this).get(ReservaViewModel.class);
     }
 
-    private void setupRecyclerViews() {
+    private void setupRecyclerViewsAndData() {
         availableParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateAddedParcels);
-        availableParcelsRecyclerView.setAdapter(availableParcelsAdapter);
 
-        addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        addedParcelsAdapter = new AddedParcelsAdapter(this, this::updateAddedParcels);
-        addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
-    }
-
-    private void loadReservationData() {
         reservationId = getIntent().getLongExtra(ReservationConstants.RESERVATION_ID, 0L);
-        // addedParcels = (ArrayList<ParcelaOccupancy>) getIntent().getSerializableExtra(ReservationConstants.SELECTED_PARCELS); // Change to List<Parcela>
         addedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+
+        // TODO: shouldn't happen, there must be at least one added Parcela in a Reserva
+        Log.i("ADDED_PARCELS", addedParcels != null ? addedParcels.toString() : "null");
         if (addedParcels == null) {
             addedParcels = new ArrayList<>();
         }
-        addedParcelsAdapter.submitList(new ArrayList<>(addedParcels));
+
+        // KEY: set up the available parcels adapter AFTER retrieving "addedParcels" from the DB
+        availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateParcelSelection);
+        availableParcelsRecyclerView.setAdapter(availableParcelsAdapter);
 
         // Call the method to get parcelas not linked to the specific reservation ID
-        parcelaViewModel.getParcelasNotLinkedToReservation(reservationId).observe(this, availableParcelas -> {
-            // TODO, CHECK: good to observe here?
-            availableParcelsAdapter.submitList(availableParcelas);
+        parcelaViewModel.getParcelasNotLinkedToReservation(reservationId).observe(this, liveAvailableParcels -> {
+            // Log.i("PARCELAS_NOT_LINKED_TO_RESERVATION", "are: " + availableParcelas.toString());
+            availableParcels = liveAvailableParcels;
+            availableParcelsAdapter.submitList(liveAvailableParcels);
+
+            addedParcelsAdapter = new AddedParcelsAdapter(this, availableParcels, this::updateParcelSelection);
+            addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
+            addedParcelsAdapter.submitList(new ArrayList<>(addedParcels));
         });
+
+        addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void setupListeners() {
@@ -117,10 +120,31 @@ public class ParcelSelectionActivity extends BaseActivity {
         ReservationUtils.confirmReservation(this, reservationId, clientName, clientPhone, entryDate, departureDate, addedParcels);
     }
 
-    public void updateAddedParcels(List<ParcelaOccupancy> updatedList) { // Change to List<Parcela>
-        addedParcels.clear();
-        addedParcels.addAll(updatedList);
-        addedParcelsAdapter.submitList(new ArrayList<>(addedParcels));
-        availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
+    // No multiple inheritance in Java :(
+    public void updateParcelSelection(List<ParcelaOccupancy> updatedAddedParcelsList,
+                                   List<Parcela> updatedAvailableParcelsList, String whoCalled) { // Change to List<Parcela>
+
+        addedParcels = updatedAddedParcelsList;
+        availableParcels = updatedAvailableParcelsList;
+
+        // DONE: avoid calling the object that has called us first
+        switch (whoCalled) {
+            case ReservationConstants.ADDED_PARCELS_ADAPTER_CALLED:
+                availableParcelsAdapter.updateAddedParcels(addedParcels);
+                availableParcelsAdapter.submitList(new ArrayList<>(availableParcels), () -> {
+                    availableParcelsRecyclerView.scrollToPosition(0);
+                });
+                break;
+            case ReservationConstants.AVAILABLE_PARCELS_ADAPTER_CALLED:
+                addedParcelsAdapter.updateAvailableParcels(availableParcels);
+                addedParcelsAdapter.submitList(new ArrayList<>(addedParcels), () -> {
+                    addedParcelsRecyclerView.scrollToPosition(0);
+                });
+                break;
+            default:
+                break;
+        }
+
+        // availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
     }
 }
