@@ -85,10 +85,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
     }
 
     private void setupListeners() {
-        findViewById(R.id.new_reservation_previous_button).setOnClickListener(v -> {
-            setResult(RESULT_CANCELED);
-            finish();
-        });
+        findViewById(R.id.new_reservation_previous_button).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         findViewById(R.id.new_reservation_confirm_button).setOnClickListener(v -> confirmReservation());
     }
 

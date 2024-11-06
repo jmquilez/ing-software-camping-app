@@ -2,6 +2,7 @@ package es.unizar.eina.T213_camping.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -36,7 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         homeButton = findViewById(R.id.homeButton);
 
         // TODO: deprecated
-        backButton.setOnClickListener(v -> onBackPressed());
+        backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         // TODO: revise home button
         homeButton.setOnClickListener(v -> {
@@ -69,11 +70,5 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (button != null) {
             button.setVisibility(show ? View.VISIBLE : View.GONE);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        setResult(RESULT_CANCELED); // Set the result to canceled
-        super.onBackPressed(); // Call the default implementation
     }
 }

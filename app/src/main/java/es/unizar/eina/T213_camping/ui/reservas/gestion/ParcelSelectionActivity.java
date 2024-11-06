@@ -104,7 +104,7 @@ public class ParcelSelectionActivity extends BaseActivity {
         findViewById(R.id.parcel_selection_notify_button).setOnClickListener(v -> ReservationUtils.notifyClient(this, this));
         findViewById(R.id.parcel_selection_delete_button).setOnClickListener(v -> ReservationUtils.deleteReservation(this, this));
 
-        prevButton.setOnClickListener(v -> onBackPressed());
+        prevButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         nextButton.setOnClickListener(v -> {
             // This is the last screen, so we'll just confirm the reservation
             confirmReservation();
