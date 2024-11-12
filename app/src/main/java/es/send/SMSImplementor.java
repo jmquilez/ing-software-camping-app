@@ -31,7 +31,9 @@ public class SMSImplementor implements SendImplementor {
      * @param message cuerpo del mensaje
      */
     public void send (String phone, String message) {
-	// Por implementar
+        Uri smsUri = Uri.parse("sms:" + phone);
+        Intent sentIntent = new Intent(Intent.ACTION_VIEW, smsUri);
+        sendIntent.putExtra("sms_body", message);
+        getSourceActivity().startActivity(sendIntent);
    }
-
 }
