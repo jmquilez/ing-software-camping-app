@@ -186,4 +186,24 @@ public class ModifyReservationActivity extends BaseActivity {
         ReservationUtils.confirmReservation(this, reservationId, clientNameInput.getText().toString(),
             clientPhoneInput.getText().toString(), checkInDate, checkOutDate, selectedParcels);
     }
+
+    public String getClientPhone() {
+        return clientPhoneInput.getText().toString();
+    }
+
+    public String getClientName() {
+        return clientNameInput.getText().toString();
+    }
+
+    public String getCheckInDate() {
+        return checkInDate;
+    }
+
+    public String getCheckOutDate() {
+        return checkOutDate;
+    }
+
+    public List<ParcelaOccupancy> getSelectedParcels() {
+        return selectedParcels;
+    }
 }

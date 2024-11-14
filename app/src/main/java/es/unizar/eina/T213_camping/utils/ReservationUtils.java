@@ -19,13 +19,57 @@ import java.util.List;
 public class ReservationUtils {
 
     // TODO: revise R.drawable
-    public static void notifyClient(Context context, AppCompatActivity currentActivity) {
-        DialogUtils.showConfirmationDialog(context, "Notificar al cliente", "¿Está seguro de que desea notificar al cliente?", R.drawable.ic_notify, () -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_NOTIFY_CLIENT);
-            currentActivity.setResult(RESULT_OK, resultIntent);
-            currentActivity.finish();
-        });
+    public static void notifyClient(Context context, Activity activity) {
+        SendAbstraction sender = new SendImplementation(context);
+        
+        String phoneNumber = "";
+        String clientName = "";
+        String entryDate = "";
+        String departureDate = "";
+        List<ParcelaOccupancy> parcelas = new ArrayList<>();
+        
+        if (activity instanceof ModifyReservationActivity) {
+            ModifyReservationActivity act = (ModifyReservationActivity) activity;
+            phoneNumber = act.getClientPhone();
+            clientName = act.getClientName();
+            entryDate = act.getCheckInDate();
+            departureDate = act.getCheckOutDate();
+            parcelas = act.getSelectedParcels();
+        } else if (activity instanceof ParcelSelectionActivity) {
+            ParcelSelectionActivity act = (ParcelSelectionActivity) activity;
+            phoneNumber = act.getClientPhone();
+            clientName = act.getClientName();
+            entryDate = act.getCheckInDate();
+            departureDate = act.getCheckOutDate();
+            parcelas = act.getAddedParcels();
+        }
+        
+        // Construir el mensaje
+        StringBuilder messageBuilder = new StringBuilder();
+        messageBuilder.append("¡Hola ").append(clientName).append("!\n\n");
+        messageBuilder.append("Detalles de su reserva:\n");
+        messageBuilder.append("Fecha de entrada: ").append(entryDate).append("\n");
+        messageBuilder.append("Fecha de salida: ").append(departureDate).append("\n");
+        messageBuilder.append("Parcelas reservadas: ");
+        
+        // Añadir información de las parcelas
+        if (parcelas != null && !parcelas.isEmpty()) {
+            for (int i = 0; i < parcelas.size(); i++) {
+                messageBuilder.append(parcelas.get(i).getParcelaId());
+                if (i < parcelas.size() - 1) {
+                    messageBuilder.append(", ");
+                }
+            }
+        }
+        
+        String message = messageBuilder.toString();
+        
+        try {
+            sender.send(phoneNumber, message);
+            Toast.makeText(context, "Mensaje enviado con éxito", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(context, "Error al enviar el mensaje", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public static void deleteReservation(Context context, AppCompatActivity currentActivity) {

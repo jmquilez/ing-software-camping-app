@@ -34,4 +34,17 @@ public interface ParcelaReservadaDao {
 
     @Query("DELETE FROM parcela_reservada WHERE reservaId = :reservationId")
     void deleteParcelasForReservation(long reservationId);
+
+    @Query("SELECT p.* FROM parcela p " +
+           "WHERE NOT EXISTS (" +
+           "    SELECT 1 FROM parcela_reservada pr " +
+           "    JOIN reserva r ON pr.reservaId = r.id " +
+           "    WHERE pr.parcelaNombre = p.nombre " +
+           "    AND (" +
+           "        (r.fechaInicio <= :fechaFin AND r.fechaFin >= :fechaInicio) OR " +
+           "        (r.fechaInicio >= :fechaInicio AND r.fechaInicio <= :fechaFin) OR " +
+           "        (r.fechaFin >= :fechaInicio AND r.fechaFin <= :fechaFin)" +
+           "    )" +
+           ")")
+    LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(String fechaInicio, String fechaFin);
 }
