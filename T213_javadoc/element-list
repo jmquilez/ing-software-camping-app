@@ -1,0 +1,16 @@
+es.unizar.eina.T213_camping.database
+es.unizar.eina.T213_camping.database.daos
+es.unizar.eina.T213_camping.database.models
+es.unizar.eina.T213_camping.database.repositories
+es.unizar.eina.T213_camping.ui
+es.unizar.eina.T213_camping.ui.parcelas
+es.unizar.eina.T213_camping.ui.parcelas.creacion
+es.unizar.eina.T213_camping.ui.parcelas.gestion
+es.unizar.eina.T213_camping.ui.parcelas.listado
+es.unizar.eina.T213_camping.ui.reservas
+es.unizar.eina.T213_camping.ui.reservas.adapters
+es.unizar.eina.T213_camping.ui.reservas.creacion
+es.unizar.eina.T213_camping.ui.reservas.gestion
+es.unizar.eina.T213_camping.ui.reservas.listado
+es.unizar.eina.T213_camping.ui.view_models
+es.unizar.eina.T213_camping.utils

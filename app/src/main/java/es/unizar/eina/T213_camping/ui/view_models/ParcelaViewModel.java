@@ -11,42 +11,82 @@ import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.repositories.ParcelaRepository;
 
+/**
+ * ViewModel que gestiona los datos de las parcelas.
+ * Actúa como intermediario entre la UI y el repositorio de parcelas,
+ * proporcionando una capa de abstracción para las operaciones de datos.
+ */
 public class ParcelaViewModel extends AndroidViewModel {
 
     private ParcelaRepository mRepository;
 
     private final LiveData<List<Parcela>> mAllParcelas;
 
+    /**
+     * Constructor del ViewModel.
+     * Inicializa el repositorio y obtiene la lista inicial de parcelas.
+     * @param application Contexto de la aplicación
+     */
     public ParcelaViewModel(Application application) {
         super(application);
         mRepository = new ParcelaRepository(application);
         mAllParcelas = mRepository.getAllParcelas();
     }
 
+    /**
+     * Obtiene todas las parcelas del sistema.
+     * @return LiveData con la lista de todas las parcelas
+     */
     public LiveData<List<Parcela>> getAllParcelas() { return mAllParcelas; }
 
+    /**
+     * Inserta una nueva parcela en el sistema.
+     * @param parcela Parcela a insertar
+     */
     public void insert(Parcela parcela) { mRepository.insert(parcela); }
 
+    /**
+     * Actualiza una parcela existente.
+     * @param parcela Parcela con los datos actualizados
+     */
     public void update(Parcela parcela) { mRepository.update(parcela); }
 
+    /**
+     * Elimina una parcela del sistema.
+     * @param parcela Parcela a eliminar
+     */
     public void delete(Parcela parcela) { mRepository.delete(parcela); }
 
-    // New method to retrieve available parcelas
+    /**
+     * Obtiene las parcelas que no están reservadas.
+     * @return LiveData con la lista de parcelas disponibles
+     */
     public LiveData<List<Parcela>> getAvailableParcelas() {
         return mRepository.getAvailableParcelas();
     }
 
-    // New method to retrieve parcelas by reservation ID
+    /**
+     * Obtiene las parcelas asociadas a una reserva específica junto con su ocupación.
+     * @param reservationId ID de la reserva
+     * @return LiveData con la lista de parcelas y su ocupación
+     */
     public LiveData<List<ParcelaOccupancy>> getParcelasByReservationId(long reservationId) {
         return mRepository.getParcelasByReservationId(reservationId);
     }
 
-    // New method to retrieve parcelas not linked to a specific reservation ID
+    /**
+     * Obtiene las parcelas que no están vinculadas a una reserva específica.
+     * @param reservationId ID de la reserva
+     * @return LiveData con la lista de parcelas no vinculadas
+     */
     public LiveData<List<Parcela>> getParcelasNotLinkedToReservation(long reservationId) {
         return mRepository.getParcelasNotLinkedToReservation(reservationId);
     }
 
-    // New method to delete a parcela by its nombre
+    /**
+     * Elimina una parcela por su nombre.
+     * @param nombre Nombre de la parcela a eliminar
+     */
     public void deleteByNombre(String nombre) {
         mRepository.deleteByNombre(nombre);
     }

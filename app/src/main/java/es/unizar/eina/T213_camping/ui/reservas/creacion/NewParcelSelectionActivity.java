@@ -22,6 +22,15 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 
+/**
+ * Activity que permite seleccionar las parcelas para una nueva reserva.
+ * Muestra dos listas:
+ * - Parcelas disponibles para seleccionar
+ * - Parcelas ya añadidas a la reserva
+ * 
+ * Permite al usuario añadir parcelas a la reserva, especificar su ocupación,
+ * y eliminar parcelas previamente añadidas.
+ */
 public class NewParcelSelectionActivity extends BaseActivity {
 
     private RecyclerView availableParcelsRecyclerView, addedParcelsRecyclerView;
@@ -55,16 +64,25 @@ public class NewParcelSelectionActivity extends BaseActivity {
         setButtonVisibility("home", true);
     }
 
+    /**
+     * Inicializa las referencias a las vistas de la actividad.
+     */
     private void setupViews() {
         availableParcelsRecyclerView = findViewById(R.id.new_reservation_available_parcels_recycler_view);
         addedParcelsRecyclerView = findViewById(R.id.new_reservation_added_parcels_recycler_view);
     }
 
+    /**
+     * Configura los ViewModels y las listas iniciales.
+     */
     private void setupViewModels() {
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
         addedParcels = new ArrayList<>();
     }
 
+    /**
+     * Configura los RecyclerViews y sus adaptadores.
+     */
     private void setupRecyclerViews() {
         availableParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateParcelSelection);
@@ -84,11 +102,17 @@ public class NewParcelSelectionActivity extends BaseActivity {
         addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
+    /**
+     * Configura los listeners para los botones de navegación y confirmación.
+     */
     private void setupListeners() {
         findViewById(R.id.new_reservation_previous_button).setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         findViewById(R.id.new_reservation_confirm_button).setOnClickListener(v -> confirmReservation());
     }
 
+    /**
+     * Muestra un diálogo de confirmación y procesa la creación de la reserva.
+     */
     private void confirmReservation() {
         // TODO: merge with ReservationUtils.confirmReservation
         DialogUtils.showConfirmationDialog(
@@ -108,7 +132,13 @@ public class NewParcelSelectionActivity extends BaseActivity {
         );
     }
 
-    // No multiple inheritance in Java :(
+    /**
+     * Actualiza las listas de parcelas cuando cambia la selección.
+     * No multiple inheritance in Java :(
+     * @param updatedAddedParcelsList Lista actualizada de parcelas añadidas
+     * @param updatedAvailableParcelsList Lista actualizada de parcelas disponibles
+     * @param whoCalled Identificador del adaptador que realizó el cambio
+     */
     public void updateParcelSelection(List<ParcelaOccupancy> updatedAddedParcelsList,
                                       List<Parcela> updatedAvailableParcelsList, String whoCalled) { // Change to List<Parcela>
 

@@ -16,8 +16,20 @@ import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Utilidades para la gestión de reservas.
+ * Proporciona métodos para realizar operaciones comunes sobre reservas:
+ * - Notificación al cliente
+ * - Eliminación de reservas
+ * - Confirmación de cambios
+ */
 public class ReservationUtils {
 
+    /**
+     * Muestra un diálogo de confirmación para notificar al cliente.
+     * @param context Contexto de la aplicación
+     * @param currentActivity Actividad actual
+     */
     // TODO: revise R.drawable
     public static void notifyClient(Context context, AppCompatActivity currentActivity) {
         DialogUtils.showConfirmationDialog(context, "Notificar al cliente", "¿Está seguro de que desea notificar al cliente?", R.drawable.ic_notify, () -> {
@@ -28,6 +40,11 @@ public class ReservationUtils {
         });
     }
 
+    /**
+     * Muestra un diálogo de confirmación para eliminar una reserva.
+     * @param context Contexto de la aplicación
+     * @param currentActivity Actividad actual
+     */
     public static void deleteReservation(Context context, AppCompatActivity currentActivity) {
         DialogUtils.showConfirmationDialog(context, "Eliminar reserva", "¿Está seguro de que desea eliminar esta reserva?", R.drawable.ic_delete_confirm, () -> {
             Intent resultIntent = new Intent();
@@ -37,6 +54,16 @@ public class ReservationUtils {
         });
     }
 
+    /**
+     * Muestra un diálogo de confirmación para guardar los cambios en una reserva.
+     * @param activity Actividad actual
+     * @param reservationId ID de la reserva
+     * @param clientName Nombre del cliente
+     * @param clientPhone Teléfono del cliente
+     * @param entryDate Fecha de entrada
+     * @param departureDate Fecha de salida
+     * @param selectedParcels Lista de parcelas seleccionadas
+     */
     public static void confirmReservation(BaseActivity activity, long reservationId, String clientName,
                                           String clientPhone, String entryDate, String departureDate,
                                           @NonNull List<ParcelaOccupancy> selectedParcels) {
@@ -52,7 +79,6 @@ public class ReservationUtils {
                 resultIntent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhone);
                 resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate);
                 resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate);
-                // resultIntent.putExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
                 // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
                 resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_UPDATE);

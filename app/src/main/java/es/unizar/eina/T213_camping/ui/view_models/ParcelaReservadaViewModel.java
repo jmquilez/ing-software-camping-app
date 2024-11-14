@@ -10,28 +10,72 @@ import java.util.List;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.database.repositories.ParcelaReservadaRepository;
 
+/**
+ * ViewModel que gestiona los datos de las parcelas reservadas.
+ * Actúa como intermediario entre la UI y el repositorio de parcelas reservadas,
+ * proporcionando una capa de abstracción para las operaciones de datos.
+ */
 public class ParcelaReservadaViewModel extends AndroidViewModel {
 
+    /**
+     * Repositorio para acceder a las operaciones de parcelas reservadas.
+     */
     private ParcelaReservadaRepository mRepository;
 
+    /**
+     * LiveData que contiene todas las relaciones parcela-reserva.
+     */
     private final LiveData<List<ParcelaReservada>> mAllParcelaReservadas;
 
+    /**
+     * Constructor del ViewModel.
+     * Inicializa el repositorio y obtiene la lista inicial de parcelas reservadas.
+     * @param application Contexto de la aplicación
+     */
     public ParcelaReservadaViewModel(Application application) {
         super(application);
         mRepository = new ParcelaReservadaRepository(application);
         mAllParcelaReservadas = mRepository.getAllParcelaReservadas();
     }
 
+    /**
+     * Obtiene todas las parcelas reservadas.
+     * @return LiveData con la lista de todas las parcelas reservadas
+     */
     public LiveData<List<ParcelaReservada>> getAllParcelaReservadas() { return mAllParcelaReservadas; }
 
-    public LiveData<List<ParcelaReservada>> getAllParcelaReservadasForReserva(int idReserva) { return mRepository.fetchParcelsForReserva(idReserva); }
+    /**
+     * Obtiene las parcelas reservadas para una reserva específica.
+     * @param idReserva ID de la reserva
+     * @return LiveData con la lista de parcelas reservadas para esa reserva
+     */
+    public LiveData<List<ParcelaReservada>> getAllParcelaReservadasForReserva(int idReserva) { 
+        return mRepository.fetchParcelsForReserva(idReserva); 
+    }
 
+    /**
+     * Inserta una nueva relación parcela-reserva.
+     * @param parcelaReservada ParcelaReservada a insertar
+     */
     public void insert(ParcelaReservada parcelaReservada) { mRepository.insert(parcelaReservada); }
 
+    /**
+     * Actualiza una relación parcela-reserva existente.
+     * @param parcelaReservada ParcelaReservada con los datos actualizados
+     */
     public void update(ParcelaReservada parcelaReservada) { mRepository.update(parcelaReservada); }
 
+    /**
+     * Elimina una relación parcela-reserva.
+     * @param parcelaReservada ParcelaReservada a eliminar
+     */
     public void delete(ParcelaReservada parcelaReservada) { mRepository.delete(parcelaReservada); }
 
+    /**
+     * Actualiza las parcelas asociadas a una reserva.
+     * @param reservationId ID de la reserva
+     * @param updatedParcels Nueva lista de parcelas reservadas
+     */
     public void updateParcelasForReservation(long reservationId, List<ParcelaReservada> updatedParcels) {
         mRepository.updateParcelasForReservation(reservationId, updatedParcels);
     }

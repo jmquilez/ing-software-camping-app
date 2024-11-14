@@ -5,8 +5,26 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * Utilidades para la validación de datos de parcelas.
+ * Proporciona métodos para validar los campos de entrada al crear o modificar parcelas.
+ */
 public class ParcelUtils {
 
+    /**
+     * Valida los campos de entrada de una parcela.
+     * Verifica que:
+     * - Ningún campo esté vacío
+     * - El número de ocupantes sea válido y mayor que cero
+     * - El precio por persona sea válido y mayor que cero
+     * 
+     * @param context Contexto de la aplicación
+     * @param parcelNameInput Campo de nombre de la parcela
+     * @param maxOccupantsInput Campo de ocupantes máximos
+     * @param pricePerPersonInput Campo de precio por persona
+     * @param errorMessage TextView para mostrar mensajes de error
+     * @return true si todos los campos son válidos
+     */
     public static boolean validateInputs(Context context, EditText parcelNameInput, EditText maxOccupantsInput, EditText pricePerPersonInput, TextView errorMessage) {
         String parcelName = parcelNameInput.getText().toString().trim();
         String maxOccupants = maxOccupantsInput.getText().toString().trim();

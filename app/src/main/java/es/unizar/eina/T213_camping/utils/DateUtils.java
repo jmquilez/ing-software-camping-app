@@ -6,8 +6,19 @@ import android.widget.Button;
 
 import java.util.Calendar;
 
+/**
+ * Utilidades para el manejo de fechas en la aplicación.
+ * Proporciona métodos para mostrar selectores de fecha y validar fechas.
+ */
 public class DateUtils {
 
+    /**
+     * Muestra un diálogo para seleccionar una fecha.
+     * @param context Contexto de la aplicación
+     * @param isCheckIn true si es fecha de entrada, false si es fecha de salida
+     * @param dateInput Botón que mostrará la fecha seleccionada
+     * @param onDateSet Runnable a ejecutar después de seleccionar la fecha
+     */
     public static void showDatePickerDialog(Context context, boolean isCheckIn, Button dateInput, Runnable onDateSet) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -22,6 +33,12 @@ public class DateUtils {
         datePickerDialog.show();
     }
 
+    /**
+     * Verifica si la fecha de salida es anterior a la fecha de entrada.
+     * @param checkInDate Fecha de entrada en formato dd/MM/yyyy
+     * @param checkOutDate Fecha de salida en formato dd/MM/yyyy
+     * @return true si la fecha de salida es anterior a la de entrada
+     */
     public static boolean isCheckOutBeforeCheckIn(String checkInDate, String checkOutDate) {
         String[] checkInParts = checkInDate.split("/");
         String[] checkOutParts = checkOutDate.split("/");

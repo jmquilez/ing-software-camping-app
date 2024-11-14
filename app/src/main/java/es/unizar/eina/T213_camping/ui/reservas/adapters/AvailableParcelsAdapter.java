@@ -24,16 +24,35 @@ import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
+/**
+ * Adaptador para mostrar las parcelas disponibles para reservar.
+ * Permite al usuario seleccionar parcelas y especificar su ocupación.
+ */
 public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParcelsAdapter.ViewHolder> {
     private Context context;
     private List<ParcelaOccupancy> addedParcels;
     private OnParcelSelectionChangedListener onParcelAddedListener;
 
+    /**
+     * Interfaz para notificar cambios en la selección de parcelas.
+     */
     public interface OnParcelSelectionChangedListener {
+        /**
+         * Se llama cuando se añade o modifica una parcela seleccionada.
+         * @param updatedAddedParcelsList Lista actualizada de parcelas añadidas
+         * @param updatedAvailableParcelsList Lista actualizada de parcelas disponibles
+         * @param whoCalled Identificador del componente que realizó el cambio
+         */
         void onParcelSelectionChanged(List<ParcelaOccupancy> updatedAddedParcelsList,
                            List<Parcela> updatedAvailableParcelsList, String whoCalled);
     }
 
+    /**
+     * Constructor del adaptador.
+     * @param context Contexto de la aplicación
+     * @param addedParcels Lista inicial de parcelas ya añadidas
+     * @param listener Listener para eventos de selección
+     */
     public AvailableParcelsAdapter(Context context, List<ParcelaOccupancy> addedParcels, OnParcelSelectionChangedListener listener) {
         super(DIFF_CALLBACK);
         this.context = context;
@@ -42,31 +61,36 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
         this.onParcelAddedListener = listener;
     }
 
+    /**
+     * Callback para calcular las diferencias entre elementos de la lista.
+     * Ayuda a optimizar las actualizaciones del RecyclerView determinando
+     * qué elementos han cambiado y cómo.
+     */
     private static final DiffUtil.ItemCallback<Parcela> DIFF_CALLBACK = new DiffUtil.ItemCallback<Parcela>() {
+        /**
+         * Determina si dos elementos representan el mismo objeto.
+         * En este caso, compara los nombres de las parcelas.
+         * @param oldItem Parcela antigua
+         * @param newItem Parcela nueva
+         * @return true si representan la misma parcela
+         */
         @Override
         public boolean areItemsTheSame(@NonNull Parcela oldItem, @NonNull Parcela newItem) {
             return oldItem.getNombre().equals(newItem.getNombre());
         }
 
+        /**
+         * Determina si el contenido de dos elementos es el mismo.
+         * Compara todos los campos relevantes de las parcelas.
+         * @param oldItem Parcela antigua
+         * @param newItem Parcela nueva
+         * @return true si el contenido es idéntico
+         */
         @Override
         public boolean areContentsTheSame(@NonNull Parcela oldItem, @NonNull Parcela newItem) {
             return oldItem.equals(newItem);
-            // return areItemsTheSame(oldItem, newItem);
         }
     };
-
-    /*@Override
-    public void submitList(List<Parcela> list) {
-        if (list != null && addedParcels != null) {
-            List<Parcela> filteredList = list.stream()
-                    .filter(parcela -> addedParcels.stream()
-                            .noneMatch(added -> added.getParcela().getNombre().equals(parcela.getNombre())))
-                    .collect(Collectors.toList());
-            super.submitList(filteredList);
-        } else {
-            super.submitList(list);
-        }
-    }*/
 
     @NonNull
     @Override
@@ -82,10 +106,31 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
         holder.addButton.setOnClickListener(v -> showParcelDetailsDialog(parcel));
     }
 
+    /**
+     * Actualiza la lista de parcelas añadidas.
+     * @param addedParcels Nueva lista de parcelas añadidas
+     */
     public void updateAddedParcels(List<ParcelaOccupancy> addedParcels) {
         this.addedParcels = new ArrayList<>(addedParcels);
     }
 
+    /*@Override
+    public void submitList(List<Parcela> list) {
+        if (list != null && addedParcels != null) {
+            List<Parcela> filteredList = list.stream()
+                    .filter(parcela -> addedParcels.stream()
+                            .noneMatch(added -> added.getParcela().getNombre().equals(parcela.getNombre())))
+                    .collect(Collectors.toList());
+            super.submitList(filteredList);
+        } else {
+            super.submitList(list);
+        }
+    }*/
+
+    /**
+     * Muestra un diálogo para seleccionar el número de ocupantes de una parcela.
+     * @param parcel Parcela seleccionada
+     */
     private void showParcelDetailsDialog(Parcela parcel) {
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_parcel_details);
@@ -119,6 +164,9 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
         dialog.show();
     }
 
+    /**
+     * ViewHolder para mantener las vistas de cada elemento de la lista.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView parcelName;
         MaterialButton addButton;

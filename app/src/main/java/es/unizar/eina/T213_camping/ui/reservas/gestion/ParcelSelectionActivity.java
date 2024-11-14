@@ -9,7 +9,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import androidx.appcompat.app.AlertDialog;
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
@@ -21,19 +26,28 @@ import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.utils.ReservationUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 
+/**
+ * Activity que permite gestionar las parcelas asociadas a una reserva existente.
+ * Muestra dos listas:
+ * - Parcelas disponibles para añadir
+ * - Parcelas ya asociadas a la reserva
+ * 
+ * Permite añadir nuevas parcelas, modificar la ocupación de las existentes
+ * y eliminar parcelas de la reserva.
+ */
 public class ParcelSelectionActivity extends BaseActivity {
 
     private RecyclerView availableParcelsRecyclerView, addedParcelsRecyclerView;
     private AvailableParcelsAdapter availableParcelsAdapter;
     private AddedParcelsAdapter addedParcelsAdapter;
-    private List<ParcelaOccupancy> addedParcels; // Change to List<Parcela>
+    private List<ParcelaOccupancy> addedParcels;
     private List<Parcela> availableParcels;
 
-    private ParcelaViewModel parcelaViewModel; // Change to ParcelaViewModel
-
+    private ParcelaViewModel parcelaViewModel;
     private long reservationId;
-
     private ImageButton prevButton, nextButton;
+
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
 
     @Override
     protected int getLayoutResourceId() {
@@ -58,6 +72,9 @@ public class ParcelSelectionActivity extends BaseActivity {
         setButtonVisibility("home", true);
     }
 
+    /**
+     * Inicializa las referencias a las vistas de la actividad.
+     */
     private void setupViews() {
         availableParcelsRecyclerView = findViewById(R.id.parcel_selection_available_parcels_recycler_view);
         addedParcelsRecyclerView = findViewById(R.id.parcel_selection_added_parcels_recycler_view);
@@ -65,10 +82,18 @@ public class ParcelSelectionActivity extends BaseActivity {
         nextButton = findViewById(R.id.parcel_selection_next_button);
     }
 
+    /**
+     * Configura los ViewModels necesarios.
+     */
     private void setupViewModels() {
-        parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class); // Change to ParcelaViewModel
+        parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
     }
 
+    /**
+     * Configura los RecyclerViews y carga los datos iniciales.
+     * Incluye la configuración de adaptadores y la carga de parcelas
+     * disponibles y ya añadidas.
+     */
     private void setupRecyclerViewsAndData() {
         availableParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -99,6 +124,9 @@ public class ParcelSelectionActivity extends BaseActivity {
         addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
 
+    /**
+     * Configura los listeners para los botones de navegación y acciones.
+     */
     private void setupListeners() {
         findViewById(R.id.parcel_selection_save_button).setOnClickListener(v -> confirmReservation());
         findViewById(R.id.parcel_selection_notify_button).setOnClickListener(v -> ReservationUtils.notifyClient(this, this));
@@ -111,19 +139,51 @@ public class ParcelSelectionActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Confirma los cambios en la reserva utilizando ReservationUtils.
+     */
     private void confirmReservation() {
         String clientName = getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
         String clientPhone = getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
-        String entryDate = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
-        String departureDate = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
+        
+        // Get the date strings from intent
+        String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
+        String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
 
-        ReservationUtils.confirmReservation(this, reservationId, clientName, clientPhone, entryDate, departureDate, addedParcels);
+        try {
+            // Parse the dates to ensure they're in the correct format
+            Date entryDate = DATE_FORMAT.parse(entryDateStr);
+            Date departureDate = DATE_FORMAT.parse(departureDateStr);
+
+            // Format the dates back to strings in the consistent format
+            ReservationUtils.confirmReservation(this, reservationId, clientName, clientPhone, 
+                DATE_FORMAT.format(entryDate), 
+                DATE_FORMAT.format(departureDate), 
+                addedParcels);
+                
+        } catch (ParseException e) {
+            Log.e("ParcelSelectionActivity", "Error parsing dates", e);
+            // Show error dialog or handle the error appropriately
+            showErrorDialog("Error al procesar las fechas de la reserva");
+        }
     }
 
-    // No multiple inheritance in Java :(
-    public void updateParcelSelection(List<ParcelaOccupancy> updatedAddedParcelsList,
-                                   List<Parcela> updatedAvailableParcelsList, String whoCalled) { // Change to List<Parcela>
+    private void showErrorDialog(String message) {
+        new AlertDialog.Builder(this)
+            .setMessage(message)
+            .setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss())
+            .show();
+    }
 
+    /**
+     * Actualiza las listas de parcelas cuando cambia la selección.
+     * No multiple inheritance in Java :(
+     * @param updatedAddedParcelsList Lista actualizada de parcelas añadidas
+     * @param updatedAvailableParcelsList Lista actualizada de parcelas disponibles
+     * @param whoCalled Identificador del adaptador que realizó el cambio
+     */
+    public void updateParcelSelection(List<ParcelaOccupancy> updatedAddedParcelsList,
+                                   List<Parcela> updatedAvailableParcelsList, String whoCalled) {
         addedParcels = updatedAddedParcelsList;
         availableParcels = updatedAvailableParcelsList;
 

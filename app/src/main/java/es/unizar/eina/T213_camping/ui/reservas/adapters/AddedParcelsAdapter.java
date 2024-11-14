@@ -23,14 +23,27 @@ import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
+/**
+ * Adaptador para mostrar las parcelas ya añadidas a una reserva.
+ * Permite gestionar la ocupación de cada parcela y eliminarlas de la reserva.
+ */
 public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParcelsAdapter.ViewHolder> {
     private final Context context;
     private final OnParcelSelectionChangedListener onParcelUpdatedListener;
 
     private List<Parcela> availableParcels;
 
-    // TODO: move to common class
+    /**
+     * Interfaz para notificar cambios en la selección de parcelas.
+     */
     public interface OnParcelSelectionChangedListener {
+        // TODO: move to common class
+        /**
+         * Se llama cuando cambia la selección de parcelas.
+         * @param updatedAddedList Lista actualizada de parcelas añadidas
+         * @param updatedAvailableList Lista actualizada de parcelas disponibles
+         * @param whoCalled Identificador del componente que realizó el cambio
+         */
         void onParcelSelectionChanged(List<ParcelaOccupancy> updatedAddedList,
                              List<Parcela> updatedAvailableList, String whoCalled);
     }
@@ -47,6 +60,12 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
         }
     };
 
+    /**
+     * Constructor del adaptador.
+     * @param context Contexto de la aplicación
+     * @param availableParcels Lista inicial de parcelas disponibles
+     * @param listener Listener para eventos de cambio en la selección
+     */
     public AddedParcelsAdapter(Context context, List<Parcela> availableParcels,
                                OnParcelSelectionChangedListener listener) {
         super(DIFF_CALLBACK);
@@ -71,6 +90,10 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
     }
 
     // TODO: merge with the other adapter
+    /**
+     * Muestra un diálogo para editar los detalles de una parcela añadida.
+     * @param addedParcel Parcela añadida a editar
+     */
     private void showParcelDetailsDialog(ParcelaOccupancy addedParcel) {
         Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dialog_parcel_details);
@@ -87,14 +110,10 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
 
         List<ParcelaOccupancy> currentList = new ArrayList<>(getCurrentList());
 
-        // Set visibility of remove button
         // TODO: fix DesligarParcela
         removeButton.setOnClickListener(v -> {
             // Available parcels array IS modified
             availableParcels.add(0, addedParcel.getParcela()); // NOTE: add first so the user can see the changes directly
-            // KEY: List.remove calls the ".equals" method. So, we do not set the
-            // new picked occupancy for this ParcelaOccupancy (since that would mess
-            // up the equality between the two objects)
             currentList.remove(addedParcel);
             onParcelUpdatedListener.onParcelSelectionChanged(currentList, availableParcels, ReservationConstants.ADDED_PARCELS_ADAPTER_CALLED);
             dialog.dismiss();
@@ -102,7 +121,6 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
         });
 
         confirmButton.setOnClickListener(v -> {
-            // Available parcels array is not modified
             addedParcel.setOccupancy(occupantsPicker.getValue());
             onParcelUpdatedListener.onParcelSelectionChanged(currentList, availableParcels, ReservationConstants.ADDED_PARCELS_ADAPTER_CALLED);
             dialog.dismiss();
@@ -112,10 +130,17 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
         dialog.show();
     }
 
+    /**
+     * Actualiza la lista de parcelas disponibles.
+     * @param updatedAvailableParcels Nueva lista de parcelas disponibles
+     */
     public void updateAvailableParcels(List<Parcela> updatedAvailableParcels) {
         this.availableParcels = new ArrayList<>(updatedAvailableParcels);
     }
 
+    /**
+     * ViewHolder para mantener las vistas de cada elemento de la lista.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView parcelName;
         Button editButton;

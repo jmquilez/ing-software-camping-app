@@ -27,6 +27,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    tasks.withType(Javadoc).configureEach {
+        options.addStringOption('sourcepath', 'src/main/java') // Focus only on Java source files
+        exclude '**/*.kt' // Exclude Kotlin files if they exist
+    }
 }
 
 dependencies {

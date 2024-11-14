@@ -11,6 +11,16 @@ import es.unizar.eina.T213_camping.utils.DialogUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 
+/**
+ * Activity para modificar o eliminar una parcela existente.
+ * Permite editar todos los campos de una parcela o eliminarla completamente del sistema.
+ * 
+ * Recibe los datos actuales de la parcela a través de un Intent con los extras:
+ * - PARCEL_NAME: nombre de la parcela
+ * - MAX_OCCUPANTS: ocupantes máximos
+ * - PRICE_PER_PERSON: precio por persona
+ * - DESCRIPTION: descripción
+ */
 public class ModifyParcelActivity extends BaseActivity {
 
     private EditText parcelNameInput, maxOccupantsInput, pricePerPersonInput, descriptionInput;
@@ -45,6 +55,9 @@ public class ModifyParcelActivity extends BaseActivity {
         setButtonVisibility("home", true);
     }
 
+    /**
+     * Inicializa las referencias a las vistas de la actividad.
+     */
     private void initializeViews() {
         parcelNameInput = findViewById(R.id.modify_parcel_name_input);
         maxOccupantsInput = findViewById(R.id.modify_parcel_max_occupants_input);
@@ -55,6 +68,9 @@ public class ModifyParcelActivity extends BaseActivity {
         errorMessage = findViewById(R.id.modify_parcel_error_message);
     }
 
+    /**
+     * Carga los datos de la parcela recibidos en el Intent.
+     */
     private void loadParcelData() {
         parcelName = getIntent().getStringExtra(ParcelConstants.PARCEL_NAME);
         maxOccupants = getIntent().getIntExtra(ParcelConstants.MAX_OCCUPANTS, 0);
@@ -68,11 +84,18 @@ public class ModifyParcelActivity extends BaseActivity {
         descriptionInput.setText(description);
     }
 
+    /**
+     * Configura los listeners para los botones de guardar y eliminar.
+     */
     private void setupListeners() {
         saveChangesButton.setOnClickListener(v -> saveParcel());
         deleteParcelButton.setOnClickListener(v -> showDeleteConfirmationDialog());
     }
 
+    /**
+     * Valida y guarda los cambios realizados en la parcela.
+     * Si la validación es exitosa, devuelve los datos actualizados con OPERATION_UPDATE.
+     */
     private void saveParcel() {
         if (!ParcelUtils.validateInputs(this, parcelNameInput, maxOccupantsInput, pricePerPersonInput, errorMessage)) {
             return;
@@ -89,6 +112,9 @@ public class ModifyParcelActivity extends BaseActivity {
         finish();
     }
     
+    /**
+     * Muestra un diálogo de confirmación antes de eliminar la parcela.
+     */
     private void showDeleteConfirmationDialog() {
         DialogUtils.showConfirmationDialog(
             this,
@@ -99,6 +125,10 @@ public class ModifyParcelActivity extends BaseActivity {
         );
     }
 
+    /**
+     * Procesa la eliminación de la parcela.
+     * Devuelve el nombre de la parcela con OPERATION_DELETE.
+     */
     private void deleteParcel() {
         Intent replyIntent = new Intent();
         replyIntent.putExtra(ParcelConstants.PARCEL_NAME, parcelNameInput.getText().toString());

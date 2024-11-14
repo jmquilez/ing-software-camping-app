@@ -10,28 +10,65 @@ import java.util.List;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import es.unizar.eina.T213_camping.database.repositories.ReservaRepository;
 
+/**
+ * ViewModel que gestiona los datos de las reservas.
+ * Actúa como intermediario entre la UI y el repositorio de reservas,
+ * proporcionando una capa de abstracción para las operaciones de datos.
+ */
 public class ReservaViewModel extends AndroidViewModel {
 
+    /**
+     * Repositorio para acceder a las operaciones de reservas.
+     */
     private ReservaRepository mRepository;
 
+    /**
+     * LiveData que contiene todas las reservas del sistema.
+     */
     private final LiveData<List<Reserva>> mAllReservas;
 
+    /**
+     * Constructor del ViewModel.
+     * Inicializa el repositorio y obtiene la lista inicial de reservas.
+     * @param application Contexto de la aplicación
+     */
     public ReservaViewModel(Application application) {
         super(application);
         mRepository = new ReservaRepository(application);
         mAllReservas = mRepository.getAllReservas();
     }
 
+    /**
+     * Obtiene todas las reservas del sistema.
+     * @return LiveData con la lista de todas las reservas
+     */
     public LiveData<List<Reserva>> getAllReservas() { return mAllReservas; }
 
+    /**
+     * Inserta una nueva reserva en el sistema.
+     * @param reserva Reserva a insertar
+     * @return ID generado para la nueva reserva
+     */
     public long insert(Reserva reserva) { return mRepository.insert(reserva); }
 
+    /**
+     * Actualiza una reserva existente.
+     * @param reserva Reserva con los datos actualizados
+     */
     public void update(Reserva reserva) { mRepository.update(reserva); }
 
+    /**
+     * Elimina una reserva del sistema.
+     * @param reserva Reserva a eliminar
+     */
     public void delete(Reserva reserva) {
         mRepository.delete(reserva);
     }
 
+    /**
+     * Elimina una reserva por su ID.
+     * @param reservationId ID de la reserva a eliminar
+     */
     public void deleteById(long reservationId) {
         mRepository.deleteById(reservationId);
     }

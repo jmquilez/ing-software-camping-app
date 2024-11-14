@@ -7,23 +7,45 @@ import androidx.room.Embedded;
 
 import java.util.Objects;
 
+/**
+ * Representa una parcela junto con su ocupación actual.
+ * Esta clase implementa Parcelable para permitir la transferencia de objetos entre componentes de Android.
+ */
 public class ParcelaOccupancy implements Parcelable {
+    /**
+     * Parcela asociada a esta ocupación.
+     * Se utiliza @Embedded para incluir todos los campos de Parcela en esta clase.
+     */
     @Embedded
     private Parcela parcela;
+
+    /**
+     * Número actual de ocupantes en la parcela.
+     */
     public int numOcupantes;
 
+    /**
+     * Constructor principal.
+     * @param parcela Parcela asociada
+     * @param numOcupantes Número de ocupantes actuales
+     */
     public ParcelaOccupancy(Parcela parcela, int numOcupantes) {
         this.parcela = parcela;
         this.numOcupantes = numOcupantes;
     }
 
-    // Parcelable constructor
+    /**
+     * Constructor para crear un objeto a partir de un Parcel.
+     * @param in Parcel que contiene los datos
+     */
     protected ParcelaOccupancy(Parcel in) {
         parcela = in.readParcelable(Parcela.class.getClassLoader());
         numOcupantes = in.readInt();
     }
 
-    // Parcelable CREATOR
+    /**
+     * Creator para la interfaz Parcelable.
+     */
     public static final Creator<ParcelaOccupancy> CREATOR = new Creator<ParcelaOccupancy>() {
         @Override
         public ParcelaOccupancy createFromParcel(Parcel in) {
@@ -47,18 +69,34 @@ public class ParcelaOccupancy implements Parcelable {
         dest.writeInt(numOcupantes);
     }
 
+    /**
+     * Obtiene la parcela asociada.
+     * @return Parcela asociada a esta ocupación
+     */
     public Parcela getParcela() {
         return parcela;
     }
 
+    /**
+     * Establece la parcela asociada.
+     * @param parcela Nueva parcela a asociar
+     */
     public void setParcela(Parcela parcela) {
         this.parcela = parcela;
     }
 
+    /**
+     * Obtiene el número de ocupantes actuales.
+     * @return Número de ocupantes
+     */
     public int getOccupancy() {
         return numOcupantes;
     }
 
+    /**
+     * Establece el número de ocupantes.
+     * @param numOcupantes Nuevo número de ocupantes
+     */
     public void setOccupancy(int numOcupantes) {
         this.numOcupantes = numOcupantes;
     }

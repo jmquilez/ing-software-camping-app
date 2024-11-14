@@ -15,16 +15,33 @@ import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 
+/**
+ * Adaptador para mostrar parcelas en un RecyclerView.
+ * Gestiona la visualización y actualización de la lista de parcelas.
+ */
 public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder> {
 
     private Context context;
     private String sortingCriteria;
     private OnParcelClickListener onParcelClickListener;
 
+    /**
+     * Interfaz para manejar los eventos de clic en las parcelas.
+     */
     public interface OnParcelClickListener {
+        /**
+         * Se llama cuando se hace clic en una parcela.
+         * @param parcela Parcela seleccionada
+         */
         void onParcelClick(Parcela parcela);
     }
 
+    /**
+     * Constructor del adaptador.
+     * @param context Contexto de la aplicación
+     * @param sortingCriteria Criterio inicial de ordenación
+     * @param listener Listener para eventos de clic
+     */
     public ParcelAdapter(Context context, String sortingCriteria, OnParcelClickListener listener) {
         // TODO: pass parcelDiff as parameter
         super(new ParcelDiff());
@@ -66,6 +83,9 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
         holder.itemView.setOnClickListener(v -> onParcelClickListener.onParcelClick(parcela));
     }
 
+    /**
+     * ViewHolder para mantener las vistas de cada elemento de la lista.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView itemParcelName;
         TextView itemParcelAdditionalInfo;
@@ -77,6 +97,10 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
         }
     }
 
+    /**
+     * Clase para calcular las diferencias entre elementos de la lista.
+     * Ayuda a optimizar las actualizaciones del RecyclerView.
+     */
     public static class ParcelDiff extends DiffUtil.ItemCallback<Parcela> {
         // TODO: compare by reference? => NO
         // KEY: See https://jermainedilao.medium.com/demystifying-diffutil-itemcallback-class-8c0201cc69b1
@@ -99,6 +123,10 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
         }
     }
 
+    /**
+     * Actualiza el criterio de ordenación y notifica los cambios.
+     * @param newSortingCriteria Nuevo criterio de ordenación
+     */
     public void updateSortingCriteria(String newSortingCriteria) {
         // TODO: when modifying a single Parcela, just call "notifyItemChanged(i)"
         this.sortingCriteria = newSortingCriteria;

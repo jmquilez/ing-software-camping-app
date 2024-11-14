@@ -28,6 +28,10 @@ import es.unizar.eina.T213_camping.ui.parcelas.gestion.ModifyParcelActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.creacion.CreateParcelActivity;
 import es.unizar.eina.T213_camping.utils.DialogUtils;
 
+/**
+ * Activity que muestra la lista de parcelas disponibles.
+ * Permite crear, modificar y eliminar parcelas, así como ordenarlas según diferentes criterios.
+ */
 public class ParcelFeedActivity extends BaseActivity {
 
     private ParcelaViewModel parcelaViewModel;
@@ -63,6 +67,9 @@ public class ParcelFeedActivity extends BaseActivity {
         setButtonVisibility("home", true);
     }
 
+    /**
+     * Configura el ViewModel y observa los cambios en la lista de parcelas.
+     */
     private void setupViewModel() {
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
         parcelaViewModel.getAllParcelas().observe(this, parcelas -> {
@@ -72,6 +79,9 @@ public class ParcelFeedActivity extends BaseActivity {
         });
     }
 
+    /**
+     * Configura el RecyclerView y su adaptador.
+     */
     private void setupRecyclerView() {
         RecyclerView parcelRecyclerView = findViewById(R.id.parcel_list_recycler_view);
         parcelAdapter = new ParcelAdapter(this, currentSortingCriteria, this::onParcelClick);
@@ -79,18 +89,27 @@ public class ParcelFeedActivity extends BaseActivity {
         parcelRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
+    /**
+     * Configura los botones de ordenación.
+     */
     private void setupSortingButtons() {
         findViewById(R.id.parcel_sort_id_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_ID));
         findViewById(R.id.parcel_sort_occupants_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_MAX_OCCUPANTS));
         findViewById(R.id.parcel_sort_price_button).setOnClickListener(v -> sortParcels(ParcelConstants.SORT_EUR_PERSONA));
     }
 
+    /**
+     * Configura el botón para crear nuevas parcelas.
+     */
     private void setupCreateParcelButton() {
         findViewById(R.id.parcel_create_button).setOnClickListener(v -> 
             parcelLauncher.launch(new Intent(this, CreateParcelActivity.class))
         );
     }
 
+    /**
+     * Configura el launcher para gestionar los resultados de las actividades de creación/modificación.
+     */
     private void setupParcelLauncher() {
         parcelLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -102,11 +121,19 @@ public class ParcelFeedActivity extends BaseActivity {
         );
     }
 
+    /**
+     * Ordena las parcelas según el criterio especificado.
+     * @param criteria Criterio de ordenación
+     */
     private void sortParcels(String criteria) {
         currentSortingCriteria = criteria;
         sortParcels();
     }
 
+    /**
+     * Ordena las parcelas según el criterio actual.
+     * Aplica el comparador correspondiente y actualiza el adaptador.
+     */
     private void sortParcels() {
         if (parcelList != null) {
             Comparator<Parcela> comparator;
@@ -128,6 +155,10 @@ public class ParcelFeedActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Maneja el resultado de las operaciones de creación/modificación/eliminación de parcelas.
+     * @param data Intent con los datos de la operación
+     */
     private void handleParcelResult(Intent data) {
         Bundle extras = data.getExtras();
         assert extras != null;
@@ -166,6 +197,11 @@ public class ParcelFeedActivity extends BaseActivity {
         }, 2000);
     }
 
+    /**
+     * Inserta una nueva parcela en la base de datos.
+     * Muestra un diálogo de éxito al completar la operación.
+     * @param extras Bundle con los datos de la nueva parcela
+     */
     private void insertParcel(Bundle extras) {
         Parcela parcela = new Parcela(
                 Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
@@ -178,6 +214,11 @@ public class ParcelFeedActivity extends BaseActivity {
         DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
     }
 
+    /**
+     * Actualiza una parcela existente en la base de datos.
+     * Muestra un diálogo de éxito al completar la operación.
+     * @param extras Bundle con los datos actualizados de la parcela
+     */
     private void updateParcel(Bundle extras) {
         Parcela parcela = new Parcela(
                 Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
@@ -190,6 +231,11 @@ public class ParcelFeedActivity extends BaseActivity {
         DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", R.drawable.ic_update_success);
     }
 
+    /**
+     * Maneja el evento de clic en una parcela.
+     * Inicia ModifyParcelActivity con los datos de la parcela seleccionada.
+     * @param parcela Parcela seleccionada
+     */
     private void onParcelClick(Parcela parcela) {
         Intent intent = new Intent(this, ModifyParcelActivity.class);
         intent.putExtra(ParcelConstants.PARCEL_NAME, parcela.getNombre());
