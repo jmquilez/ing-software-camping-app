@@ -2,17 +2,25 @@ package es.unizar.eina.T213_camping.utils;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import es.send.SendAbstraction;
+import es.send.SendAbstractionImpl;
+import es.send.SendImplementor;
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
+import es.unizar.eina.T213_camping.ui.reservas.gestion.ModifyReservationActivity;
+import es.unizar.eina.T213_camping.ui.reservas.gestion.ParcelSelectionActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +28,7 @@ public class ReservationUtils {
 
     // TODO: revise R.drawable
     public static void notifyClient(Context context, Activity activity) {
-        SendAbstraction sender = new SendImplementation(context);
+        SendAbstraction sender = new SendAbstractionImpl(activity, "SMS");
         
         String phoneNumber = "";
         String clientName = "";
@@ -55,7 +63,7 @@ public class ReservationUtils {
         // Añadir información de las parcelas
         if (parcelas != null && !parcelas.isEmpty()) {
             for (int i = 0; i < parcelas.size(); i++) {
-                messageBuilder.append(parcelas.get(i).getParcelaId());
+                messageBuilder.append(parcelas.get(i).getParcela().getNombre());
                 if (i < parcelas.size() - 1) {
                     messageBuilder.append(", ");
                 }

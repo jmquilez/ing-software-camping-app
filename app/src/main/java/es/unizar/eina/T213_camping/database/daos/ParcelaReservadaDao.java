@@ -41,9 +41,9 @@ public interface ParcelaReservadaDao {
            "    JOIN reserva r ON pr.reservaId = r.id " +
            "    WHERE pr.parcelaNombre = p.nombre " +
            "    AND (" +
-           "        (r.fechaInicio <= :fechaFin AND r.fechaFin >= :fechaInicio) OR " +
-           "        (r.fechaInicio >= :fechaInicio AND r.fechaInicio <= :fechaFin) OR " +
-           "        (r.fechaFin >= :fechaInicio AND r.fechaFin <= :fechaFin)" +
+           "        (r.fechaEntrada <= :fechaFin AND r.fechaSalida >= :fechaInicio) OR " +
+           "        (r.fechaEntrada >= :fechaInicio AND r.fechaEntrada <= :fechaFin) OR " +
+           "        (r.fechaSalida >= :fechaInicio AND r.fechaSalida <= :fechaFin)" +
            "    )" +
            ")")
     LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(String fechaInicio, String fechaFin);
