@@ -1,4 +1,4 @@
-package es.unizar.eina.send;
+package es.send;
 
 /** Define la interfaz de la abstracción */
 public interface SendAbstraction {

@@ -1,4 +1,4 @@
-package es.unizar.eina.send;
+package es.send;
 
 import android.app.Activity;
 
