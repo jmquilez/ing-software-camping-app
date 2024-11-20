@@ -45,8 +45,8 @@ public class ReservationUtils {
         
         String phoneNumber = "";
         String clientName = "";
-        Date entryDate = "";
-        Date departureDate = "";
+        Date entryDate = new Date();
+        Date departureDate = new Date();
         List<ParcelaOccupancy> parcelas = new ArrayList<>();
         
         if (activity instanceof ModifyReservationActivity) {

@@ -47,7 +47,7 @@ public class ParcelSelectionActivity extends BaseActivity {
     private long reservationId;
     private ImageButton prevButton, nextButton;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     @Override
     protected int getLayoutResourceId() {
@@ -146,24 +146,22 @@ public class ParcelSelectionActivity extends BaseActivity {
         String clientName = getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
         String clientPhone = getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
         
-        // Get the date strings from intent
         String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
         String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
 
         try {
-            // Parse the dates to ensure they're in the correct format
+            // Parse las fechas a objetos Date
             Date entryDate = DATE_FORMAT.parse(entryDateStr);
             Date departureDate = DATE_FORMAT.parse(departureDateStr);
 
-            // Format the dates back to strings in the consistent format
+            // Pasar directamente los objetos Date
             ReservationUtils.confirmReservation(this, reservationId, clientName, clientPhone, 
-                DATE_FORMAT.format(entryDate), 
-                DATE_FORMAT.format(departureDate), 
+                entryDate,  // Pasar el objeto Date directamente
+                departureDate,  // Pasar el objeto Date directamente
                 addedParcels);
                 
         } catch (ParseException e) {
             Log.e("ParcelSelectionActivity", "Error parsing dates", e);
-            // Show error dialog or handle the error appropriately
             showErrorDialog("Error al procesar las fechas de la reserva");
         }
     }
@@ -220,11 +218,23 @@ public class ParcelSelectionActivity extends BaseActivity {
         return getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
     }
 
-    public String getCheckInDate() {
-        return getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
+    public Date getCheckInDate() {
+        try {
+            String dateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
+            return DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            Log.e("ParcelSelectionActivity", "Error parsing check-in date", e);
+            return null;
+        }
     }
 
-    public String getCheckOutDate() {
-        return getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
+    public Date getCheckOutDate() {
+        try{
+            String dateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
+            return DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e){
+            Log.e("ParcelSelectionActivity", "Error parsing check-in date", e);
+            return null;
+        }
     }
 }

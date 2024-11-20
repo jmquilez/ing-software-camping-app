@@ -4,7 +4,10 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.widget.Button;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Utilidades para el manejo de fechas en la aplicación.
@@ -50,5 +53,15 @@ public class DateUtils {
         checkOutCal.set(Integer.parseInt(checkOutParts[2]), Integer.parseInt(checkOutParts[1]) - 1, Integer.parseInt(checkOutParts[0]));
 
         return checkOutCal.before(checkInCal);
+    }
+
+    /**
+     * Formatea una fecha al formato dd/MM/yyyy
+     * @param date Fecha a formatear
+     * @return String con la fecha formateada
+     */
+    public static String formatDate(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        return dateFormat.format(date);
     }
 }

@@ -52,7 +52,7 @@ public class ReservationFeedActivity extends BaseActivity {
 
     private ActivityResultLauncher<Intent> reservationLauncher;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     @Override
     protected int getLayoutResourceId() {
@@ -237,9 +237,15 @@ public class ReservationFeedActivity extends BaseActivity {
     private void insertReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
         Log.d("RESERVATION_INSERTION -> client phone", extras.getString(ReservationConstants.CLIENT_PHONE));
         Log.d("RESERVATION_INSERTION -> entry date", extras.getString(ReservationConstants.ENTRY_DATE));
+        Log.d("RESERVATION_INSERTION -> departure date", extras.getString(ReservationConstants.DEPARTURE_DATE));
+        Log.d("RESERVATION_INSERTION -> date format", DATE_FORMAT.toPattern());
+        
         try {
             Date entryDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
+            Log.d("RESERVATION_INSERTION", "Entry date parsed successfully: " + entryDate);
+            
             Date departureDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
+            Log.d("RESERVATION_INSERTION", "Departure date parsed successfully: " + departureDate);
             
             Reserva reservation = new Reserva(
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
@@ -263,8 +269,15 @@ public class ReservationFeedActivity extends BaseActivity {
             }
             DialogUtils.showSuccessDialog(this, "Reserva creada con éxito.", R.drawable.ic_create_success);
         } catch (ParseException e) {
-            Log.e("ReservationFeedActivity", "Error parsing date", e);
-            Toast.makeText(this, "Error al procesar las fechas", Toast.LENGTH_SHORT).show();
+            Log.e("ReservationFeedActivity", "Error parsing date: " + e.getMessage());
+            Toast.makeText(this, 
+                "Error al procesar las fechas: Formato incorrecto o fecha inválida", 
+                Toast.LENGTH_LONG).show();
+        } catch (NullPointerException e) {
+            Log.e("ReservationFeedActivity", "Error: fecha es null", e);
+            Toast.makeText(this, 
+                "Error: No se ha especificado la fecha", 
+                Toast.LENGTH_LONG).show();
         }
     }
 
@@ -275,9 +288,16 @@ public class ReservationFeedActivity extends BaseActivity {
      */
     private void updateReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
         long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
+        Log.d("RESERVATION_UPDATE -> entry date", extras.getString(ReservationConstants.ENTRY_DATE));
+        Log.d("RESERVATION_UPDATE -> departure date", extras.getString(ReservationConstants.DEPARTURE_DATE));
+        Log.d("RESERVATION_UPDATE -> date format", DATE_FORMAT.toPattern());
+        
         try {
             Date entryDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
+            Log.d("RESERVATION_UPDATE", "Entry date parsed successfully: " + entryDate);
+            
             Date departureDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
+            Log.d("RESERVATION_UPDATE", "Departure date parsed successfully: " + departureDate);
             
             Reserva updatedReservation = new Reserva(
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
@@ -300,8 +320,15 @@ public class ReservationFeedActivity extends BaseActivity {
 
             DialogUtils.showSuccessDialog(this, "Reserva actualizada con éxito.", R.drawable.ic_update_success);
         } catch (ParseException e) {
-            Log.e("ReservationFeedActivity", "Error parsing date", e);
-            Toast.makeText(this, "Error al procesar las fechas", Toast.LENGTH_SHORT).show();
+            Log.e("ReservationFeedActivity", "Error parsing date: " + e.getMessage());
+            Toast.makeText(this, 
+                "Error al procesar las fechas: Formato incorrecto o fecha inválida", 
+                Toast.LENGTH_LONG).show();
+        } catch (NullPointerException e) {
+            Log.e("ReservationFeedActivity", "Error: fecha es null", e);
+            Toast.makeText(this, 
+                "Error: No se ha especificado la fecha", 
+                Toast.LENGTH_LONG).show();
         }
     }
 
@@ -315,8 +342,8 @@ public class ReservationFeedActivity extends BaseActivity {
         intent.putExtra(ReservationConstants.RESERVATION_ID, reserva.getId());
         intent.putExtra(ReservationConstants.CLIENT_NAME, reserva.getNombreCliente());
         intent.putExtra(ReservationConstants.CLIENT_PHONE, reserva.getTelefonoCliente());
-        intent.putExtra(ReservationConstants.ENTRY_DATE, reserva.getFechaEntrada());
-        intent.putExtra(ReservationConstants.DEPARTURE_DATE, reserva.getFechaSalida());
+        intent.putExtra(ReservationConstants.ENTRY_DATE, DATE_FORMAT.format(reserva.getFechaEntrada()));
+        intent.putExtra(ReservationConstants.DEPARTURE_DATE, DATE_FORMAT.format(reserva.getFechaSalida()));
 
         // NOTE: See https://www.youtube.com/watch?v=ESM3NwSqJFo
         LiveData<List<ParcelaOccupancy>> parcelasReservadasLiveData = parcelaViewModel.getParcelasByReservationId(reserva.getId());

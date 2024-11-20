@@ -59,7 +59,7 @@ public class ModifyReservationActivity extends BaseActivity {
     private ReservaViewModel reservaViewModel;
     private List<ParcelaOccupancy> selectedParcels;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     @Override
     protected int getLayoutResourceId() {
@@ -111,15 +111,20 @@ public class ModifyReservationActivity extends BaseActivity {
         clientPhone = getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
         
         try {
-            // Parse dates from intent
-            checkInDate = DATE_FORMAT.parse(getIntent().getStringExtra(ReservationConstants.ENTRY_DATE));
-            checkOutDate = DATE_FORMAT.parse(getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE));
+            String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
+            String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
             
-            // Set the formatted dates to the date pickers
-            checkInDatePicker.setText(DATE_FORMAT.format(checkInDate));
-            checkOutDatePicker.setText(DATE_FORMAT.format(checkOutDate));
+            if (entryDateStr != null && departureDateStr != null) {
+                checkInDate = DATE_FORMAT.parse(entryDateStr);
+                checkOutDate = DATE_FORMAT.parse(departureDateStr);
+                
+                checkInDatePicker.setText(DATE_FORMAT.format(checkInDate));
+                checkOutDatePicker.setText(DATE_FORMAT.format(checkOutDate));
+            } else {
+                throw new ParseException("Fechas nulas", 0);
+            }
         } catch (ParseException e) {
-            Log.e("ModifyReservationActivity", "Error parsing dates", e);
+            Log.e("ModifyReservationActivity", "Error parsing dates: " + e.getMessage(), e);
             showErrorDialog("Error al cargar las fechas de la reserva");
         }
 
@@ -251,12 +256,22 @@ public class ModifyReservationActivity extends BaseActivity {
      * Confirma los cambios en la reserva utilizando ReservationUtils.
      */
     private void confirmReservation() {
-        ReservationUtils.confirmReservation(this, reservationId, 
-            clientNameInput.getText().toString(),
-            clientPhoneInput.getText().toString(), 
-            DATE_FORMAT.format(checkInDate), 
-            DATE_FORMAT.format(checkOutDate), 
-            selectedParcels);
+        try {
+            if (checkInDate == null || checkOutDate == null) {
+                showErrorDialog("Las fechas no son válidas");
+                return;
+            }
+            
+            ReservationUtils.confirmReservation(this, reservationId, 
+                clientNameInput.getText().toString(),
+                clientPhoneInput.getText().toString(), 
+                checkInDate,    // Usamos directamente los objetos Date
+                checkOutDate,   // Usamos directamente los objetos Date
+                selectedParcels);
+        } catch (Exception e) {
+            Log.e("ModifyReservationActivity", "Error al confirmar la reserva: " + e.getMessage(), e);
+            showErrorDialog("Error al procesar la reserva");
+        }
     }
 
     public String getClientPhone() {
