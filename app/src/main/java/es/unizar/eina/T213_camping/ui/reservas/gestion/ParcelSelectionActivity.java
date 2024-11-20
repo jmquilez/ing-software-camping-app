@@ -207,4 +207,24 @@ public class ParcelSelectionActivity extends BaseActivity {
 
         // availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
     }
+
+    public String getClientPhone() {
+        return getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
+    }
+
+    public List<ParcelaOccupancy> getAddedParcels() {
+        return addedParcels;
+    }
+
+    public String getClientName() {
+        return getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
+    }
+
+    public String getCheckInDate() {
+        return getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
+    }
+
+    public String getCheckOutDate() {
+        return getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
+    }
 }
