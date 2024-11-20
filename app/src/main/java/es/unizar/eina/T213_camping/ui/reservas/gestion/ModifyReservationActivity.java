@@ -267,11 +267,11 @@ public class ModifyReservationActivity extends BaseActivity {
         return clientNameInput.getText().toString();
     }
 
-    public String getCheckInDate() {
+    public Date getCheckInDate() {
         return checkInDate;
     }
 
-    public String getCheckOutDate() {
+    public Date getCheckOutDate() {
         return checkOutDate;
     }
 

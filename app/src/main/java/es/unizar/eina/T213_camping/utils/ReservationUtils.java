@@ -22,6 +22,7 @@ import es.unizar.eina.T213_camping.ui.reservas.gestion.ModifyReservationActivity
 import es.unizar.eina.T213_camping.ui.reservas.gestion.ParcelSelectionActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,8 +45,8 @@ public class ReservationUtils {
         
         String phoneNumber = "";
         String clientName = "";
-        String entryDate = "";
-        String departureDate = "";
+        Date entryDate = "";
+        Date departureDate = "";
         List<ParcelaOccupancy> parcelas = new ArrayList<>();
         
         if (activity instanceof ModifyReservationActivity) {
