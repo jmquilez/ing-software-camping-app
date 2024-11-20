@@ -69,8 +69,8 @@ public class ReservationUtils {
         StringBuilder messageBuilder = new StringBuilder();
         messageBuilder.append("¡Hola ").append(clientName).append("!\n\n");
         messageBuilder.append("Detalles de su reserva:\n");
-        messageBuilder.append("Fecha de entrada: ").append(entryDate).append("\n");
-        messageBuilder.append("Fecha de salida: ").append(departureDate).append("\n");
+        messageBuilder.append("Fecha de entrada: ").append(DateUtils.formatDate(entryDate)).append("\n");
+        messageBuilder.append("Fecha de salida: ").append(DateUtils.formatDate(departureDate)).append("\n");
         messageBuilder.append("Parcelas reservadas: ");
         
         // Añadir información de las parcelas
@@ -118,7 +118,7 @@ public class ReservationUtils {
      * @param selectedParcels Lista de parcelas seleccionadas
      */
     public static void confirmReservation(BaseActivity activity, long reservationId, String clientName,
-                                          String clientPhone, String entryDate, String departureDate,
+                                          String clientPhone, Date entryDate, Date departureDate,
                                           @NonNull List<ParcelaOccupancy> selectedParcels) {
         DialogUtils.showConfirmationDialog(
             activity,
@@ -130,8 +130,8 @@ public class ReservationUtils {
                 resultIntent.putExtra(ReservationConstants.RESERVATION_ID, reservationId);
                 resultIntent.putExtra(ReservationConstants.CLIENT_NAME, clientName);
                 resultIntent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhone);
-                resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate);
-                resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate);
+                resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate.getTime());
+                resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate.getTime());
                 // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
                 resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_UPDATE);
