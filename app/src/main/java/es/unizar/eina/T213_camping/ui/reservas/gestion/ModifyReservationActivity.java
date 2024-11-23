@@ -114,18 +114,32 @@ public class ModifyReservationActivity extends BaseActivity {
             String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
             String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
             
-            if (entryDateStr != null && departureDateStr != null) {
+            Log.d("ModifyReservationActivity", "Entry date string: " + entryDateStr);
+            Log.d("ModifyReservationActivity", "Departure date string: " + departureDateStr);
+            
+            if (entryDateStr != null && !entryDateStr.isEmpty() && 
+                departureDateStr != null && !departureDateStr.isEmpty()) {
+                
                 checkInDate = DATE_FORMAT.parse(entryDateStr);
                 checkOutDate = DATE_FORMAT.parse(departureDateStr);
                 
+                if (checkInDate == null || checkOutDate == null) {
+                    throw new ParseException("Error al parsear las fechas", 0);
+                }
+                
                 checkInDatePicker.setText(DATE_FORMAT.format(checkInDate));
                 checkOutDatePicker.setText(DATE_FORMAT.format(checkOutDate));
+                
+                Log.d("ModifyReservationActivity", "Fechas parseadas correctamente - Entry: " + 
+                      checkInDate + ", Departure: " + checkOutDate);
             } else {
-                throw new ParseException("Fechas nulas", 0);
+                throw new ParseException("Fechas vacías o nulas", 0);
             }
         } catch (ParseException e) {
             Log.e("ModifyReservationActivity", "Error parsing dates: " + e.getMessage(), e);
-            showErrorDialog("Error al cargar las fechas de la reserva");
+            showErrorDialog("Error al cargar las fechas de la reserva: " + e.getMessage());
+            checkInDate = new Date();
+            checkOutDate = new Date(checkInDate.getTime() + 86400000);
         }
 
         selectedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);

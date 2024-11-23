@@ -1,5 +1,7 @@
 package es.unizar.eina.T213_camping.ui.reservas;
 
+
+
 /**
  * Constantes utilizadas en la gestión de reservas.
  * Define las claves para operaciones, criterios de ordenación y detalles de reservas

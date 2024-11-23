@@ -287,9 +287,28 @@ public class ReservationFeedActivity extends BaseActivity {
      * @param selectedParcels Nueva lista de parcelas seleccionadas
      */
     private void updateReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
+        if (extras == null) {
+            Log.e("RESERVATION_UPDATE", "Error: extras es null");
+            Toast.makeText(this, "Error: datos de reserva no disponibles", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
-        Log.d("RESERVATION_UPDATE -> entry date", extras.getString(ReservationConstants.ENTRY_DATE));
-        Log.d("RESERVATION_UPDATE -> departure date", extras.getString(ReservationConstants.DEPARTURE_DATE));
+        String entryDateStr = extras.getString(ReservationConstants.ENTRY_DATE);
+        String departureDateStr = extras.getString(ReservationConstants.DEPARTURE_DATE);
+        
+        // Logging con validación
+        Log.d("RESERVATION_UPDATE", String.format("ID: %d", reservationId));
+        Log.d("RESERVATION_UPDATE", String.format("Fecha entrada: %s", entryDateStr != null ? entryDateStr : "null"));
+        Log.d("RESERVATION_UPDATE", String.format("Fecha salida: %s", departureDateStr != null ? departureDateStr : "null"));
+
+        // Validación de datos requeridos
+        if (entryDateStr == null || departureDateStr == null) {
+            Log.e("RESERVATION_UPDATE", "Error: fechas requeridas son null");
+            Toast.makeText(this, "Error: fechas de reserva no válidas", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Log.d("RESERVATION_UPDATE -> date format", DATE_FORMAT.toPattern());
         
         try {
@@ -339,13 +358,37 @@ public class ReservationFeedActivity extends BaseActivity {
      */
     private void onReservationClick(Reserva reserva) {
         Intent intent = new Intent(this, ModifyReservationActivity.class);
+        
+        // Añadir logs antes de poner los extras
+        Log.d("ReservationFeed", "Datos de la reserva a modificar:");
+        Log.d("ReservationFeed", "ID: " + reserva.getId());
+        Log.d("ReservationFeed", "Nombre: " + reserva.getNombreCliente());
+        Log.d("ReservationFeed", "Teléfono: " + reserva.getTelefonoCliente());
+        Log.d("ReservationFeed", "Fecha Entrada (Date): " + reserva.getFechaEntrada());
+        Log.d("ReservationFeed", "Fecha Salida (Date): " + reserva.getFechaSalida());
+        
+        // Formatear y verificar las fechas antes de añadirlas al intent
+        String entryDateStr = DATE_FORMAT.format(reserva.getFechaEntrada());
+        String departureDateStr = DATE_FORMAT.format(reserva.getFechaSalida());
+        
+        Log.d("ReservationFeed", "Fecha Entrada (formateada): " + entryDateStr);
+        Log.d("ReservationFeed", "Fecha Salida (formateada): " + departureDateStr);
+        
         intent.putExtra(ReservationConstants.RESERVATION_ID, reserva.getId());
         intent.putExtra(ReservationConstants.CLIENT_NAME, reserva.getNombreCliente());
         intent.putExtra(ReservationConstants.CLIENT_PHONE, reserva.getTelefonoCliente());
-        intent.putExtra(ReservationConstants.ENTRY_DATE, DATE_FORMAT.format(reserva.getFechaEntrada()));
-        intent.putExtra(ReservationConstants.DEPARTURE_DATE, DATE_FORMAT.format(reserva.getFechaSalida()));
+        intent.putExtra(ReservationConstants.ENTRY_DATE, entryDateStr);
+        intent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDateStr);
 
-        // NOTE: See https://www.youtube.com/watch?v=ESM3NwSqJFo
+        // Verificar que los extras se añadieron correctamente
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            Log.d("ReservationFeed", "Extras añadidos al intent:");
+            for (String key : extras.keySet()) {
+                Log.d("ReservationFeed", key + ": " + extras.get(key));
+            }
+        }
+
         LiveData<List<ParcelaOccupancy>> parcelasReservadasLiveData = parcelaViewModel.getParcelasByReservationId(reserva.getId());
         parcelasReservadasLiveData.observe(this, parcelasReservadas -> {
             if (parcelasReservadas == null) {
