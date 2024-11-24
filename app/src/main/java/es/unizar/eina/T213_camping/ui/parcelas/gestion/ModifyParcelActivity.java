@@ -10,6 +10,8 @@ import es.unizar.eina.T213_camping.utils.ParcelUtils;
 import es.unizar.eina.T213_camping.utils.DialogUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
+import androidx.lifecycle.ViewModelProvider;
+import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 
 /**
  * Activity para modificar o eliminar una parcela existente.
@@ -32,6 +34,8 @@ public class ModifyParcelActivity extends BaseActivity {
     private double pricePerPerson;
     private String description;
 
+    private ParcelaViewModel parcelaViewModel;
+
     @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_modify_parcel;
@@ -45,6 +49,7 @@ public class ModifyParcelActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
 
         initializeViews();
         loadParcelData();
@@ -97,19 +102,28 @@ public class ModifyParcelActivity extends BaseActivity {
      * Si la validación es exitosa, devuelve los datos actualizados con OPERATION_UPDATE.
      */
     private void saveParcel() {
-        if (!ParcelUtils.validateInputs(this, parcelNameInput, maxOccupantsInput, pricePerPersonInput, errorMessage)) {
-            return;
-        }
-    
-        Intent replyIntent = new Intent();
-        replyIntent.putExtra(ParcelConstants.PARCEL_NAME, parcelNameInput.getText().toString());
-        replyIntent.putExtra(ParcelConstants.MAX_OCCUPANTS, Integer.parseInt(maxOccupantsInput.getText().toString()));
-        replyIntent.putExtra(ParcelConstants.PRICE_PER_PERSON, Double.parseDouble(pricePerPersonInput.getText().toString()));
-        replyIntent.putExtra(ParcelConstants.DESCRIPTION, descriptionInput.getText().toString());
-        replyIntent.putExtra(ParcelConstants.OPERATION_TYPE, ParcelConstants.OPERATION_UPDATE);
+        ParcelUtils.validateInputsAsync(this, parcelNameInput, maxOccupantsInput, 
+            pricePerPersonInput, errorMessage, parcelaViewModel, parcelName,
+            isValid -> {
+                if (isValid) {
+                    String newName = parcelNameInput.getText().toString();
+                    boolean isNameChanged = !newName.equals(parcelName);
 
-        setResult(RESULT_OK, replyIntent);
-        finish();
+                    Intent replyIntent = new Intent();
+                    replyIntent.putExtra(ParcelConstants.PARCEL_NAME, newName);
+                    replyIntent.putExtra(ParcelConstants.OLD_PARCEL_NAME, parcelName);
+                    replyIntent.putExtra(ParcelConstants.MAX_OCCUPANTS, 
+                        Integer.parseInt(maxOccupantsInput.getText().toString()));
+                    replyIntent.putExtra(ParcelConstants.PRICE_PER_PERSON, 
+                        Double.parseDouble(pricePerPersonInput.getText().toString()));
+                    replyIntent.putExtra(ParcelConstants.DESCRIPTION, descriptionInput.getText().toString());
+                    replyIntent.putExtra(ParcelConstants.OPERATION_TYPE, 
+                        isNameChanged ? ParcelConstants.OPERATION_UPDATE_WITH_NAME : ParcelConstants.OPERATION_UPDATE);
+
+                    setResult(RESULT_OK, replyIntent);
+                    finish();
+                }
+            });
     }
     
     /**

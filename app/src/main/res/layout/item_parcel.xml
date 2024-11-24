@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:textStyle="bold"
+                android:paddingHorizontal="4dp"
                 android:textColor="?attr/colorPrimary"/>
 
             <TextView
@@ -38,6 +39,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:layout_marginTop="4dp"
+                android:paddingHorizontal="4dp"
                 android:alpha="0.7"/>
         </LinearLayout>
 

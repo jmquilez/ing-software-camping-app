@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/default_logo" />
+                    android:src="@drawable/camping_logo_cropped_xml"/>
 
             </androidx.cardview.widget.CardView>
 
@@ -63,7 +63,9 @@
                 android:textAllCaps="true"
                 app:cornerRadius="28dp"
                 android:alpha="0.95"
-                app:elevation="4dp"/>
+                app:elevation="4dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
 
         </LinearLayout>
     </ScrollView>

@@ -105,4 +105,12 @@ public interface ParcelaReservadaDao {
            "AND r.fechaEntrada < :endDate " +
            "AND r.fechaSalida > :startDate)")
     LiveData<List<Parcela>> getParcelasDisponiblesEnIntervaloExcludingReservation(Date startDate, Date endDate, long excludeReservationId);
+
+    /** 
+     * Actualiza el nombre de una parcela en todas las relaciones parcela-reserva.
+     * @param oldName Nombre actual de la parcela
+     * @param newName Nuevo nombre de la parcela
+     */
+    @Query("UPDATE parcela_reservada SET parcelaNombre = :newName WHERE parcelaNombre = :oldName")
+    void updateParcelaNombre(String oldName, String newName);
 }

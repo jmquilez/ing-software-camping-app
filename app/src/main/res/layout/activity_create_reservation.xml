@@ -131,7 +131,8 @@
                 android:drawableTint="@color/white"
                 android:drawablePadding="8dp"
                 android:backgroundTint="@color/green"
-                app:cornerRadius="32dp"/>
+                app:cornerRadius="32dp"
+                android:textStyle="bold"/>
 
         </LinearLayout>
     </ScrollView>

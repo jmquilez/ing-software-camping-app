@@ -79,4 +79,25 @@ public interface ParcelaDao {
      */
     @Query("DELETE FROM parcela WHERE nombre = :nombre")
     void deleteByNombre(String nombre);
+
+    /** 
+     * Verifica si una parcela con el nombre dado existe en la base de datos.
+     * @param nombre Nombre de la parcela a verificar
+     * @return true si la parcela existe, false en caso contrario
+     */
+    @Query("SELECT EXISTS(SELECT 1 FROM parcela WHERE nombre = :nombre LIMIT 1)")
+    boolean exists(String nombre);
+
+    /** 
+     * Obtiene una parcela por su nombre.
+     * @param nombre Nombre de la parcela a obtener
+     * @return Parcela correspondiente al nombre dado
+     */
+    @Query("SELECT * FROM parcela WHERE nombre = :nombre LIMIT 1")
+    Parcela getByNombre(String nombre);
+
+    @Transaction
+    default void runInTransaction(Runnable action) {
+        action.run();
+    }
 }

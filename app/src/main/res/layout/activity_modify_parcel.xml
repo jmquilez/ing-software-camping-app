@@ -17,14 +17,6 @@
             android:padding="24dp">
 
             <TextView
-                android:id="@+id/modify_parcel_error_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone"
-                android:layout_marginBottom="8dp"/>
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="MODIFICAR PARCELA"
@@ -48,7 +40,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 android:hint="Nombre parcela">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -57,6 +49,14 @@
                     android:layout_height="wrap_content"
                     android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/modify_parcel_error_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
 
             <View
                 android:layout_width="match_parent"
@@ -142,7 +142,8 @@
                 android:text="ELIMINAR PARCELA"
                 android:backgroundTint="@android:color/holo_red_dark"
                 android:textColor="@android:color/white"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

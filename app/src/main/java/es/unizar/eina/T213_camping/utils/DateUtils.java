@@ -92,17 +92,46 @@ public class DateUtils {
      */
     public static String validateDates(Date checkInDate, Date checkOutDate) {
         if (checkInDate == null || checkOutDate == null) {
-            return "Las fechas no pueden estar vacías";
+            return "Por favor, seleccione ambas fechas";
         }
 
-        // Calculate difference in days
+        // Get current date and set all time components to start of day
+        Calendar currentCal = Calendar.getInstance();
+        currentCal.set(Calendar.HOUR_OF_DAY, 0);
+        currentCal.set(Calendar.MINUTE, 0);
+        currentCal.set(Calendar.SECOND, 0);
+        currentCal.set(Calendar.MILLISECOND, 0);
+        Date currentDate = currentCal.getTime();
+
+        // Set check-in date to start of day for comparison
+        Calendar checkInCal = Calendar.getInstance();
+        checkInCal.setTime(checkInDate);
+        checkInCal.set(Calendar.HOUR_OF_DAY, 0);
+        checkInCal.set(Calendar.MINUTE, 0);
+        checkInCal.set(Calendar.SECOND, 0);
+        checkInCal.set(Calendar.MILLISECOND, 0);
+        checkInDate = checkInCal.getTime();
+        
+        if (checkInDate.before(currentDate)) {
+            return "La fecha de entrada no puede ser anterior al día actual";
+        }
+
+        // Calculate difference in days using normalized dates
+        Calendar checkOutCal = Calendar.getInstance();
+        checkOutCal.setTime(checkOutDate);
+        checkOutCal.set(Calendar.HOUR_OF_DAY, 0);
+        checkOutCal.set(Calendar.MINUTE, 0);
+        checkOutCal.set(Calendar.SECOND, 0);
+        checkOutCal.set(Calendar.MILLISECOND, 0);
+        checkOutDate = checkOutCal.getTime();
+
         long diffInMillies = checkOutDate.getTime() - checkInDate.getTime();
-        long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-        if (days < 1) {
-            return "La fecha de salida debe ser al menos un día posterior a la fecha de entrada";
+        if (diffInDays < 1) {
+            return "La fecha de salida debe ser al menos un día posterior al de la fecha de entrada";
         }
 
-        return null; // Dates are valid
+        return null;
     }
 }

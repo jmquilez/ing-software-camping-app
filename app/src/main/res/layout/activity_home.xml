@@ -72,7 +72,8 @@
                         android:paddingStart="30dp"
                         android:paddingEnd="30dp"
                         android:insetTop="0dp"
-                        android:insetBottom="0dp" />
+                        android:insetBottom="0dp"
+                        android:textStyle="bold"/>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/reservas_button"
@@ -93,7 +94,8 @@
                         android:paddingStart="30dp"
                         android:paddingEnd="30dp"
                         android:insetTop="0dp"
-                        android:insetBottom="0dp" />
+                        android:insetBottom="0dp"
+                        android:textStyle="bold"/>
 
                 </LinearLayout>
 
@@ -102,6 +104,12 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:alpha="0.95"/>
+        
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

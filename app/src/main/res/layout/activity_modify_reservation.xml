@@ -184,7 +184,9 @@
                     android:text="GUARDAR CAMBIOS"
                     android:drawableStart="@drawable/ic_save"
                     android:drawablePadding="8dp"
-                    android:backgroundTint="@color/green"/>
+                    android:backgroundTint="@color/green"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"/>
 
                 <Button
                     android:id="@+id/modify_reservation_notify_button"
@@ -195,7 +197,9 @@
                     android:drawableStart="@drawable/ic_notify"
                     android:drawablePadding="8dp"
                     android:backgroundTint="@color/orange"
-                    android:layout_marginStart="8dp"/>
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
             <Button
@@ -205,7 +209,9 @@
                 android:text="ELIMINAR RESERVA"
                 android:drawableStart="@drawable/ic_delete"
                 android:drawablePadding="8dp"
-                android:backgroundTint="@color/red"/>
+                android:backgroundTint="@color/red"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

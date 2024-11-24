@@ -27,6 +27,11 @@ public class ParcelConstants {
     public static final String OPERATION_DELETE = "OPERATION_DELETE";
 
     /**
+     * Operación de actualización de una parcela con cambio de nombre.
+     */
+    public static final String OPERATION_UPDATE_WITH_NAME = "OPERATION_UPDATE_WITH_NAME";
+
+    /**
      * Criterio de ordenación por identificador (nombre) de la parcela.
      */
     public static final String SORT_ID = "SORT_ID";
@@ -45,6 +50,11 @@ public class ParcelConstants {
      * Clave para el nombre de la parcela en los Intents.
      */
     public static final String PARCEL_NAME = "PARCEL_NAME";
+
+    /**
+     * Clave para el nombre anterior de la parcela en los Intents.
+     */
+    public static final String OLD_PARCEL_NAME = "OLD_PARCEL_NAME";
 
     /**
      * Clave para el número máximo de ocupantes en los Intents.
