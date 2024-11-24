@@ -363,6 +363,7 @@ public class ReservationFeedActivity extends BaseActivity {
         Log.d("ReservationFeed", "Teléfono: " + reserva.getTelefonoCliente());
         Log.d("ReservationFeed", "Fecha Entrada (Date): " + reserva.getFechaEntrada());
         Log.d("ReservationFeed", "Fecha Salida (Date): " + reserva.getFechaSalida());
+        Log.d("ReservationFeed", "Precio: " + reserva.getPrecio());
         
         // Formatear y verificar las fechas antes de añadirlas al intent
         String entryDateStr = DateUtils.DATE_FORMAT.format(reserva.getFechaEntrada());
@@ -376,6 +377,7 @@ public class ReservationFeedActivity extends BaseActivity {
         intent.putExtra(ReservationConstants.CLIENT_PHONE, reserva.getTelefonoCliente());
         intent.putExtra(ReservationConstants.ENTRY_DATE, entryDateStr);
         intent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDateStr);
+        intent.putExtra(ReservationConstants.RESERVATION_PRICE, reserva.getPrecio());
 
         // Verificar que los extras se añadieron correctamente
         Bundle extras = intent.getExtras();

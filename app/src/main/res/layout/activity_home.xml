@@ -8,81 +8,98 @@
 
     <include layout="@layout/custom_toolbar"/>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:gravity="center">
+        android:fillViewport="true">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MENÚ PRINCIPAL"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            android:textColor="?android:attr/textColorPrimary"
-            android:layout_marginBottom="32dp"/>
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <View
-            android:layout_width="100dp"
-            android:layout_height="3dp"
-            android:background="@color/green"
-            android:layout_marginBottom="48dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MENÚ PRINCIPAL"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="?android:attr/textColorPrimary"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:layout_gravity="center"/>
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+            <View
+                android:layout_width="80dp"
+                android:layout_height="2dp"
+                android:background="@color/green"
+                android:layout_marginBottom="40dp"
+                android:layout_gravity="center"/>
 
-            <Button
-                android:id="@+id/parcelas_button"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_button"
-                android:drawableLeft="@drawable/ic_parcelas"
-                android:paddingStart="30dp"
-                android:text="Parcelas"
-                android:textSize="30sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-        </com.google.android.material.card.MaterialCardView>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginTop="-40dp"
+                android:layout_marginBottom="16dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginHorizontal="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/parcelas_button"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="40dp"
+                    app:strokeColor="?attr/colorPrimary"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="120dp"
+                    app:icon="@drawable/ic_parcel"
+                    app:iconSize="36dp"
+                    app:iconGravity="textStart"
+                    app:iconPadding="24dp"
+                    android:text="Parcelas"
+                    android:textSize="26sp"
+                    android:textAllCaps="false"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"/>
 
-            <Button
-                android:id="@+id/reservas_button"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/rounded_button"
-                android:drawableLeft="@drawable/ic_reservas"
-                android:paddingStart="30dp"
-                android:text="Reservas"
-                android:textSize="30sp"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"/>
-        </com.google.android.material.card.MaterialCardView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/reservas_button"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:layout_marginHorizontal="24dp"
+                    app:strokeColor="?attr/colorPrimary"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="120dp"
+                    app:icon="@drawable/ic_reservation"
+                    app:iconSize="36dp"
+                    app:iconGravity="textStart"
+                    app:iconPadding="24dp"
+                    android:text="Reservas"
+                    android:textSize="26sp"
+                    android:textAllCaps="false"
+                    android:paddingStart="30dp"
+                    android:paddingEnd="30dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
+            </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Camping Manager v1.0"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="14sp"
-            android:layout_marginTop="32dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Camping Manager v1.0"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="14sp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="16dp"/>
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

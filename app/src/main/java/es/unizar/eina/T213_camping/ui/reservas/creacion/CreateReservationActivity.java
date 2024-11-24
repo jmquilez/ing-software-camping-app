@@ -114,29 +114,15 @@ public class CreateReservationActivity extends BaseActivity {
     }
 
     /**
-     * Muestra un diálogo de error con el mensaje especificado.
-     * @param message Mensaje de error a mostrar
-     */
-    private void showErrorDialog(String message) {
-        DialogUtils.showErrorDialog(this, message);
-    }
-
-    /**
-     * Valida todos los campos y procede a la selección de parcelas si son válidos.
-     * Si la validación es exitosa, inicia NewParcelSelectionActivity con los datos introducidos.
+     * Valida los datos y procede a la selección de parcelas.
      */
     private void validateAndProceed() {
-        if (Objects.requireNonNull(clientNameInput.getText()).toString().isEmpty() || 
-            clientPhoneInput.getText().toString().isEmpty()) {
-            showErrorDialog("Por favor, complete todos los campos.");
-        } else if (checkInDate == null || checkOutDate == null) {
-            showErrorDialog("Por favor, seleccione las fechas de entrada y salida.");
+        if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
+            DialogUtils.showErrorDialog(this, "Por favor, complete todos los campos.");
         } else if (errorMessage.getVisibility() == View.VISIBLE) {
-            String error = DateUtils.validateDates(checkInDate, checkOutDate);
-            showErrorDialog(error != null ? error : "Las fechas seleccionadas no son válidas.");
+            DialogUtils.showErrorDialog(this, "La fecha de salida debe ser posterior a la de entrada.");
         } else {
             Intent intent = new Intent(this, NewParcelSelectionActivity.class);
-            
             intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
             intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
             intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));

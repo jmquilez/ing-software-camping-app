@@ -75,26 +75,33 @@ public class DialogUtils {
      * @param onConfirm Runnable a ejecutar si se confirma
      */
     public static void showConfirmationDialog(Context context, String title, String message, int iconResId, Runnable onConfirm) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomAlertDialogStyle);
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.confirmation_popup, null);
         
+        ImageView icon = view.findViewById(R.id.confirmIcon);
+        TextView titleText = view.findViewById(R.id.confirmTitle);
+        TextView messageText = view.findViewById(R.id.confirmMessage);
+        Button confirmButton = view.findViewById(R.id.confirmButton);
+        Button cancelButton = view.findViewById(R.id.cancelButton);
+
         if (iconResId != 0) {
-            builder.setIcon(iconResId);
+            icon.setImageResource(iconResId);
+        } else {
+            icon.setVisibility(View.GONE);
         }
-        
-        builder.setTitle(title)
-               .setMessage(message);
 
-        builder.setPositiveButton("SÍ", (dialog, which) -> onConfirm.run())
-               .setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
+        titleText.setText(title);
+        messageText.setText(message);
 
-        AlertDialog dialog = builder.create();
+        confirmButton.setOnClickListener(v -> {
+            onConfirm.run();
+            dialog.dismiss();
+        });
+
+        cancelButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.setContentView(view);
         dialog.show();
-
-        Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-        Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        
-        positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
-        negativeButton.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
     }
 
     /**
@@ -103,10 +110,16 @@ public class DialogUtils {
      * @param message Mensaje de error
      */
     public static void showErrorDialog(Context context, String message) {
-        new AlertDialog.Builder(context)
-            .setTitle("Error")
-            .setMessage(message)
-            .setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss())
-            .show();
+        Dialog dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.error_popup, null);
+        
+        TextView errorMessage = view.findViewById(R.id.errorMessage);
+        Button errorButton = view.findViewById(R.id.errorButton);
+
+        errorMessage.setText(message);
+        errorButton.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.setContentView(view);
+        dialog.show();
     }
 }

@@ -40,30 +40,47 @@ public class ReservationUtils {
      * @param context Contexto de la aplicación
      * @param currentActivity Actividad actual
      */
-    // TODO: revise R.drawable
     public static void notifyClient(Context context, Activity activity) {
+        // Validate dates first
+        Date entryDate = null;
+        Date departureDate = null;
+        
+        if (activity instanceof ModifyReservationActivity) {
+            ModifyReservationActivity act = (ModifyReservationActivity) activity;
+            entryDate = act.getCheckInDate();
+            departureDate = act.getCheckOutDate();
+            
+            // Validate dates before proceeding
+            if (entryDate == null || departureDate == null) {
+                DialogUtils.showErrorDialog(context, "Las fechas no son válidas");
+                return;
+            }
+            
+            String error = DateUtils.validateDates(entryDate, departureDate);
+            if (error != null) {
+                DialogUtils.showErrorDialog(context, "La fecha de salida debe ser posterior a la de entrada");
+                return;
+            }
+        }
+        
         SendAbstraction sender = new SendAbstractionImpl(activity, "SMS");
         
         String phoneNumber = "";
         String clientName = "";
-        Date entryDate = new Date();
-        Date departureDate = new Date();
         List<ParcelaOccupancy> parcelas = new ArrayList<>();
         
         if (activity instanceof ModifyReservationActivity) {
             ModifyReservationActivity act = (ModifyReservationActivity) activity;
             phoneNumber = act.getClientPhone();
             clientName = act.getClientName();
-            entryDate = act.getCheckInDate();
-            departureDate = act.getCheckOutDate();
             parcelas = act.getSelectedParcels();
         } else if (activity instanceof ParcelSelectionActivity) {
             ParcelSelectionActivity act = (ParcelSelectionActivity) activity;
             phoneNumber = act.getClientPhone();
             clientName = act.getClientName();
+            parcelas = act.getAddedParcels();
             entryDate = act.getCheckInDate();
             departureDate = act.getCheckOutDate();
-            parcelas = act.getAddedParcels();
         }
         
         // Construir el mensaje

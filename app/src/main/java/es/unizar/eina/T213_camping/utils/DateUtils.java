@@ -100,7 +100,7 @@ public class DateUtils {
         long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
         if (days < 1) {
-            return "La fecha de salida debe ser al menos un día después de la fecha de entrada";
+            return "La fecha de salida debe ser al menos un día posterior a la fecha de entrada";
         }
 
         return null; // Dates are valid
