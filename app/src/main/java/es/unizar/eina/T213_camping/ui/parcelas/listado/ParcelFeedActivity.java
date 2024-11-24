@@ -203,15 +203,22 @@ public class ParcelFeedActivity extends BaseActivity {
      * @param extras Bundle con los datos de la nueva parcela
      */
     private void insertParcel(Bundle extras) {
-        Parcela parcela = new Parcela(
+        try {
+            Parcela parcela = new Parcela(
                 Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
                 Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
-            extras.getInt(ParcelConstants.MAX_OCCUPANTS),
-            extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
-        );
-        parcelaViewModel.insert(parcela);
-        // TODO: conditional?
-        DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
+                Integer.parseInt(Objects.requireNonNull(extras.getString(ParcelConstants.MAX_OCCUPANTS))),
+                Double.parseDouble(Objects.requireNonNull(extras.getString(ParcelConstants.PRICE_PER_PERSON)))
+            );
+            parcelaViewModel.insert(parcela);
+            DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
+        } catch (NumberFormatException e) {
+            Log.e("ParcelFeedActivity", "Error parsing parcel data: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, "Error al procesar los datos de la parcela");
+        } catch (Exception e) {
+            Log.e("ParcelFeedActivity", "Error creating parcel: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, "Error al crear la parcela");
+        }
     }
 
     /**

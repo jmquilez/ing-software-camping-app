@@ -7,105 +7,115 @@
 
     <include layout="@layout/custom_toolbar"/>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PARCELAS"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_margin="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ordenar por:"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PARCELAS"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_margin="16dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ordenar por:"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="16dp">
-
-                <Button
-                    android:id="@+id/parcel_sort_id_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="ID"
-                    android:textSize="11sp"
-                    android:maxLines="2"
-                    android:gravity="center"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-                <Button
-                    android:id="@+id/parcel_sort_occupants_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="8dp"
-                    android:text="Máx.\nocupantes"
-                    android:textSize="11sp"
-                    android:maxLines="2"
-                    android:gravity="center"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-
-                <Button
-                    android:id="@+id/parcel_sort_price_button"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="€/persona"
-                    android:textSize="11sp"
-                    android:maxLines="2"
-                    android:minLines="2"
-                    android:gravity="center"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_margin="16dp"
-                android:minHeight="200dp"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#10FFFFFF">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/parcel_list_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical"
-                    android:padding="8dp"
-                    android:clipToPadding="false"
-                    android:background="@drawable/glass_card_background"/>
-
-            </androidx.cardview.widget.CardView>
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="24dp">
 
             <Button
-                android:id="@+id/parcel_create_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="CREAR NUEVA PARCELA"
-                android:backgroundTint="@color/green"
-                android:textColor="@android:color/white"
-                android:layout_margin="16dp"/>
+                android:id="@+id/parcel_sort_id_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="ID"
+                android:textSize="11sp"
+                android:maxLines="2"
+                android:gravity="center"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
 
+            <Button
+                android:id="@+id/parcel_sort_occupants_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="8dp"
+                android:text="Máx.\nocupantes"
+                android:textSize="11sp"
+                android:maxLines="2"
+                android:gravity="center"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+
+            <Button
+                android:id="@+id/parcel_sort_price_button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="€/persona"
+                android:textSize="11sp"
+                android:maxLines="2"
+                android:minLines="2"
+                android:gravity="center"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
         </LinearLayout>
-    </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorPrimary"
+            android:layout_marginHorizontal="16dp"
+            android:alpha="0.2"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/parcel_list_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="380dp"
+                android:scrollbars="vertical"
+                android:scrollbarStyle="outsideOverlay"
+                android:fadeScrollbars="false"
+                android:padding="8dp"
+                android:clipToPadding="false"/>
+
+        </androidx.cardview.widget.CardView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?attr/colorPrimary"
+            android:layout_marginHorizontal="16dp"
+            android:alpha="0.2"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/parcel_create_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CREAR NUEVA PARCELA"
+        android:backgroundTint="@color/green"
+        android:textColor="@android:color/white"
+        android:layout_margin="16dp"/>
+
 </LinearLayout>

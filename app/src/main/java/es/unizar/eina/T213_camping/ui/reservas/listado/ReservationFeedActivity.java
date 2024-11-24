@@ -202,7 +202,7 @@ public class ReservationFeedActivity extends BaseActivity {
                     insertReservation(extras, selectedParcels);
                     break;
                 case ReservationConstants.OPERATION_UPDATE:
-                    updateReservation(extras, selectedParcels);
+                    updateReservation(extras);
                     break;
                 case ReservationConstants.OPERATION_DELETE:
                     reservaViewModel.deleteById(reservationId);
@@ -283,68 +283,52 @@ public class ReservationFeedActivity extends BaseActivity {
     /**
      * Actualiza una reserva existente.
      * @param extras Bundle con los datos actualizados
-     * @param selectedParcels Nueva lista de parcelas seleccionadas
      */
-    private void updateReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
+    private void updateReservation(Bundle extras) {
         if (extras == null) {
             Log.e("RESERVATION_UPDATE", "Error: extras es null");
             Toast.makeText(this, "Error: datos de reserva no disponibles", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
-        String entryDateStr = extras.getString(ReservationConstants.ENTRY_DATE);
-        String departureDateStr = extras.getString(ReservationConstants.DEPARTURE_DATE);
-        
-        // Logging con validación
-        Log.d("RESERVATION_UPDATE", String.format("ID: %d", reservationId));
-        Log.d("RESERVATION_UPDATE", String.format("Fecha entrada: %s", entryDateStr != null ? entryDateStr : "null"));
-        Log.d("RESERVATION_UPDATE", String.format("Fecha salida: %s", departureDateStr != null ? departureDateStr : "null"));
-
-        // Validación de datos requeridos
-        if (entryDateStr == null || departureDateStr == null) {
-            Log.e("RESERVATION_UPDATE", "Error: fechas requeridas son null");
-            Toast.makeText(this, "Error: fechas de reserva no válidas", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        Log.d("RESERVATION_UPDATE -> date format", DateUtils.DATE_FORMAT.toPattern());
-        
         try {
-            Date entryDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
-            Log.d("RESERVATION_UPDATE", "Entry date parsed successfully: " + entryDate);
+            long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
+            String clientName = Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME));
+            String clientPhone = Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE));
             
-            Date departureDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
-            Log.d("RESERVATION_UPDATE", "Departure date parsed successfully: " + departureDate);
+            // The dates are coming as longs (milliseconds since epoch)
+            long entryDateMillis = extras.getLong(ReservationConstants.ENTRY_DATE);
+            long departureDateMillis = extras.getLong(ReservationConstants.DEPARTURE_DATE);
+            
+            Date entryDate = new Date(entryDateMillis);
+            Date departureDate = new Date(departureDateMillis);
             
             // Get price from extras
             double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
             
-            Reserva updatedReservation = new Reserva(
-                    Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
-                    entryDate,
-                    departureDate,
-                    Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE)),
-                    price  // Use the calculated price
-            );
+            Reserva updatedReservation = new Reserva(clientName, entryDate, departureDate, clientPhone, price);
             updatedReservation.setId(reservationId);
 
             // Update the reservation
             reservaViewModel.update(updatedReservation);
 
             // Update ParcelasReservadas
-            assert selectedParcels != null;
-            List<ParcelaReservada> parcelasReservadas = selectedParcels.stream()
-                .map(po -> new ParcelaReservada(po.getParcela().getNombre(), reservationId, po.getOccupancy()))
-                .collect(Collectors.toList());
-            parcelaReservadaViewModel.updateParcelasForReservation(reservationId, parcelasReservadas);
+            ArrayList<ParcelaOccupancy> selectedParcels = extras.getParcelableArrayList(ReservationConstants.SELECTED_PARCELS);
+            if (selectedParcels != null) {
+                List<ParcelaReservada> parcelasReservadas = selectedParcels.stream()
+                    .map(po -> new ParcelaReservada(
+                        po.getParcela().getNombre(),
+                        reservationId,
+                        po.getOccupancy()
+                    ))
+                    .collect(Collectors.toList());
+                parcelaReservadaViewModel.updateParcelasForReservation(reservationId, parcelasReservadas);
+            }
 
             DialogUtils.showSuccessDialog(this, "Reserva actualizada con éxito.", R.drawable.ic_update_success);
-        } catch (ParseException e) {
-            Log.e("ReservationFeedActivity", "Error parsing date: " + e.getMessage());
-            Toast.makeText(this, 
-                "Error al procesar las fechas: Formato incorrecto o fecha inválida", 
-                Toast.LENGTH_LONG).show();
+        } catch (Exception e) {
+            Log.e("ReservationFeedActivity", "Error updating reservation: " + e.getMessage(), e);
+            DialogUtils.showErrorDialog(this, "Error al actualizar la reserva: " + e.getMessage());
         }
     }
 
