@@ -5,15 +5,22 @@ import android.content.Context;
 import android.widget.Button;
 
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utilidades para el manejo de fechas en la aplicación.
  * Proporciona métodos para mostrar selectores de fecha y validar fechas.
  */
 public class DateUtils {
+
+    /**
+     * Formato estándar de fecha usado en toda la aplicación.
+     */
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     /**
      * Muestra un diálogo para seleccionar una fecha.
@@ -24,14 +31,26 @@ public class DateUtils {
      */
     public static void showDatePickerDialog(Context context, boolean isCheckIn, Button dateInput, Runnable onDateSet) {
         Calendar calendar = Calendar.getInstance();
+        
+        // Try to parse existing date from button
+        try {
+            Date currentDate = DATE_FORMAT.parse(dateInput.getText().toString());
+            if (currentDate != null) {
+                calendar.setTime(currentDate);
+            }
+        } catch (ParseException e) {
+            // Keep default date if parsing fails
+        }
+        
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(context, (view, selectedYear, selectedMonth, selectedDay) -> {
-            String date = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+            calendar.set(selectedYear, selectedMonth, selectedDay);
+            String date = DATE_FORMAT.format(calendar.getTime());
             dateInput.setText(date);
-            onDateSet.run(); // Call the provided runnable to handle date validation
+            onDateSet.run();
         }, year, month, day);
         datePickerDialog.show();
     }
@@ -61,7 +80,29 @@ public class DateUtils {
      * @return String con la fecha formateada
      */
     public static String formatDate(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        return dateFormat.format(date);
+        return DATE_FORMAT.format(date);
+    }
+
+    /**
+     * Valida que las fechas de entrada y salida sean correctas.
+     * La fecha de salida debe ser al menos un día después de la fecha de entrada.
+     * @param checkInDate Fecha de entrada
+     * @param checkOutDate Fecha de salida
+     * @return null si las fechas son válidas, mensaje de error en caso contrario
+     */
+    public static String validateDates(Date checkInDate, Date checkOutDate) {
+        if (checkInDate == null || checkOutDate == null) {
+            return "Las fechas no pueden estar vacías";
+        }
+
+        // Calculate difference in days
+        long diffInMillies = checkOutDate.getTime() - checkInDate.getTime();
+        long days = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+        if (days < 1) {
+            return "La fecha de salida debe ser al menos un día después de la fecha de entrada";
+        }
+
+        return null; // Dates are valid
     }
 }

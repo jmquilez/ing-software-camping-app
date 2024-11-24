@@ -12,11 +12,13 @@ import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.utils.DateUtils;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
 
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Activity que gestiona la primera fase de la creación de una reserva.
@@ -34,8 +36,6 @@ public class CreateReservationActivity extends BaseActivity {
     private TextView errorMessage;
 
     private ActivityResultLauncher<Intent> newParcelSelectionLauncher;
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +103,9 @@ public class CreateReservationActivity extends BaseActivity {
      */
     private void validateDates() {
         if (checkInDate != null && checkOutDate != null) {
-            if (checkOutDate.before(checkInDate)) {
-                errorMessage.setText("La fecha de salida debe ser posterior a la de entrada");
+            String error = DateUtils.validateDates(checkInDate, checkOutDate);
+            if (error != null) {
+                errorMessage.setText(error);
                 errorMessage.setVisibility(View.VISIBLE);
             } else {
                 errorMessage.setVisibility(View.GONE);
@@ -113,31 +114,35 @@ public class CreateReservationActivity extends BaseActivity {
     }
 
     /**
+     * Muestra un diálogo de error con el mensaje especificado.
+     * @param message Mensaje de error a mostrar
+     */
+    private void showErrorDialog(String message) {
+        DialogUtils.showErrorDialog(this, message);
+    }
+
+    /**
      * Valida todos los campos y procede a la selección de parcelas si son válidos.
      * Si la validación es exitosa, inicia NewParcelSelectionActivity con los datos introducidos.
      */
     private void validateAndProceed() {
-        if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
+        if (Objects.requireNonNull(clientNameInput.getText()).toString().isEmpty() || 
+            clientPhoneInput.getText().toString().isEmpty()) {
             showErrorDialog("Por favor, complete todos los campos.");
+        } else if (checkInDate == null || checkOutDate == null) {
+            showErrorDialog("Por favor, seleccione las fechas de entrada y salida.");
         } else if (errorMessage.getVisibility() == View.VISIBLE) {
-            showErrorDialog("La fecha de salida debe ser posterior a la de entrada.");
+            String error = DateUtils.validateDates(checkInDate, checkOutDate);
+            showErrorDialog(error != null ? error : "Las fechas seleccionadas no son válidas.");
         } else {
             Intent intent = new Intent(this, NewParcelSelectionActivity.class);
             
             intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
             intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
-            intent.putExtra(ReservationConstants.ENTRY_DATE, DATE_FORMAT.format(checkInDate));
-            intent.putExtra(ReservationConstants.DEPARTURE_DATE, DATE_FORMAT.format(checkOutDate));
+            intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));
+            intent.putExtra(ReservationConstants.DEPARTURE_DATE, DateUtils.DATE_FORMAT.format(checkOutDate));
             newParcelSelectionLauncher.launch(intent);
         }
-    }
-
-    /**
-     * Muestra un diálogo de error con el mensaje especificado.
-     * @param message Mensaje de error a mostrar
-     */
-    private void showErrorDialog(String message) {
-        // Implement error dialog
     }
 
     /**
@@ -147,7 +152,7 @@ public class CreateReservationActivity extends BaseActivity {
      */
     private Date parseDate(String dateString) {
         try {
-            return DATE_FORMAT.parse(dateString);
+            return DateUtils.DATE_FORMAT.parse(dateString);
         } catch (ParseException e) {
             errorMessage.setText("Formato de fecha inválido.");
             return null;

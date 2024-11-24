@@ -24,6 +24,7 @@ import es.unizar.eina.T213_camping.ui.reservas.gestion.ParcelSelectionActivity;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Utilidades para la gestión de reservas.
@@ -117,13 +118,18 @@ public class ReservationUtils {
      * @param departureDate Fecha de salida
      * @param selectedParcels Lista de parcelas seleccionadas
      */
-    public static void confirmReservation(BaseActivity activity, long reservationId, String clientName,
-                                          String clientPhone, Date entryDate, Date departureDate,
-                                          @NonNull List<ParcelaOccupancy> selectedParcels) {
+    public static void confirmReservation(BaseActivity activity, long reservationId,
+                                          String clientName, String clientPhone,
+                                          Date entryDate, Date departureDate,
+                                          List<ParcelaOccupancy> selectedParcels) {
+        double price = PriceUtils.calculateReservationPrice(entryDate, departureDate, selectedParcels);
+        
         DialogUtils.showConfirmationDialog(
             activity,
             "Confirmar cambios",
-            "¿Está seguro de que desea guardar los cambios en esta reserva?",
+            String.format(Locale.getDefault(), 
+                "¿Está seguro de que desea guardar los cambios en esta reserva?\n\nPrecio total: %.2f€", 
+                price),
             R.drawable.ic_confirm_reservation,
             () -> {
                 Intent resultIntent = new Intent();
@@ -132,9 +138,13 @@ public class ReservationUtils {
                 resultIntent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhone);
                 resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate.getTime());
                 resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate.getTime());
+                
                 // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
-                resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
-                resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_UPDATE);
+                resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, 
+                    new ArrayList<>(selectedParcels));
+                resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, 
+                    ReservationConstants.OPERATION_UPDATE);
+                resultIntent.putExtra(ReservationConstants.RESERVATION_PRICE, price);
                 
                 activity.setResult(RESULT_OK, resultIntent);
                 activity.finish();

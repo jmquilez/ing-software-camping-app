@@ -34,6 +34,7 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaReservadaViewModel;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 import es.unizar.eina.T213_camping.utils.DialogUtils;
+import es.unizar.eina.T213_camping.utils.DateUtils;
 import es.unizar.eina.T213_camping.ui.reservas.gestion.ModifyReservationActivity;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 
@@ -51,8 +52,6 @@ public class ReservationFeedActivity extends BaseActivity {
     private String currentSortingCriteria = ReservationConstants.SORT_CLIENT_NAME;
 
     private ActivityResultLauncher<Intent> reservationLauncher;
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     @Override
     protected int getLayoutResourceId() {
@@ -238,21 +237,26 @@ public class ReservationFeedActivity extends BaseActivity {
         Log.d("RESERVATION_INSERTION -> client phone", extras.getString(ReservationConstants.CLIENT_PHONE));
         Log.d("RESERVATION_INSERTION -> entry date", extras.getString(ReservationConstants.ENTRY_DATE));
         Log.d("RESERVATION_INSERTION -> departure date", extras.getString(ReservationConstants.DEPARTURE_DATE));
-        Log.d("RESERVATION_INSERTION -> date format", DATE_FORMAT.toPattern());
+        Log.d("RESERVATION_INSERTION -> date format", DateUtils.DATE_FORMAT.toPattern());
         
         try {
-            Date entryDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
+            Date entryDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
             Log.d("RESERVATION_INSERTION", "Entry date parsed successfully: " + entryDate);
             
-            Date departureDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
+            Date departureDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
             Log.d("RESERVATION_INSERTION", "Departure date parsed successfully: " + departureDate);
             
+            // Get price from extras
+            double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
+
+            assert entryDate != null;
+            assert departureDate != null;
             Reserva reservation = new Reserva(
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
                     entryDate,
                     departureDate,
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE)),
-                    0.0  // Initial price, should be calculated based on your business logic
+                    price  // Use the calculated price
             );
 
             // Insert the reservation
@@ -272,11 +276,6 @@ public class ReservationFeedActivity extends BaseActivity {
             Log.e("ReservationFeedActivity", "Error parsing date: " + e.getMessage());
             Toast.makeText(this, 
                 "Error al procesar las fechas: Formato incorrecto o fecha inválida", 
-                Toast.LENGTH_LONG).show();
-        } catch (NullPointerException e) {
-            Log.e("ReservationFeedActivity", "Error: fecha es null", e);
-            Toast.makeText(this, 
-                "Error: No se ha especificado la fecha", 
                 Toast.LENGTH_LONG).show();
         }
     }
@@ -309,23 +308,26 @@ public class ReservationFeedActivity extends BaseActivity {
             return;
         }
 
-        Log.d("RESERVATION_UPDATE -> date format", DATE_FORMAT.toPattern());
+        Log.d("RESERVATION_UPDATE -> date format", DateUtils.DATE_FORMAT.toPattern());
         
         try {
-            Date entryDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
+            Date entryDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
             Log.d("RESERVATION_UPDATE", "Entry date parsed successfully: " + entryDate);
             
-            Date departureDate = DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
+            Date departureDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
             Log.d("RESERVATION_UPDATE", "Departure date parsed successfully: " + departureDate);
+            
+            // Get price from extras
+            double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
             
             Reserva updatedReservation = new Reserva(
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
                     entryDate,
                     departureDate,
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE)),
-                    0.0  // You should get the existing price or recalculate it
+                    price  // Use the calculated price
             );
-            updatedReservation.setId(reservationId); // Set the ID for the update operation
+            updatedReservation.setId(reservationId);
 
             // Update the reservation
             reservaViewModel.update(updatedReservation);
@@ -342,11 +344,6 @@ public class ReservationFeedActivity extends BaseActivity {
             Log.e("ReservationFeedActivity", "Error parsing date: " + e.getMessage());
             Toast.makeText(this, 
                 "Error al procesar las fechas: Formato incorrecto o fecha inválida", 
-                Toast.LENGTH_LONG).show();
-        } catch (NullPointerException e) {
-            Log.e("ReservationFeedActivity", "Error: fecha es null", e);
-            Toast.makeText(this, 
-                "Error: No se ha especificado la fecha", 
                 Toast.LENGTH_LONG).show();
         }
     }
@@ -368,8 +365,8 @@ public class ReservationFeedActivity extends BaseActivity {
         Log.d("ReservationFeed", "Fecha Salida (Date): " + reserva.getFechaSalida());
         
         // Formatear y verificar las fechas antes de añadirlas al intent
-        String entryDateStr = DATE_FORMAT.format(reserva.getFechaEntrada());
-        String departureDateStr = DATE_FORMAT.format(reserva.getFechaSalida());
+        String entryDateStr = DateUtils.DATE_FORMAT.format(reserva.getFechaEntrada());
+        String departureDateStr = DateUtils.DATE_FORMAT.format(reserva.getFechaSalida());
         
         Log.d("ReservationFeed", "Fecha Entrada (formateada): " + entryDateStr);
         Log.d("ReservationFeed", "Fecha Salida (formateada): " + departureDateStr);

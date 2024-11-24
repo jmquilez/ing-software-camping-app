@@ -96,4 +96,17 @@ public class DialogUtils {
         positiveButton.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
         negativeButton.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
     }
+
+    /**
+     * Muestra un diálogo de error con un mensaje.
+     * @param context Contexto de la aplicación
+     * @param message Mensaje de error
+     */
+    public static void showErrorDialog(Context context, String message) {
+        new AlertDialog.Builder(context)
+            .setTitle("Error")
+            .setMessage(message)
+            .setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss())
+            .show();
+    }
 }

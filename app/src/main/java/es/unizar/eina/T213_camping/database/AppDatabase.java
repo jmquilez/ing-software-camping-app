@@ -7,6 +7,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.text.ParseException;
@@ -23,6 +24,7 @@ import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import androidx.room.TypeConverters;
 import es.unizar.eina.T213_camping.database.converters.DateConverter;
+import es.unizar.eina.T213_camping.utils.DateUtils;
 
 /**
  * Clase principal de la base de datos de la aplicación.
@@ -88,41 +90,69 @@ public abstract class AppDatabase extends RoomDatabase {
 
                 // Insert initial Parcelas
                 Parcela parcela1 = new Parcela("Parcela A",
-                        "Primera parcela con capacidad para 4 personas.",
-                        4, 25.0);
+                        "Parcela pequeña ideal para parejas. Zona tranquila.",
+                        2, 20.0);
                 parcelaDao.insert(parcela1);
 
                 Parcela parcela2 = new Parcela("Parcela B",
-                        "Segunda parcela con capacidad para 6 personas.",
-                        6, 30.0);
+                        "Parcela mediana con sombra natural. Perfecta para familias.",
+                        4, 25.0);
                 parcelaDao.insert(parcela2);
 
+                Parcela parcela3 = new Parcela("Parcela C",
+                        "Parcela grande con conexión eléctrica. Ideal para autocaravanas.",
+                        6, 30.0);
+                parcelaDao.insert(parcela3);
+
+                Parcela parcela4 = new Parcela("Parcela D",
+                        "Parcela premium con vistas al lago. Incluye punto de agua.",
+                        4, 35.0);
+                parcelaDao.insert(parcela4);
+
+                Parcela parcela5 = new Parcela("Parcela E",
+                        "Parcela familiar con zona de barbacoa.",
+                        5, 28.0);
+                parcelaDao.insert(parcela5);
+
                 try {
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                    
                     // Insert initial Reservas
-                    Reserva reserva1 = new Reserva("Juan Perez",
-                            dateFormat.parse("2024-10-01"),
-                            dateFormat.parse("2024-10-07"),
+                    Reserva reserva1 = new Reserva("Juan Pérez",
+                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("01/10/2024")),
+                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("07/10/2024")),
                             "123456789",
-                            25.0); // Initial price
+                            120.0);
                     long res1Id = reservaDao.insert(reserva1);
 
-                    Reserva reserva2 = new Reserva("Maria Lopez",
-                            dateFormat.parse("2024-10-10"),
-                            dateFormat.parse("2024-10-15"),
+                    Reserva reserva2 = new Reserva("María López",
+                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("10/10/2024")),
+                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("15/10/2024")),
                             "987654321",
-                            30.0); // Initial price
+                            150.0);
                     long res2Id = reservaDao.insert(reserva2);
+
+                    Reserva reserva3 = new Reserva("Carlos Ruiz",
+                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("05/11/2024")),
+                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("10/11/2024")),
+                            "555666777",
+                            175.0);
+                    long res3Id = reservaDao.insert(reserva3);
 
                     // Insert initial ParcelaReservadas
                     ParcelaReservada parcelaReservada1 = new ParcelaReservada("Parcela A",
-                            res1Id, 4);
+                            res1Id, 2);
                     parcelaReservadaDao.insert(parcelaReservada1);
 
                     ParcelaReservada parcelaReservada2 = new ParcelaReservada("Parcela B",
-                            res2Id, 6);
+                            res2Id, 4);
                     parcelaReservadaDao.insert(parcelaReservada2);
+
+                    ParcelaReservada parcelaReservada3 = new ParcelaReservada("Parcela C",
+                            res2Id, 3);
+                    parcelaReservadaDao.insert(parcelaReservada3);
+
+                    ParcelaReservada parcelaReservada4 = new ParcelaReservada("Parcela D",
+                            res3Id, 4);
+                    parcelaReservadaDao.insert(parcelaReservada4);
 
                 } catch (ParseException e) {
                     Log.e("AppDatabase", "Error parsing dates for initial data", e);

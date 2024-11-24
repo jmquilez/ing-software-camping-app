@@ -6,93 +6,146 @@
 
     <include layout="@layout/custom_toolbar"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="PARCELAS DISPONIBLES"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_margin="16dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/parcel_selection_available_parcels_recycler_view"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginHorizontal="16dp"
-        android:scrollbars="vertical"/>
+        android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="PARCELAS AÑADIDAS"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_margin="16dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/parcel_selection_added_parcels_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:scrollbars="horizontal"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="16dp">
-
-        <ImageButton
-            android:id="@+id/parcel_selection_prev_button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_left"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="2 / 2\nPARCELAS RESERVADAS"
-            android:textAlignment="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PARCELAS DISPONIBLES"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
 
-        <ImageButton
-            android:id="@+id/parcel_selection_next_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_right"
-            android:background="?attr/selectableItemBackgroundBorderless" />
-    </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/parcel_selection_available_parcels_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scrollbars="vertical"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="16dp">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginVertical="24dp"/>
 
-        <Button
-            android:id="@+id/parcel_selection_save_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="GUARDAR CAMBIOS"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PARCELAS AÑADIDAS"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
 
-        <Button
-            android:id="@+id/parcel_selection_notify_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="NOTIFICAR CLIENTE"
-            android:layout_marginStart="8dp"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/parcel_selection_added_parcels_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/parcel_selection_price_display"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Precio total: 0.00€"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginVertical="24dp"/>
 
-    <Button
-        android:id="@+id/parcel_selection_delete_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ELIMINAR RESERVA"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="24dp">
+
+                <ImageButton
+                    android:id="@+id/parcel_selection_prev_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_arrow_left"
+                    android:backgroundTint="?attr/colorSurface"
+                    android:tint="?attr/colorPrimary"
+                    android:elevation="4dp"
+                    android:padding="8dp"
+                    android:background="@drawable/rounded_button_background"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="2 / 2\nPARCELAS RESERVADAS"
+                    android:textAlignment="center"
+                    android:layout_marginHorizontal="24dp"/>
+
+                <ImageButton
+                    android:id="@+id/parcel_selection_next_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_arrow_right"
+                    android:backgroundTint="?attr/colorSurface"
+                    android:tint="?attr/colorPrimary"
+                    android:elevation="4dp"
+                    android:padding="8dp"
+                    android:background="@drawable/rounded_button_background"/>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:layout_marginBottom="24dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
+
+                <Button
+                    android:id="@+id/parcel_selection_save_button"
+                    android:layout_width="0dp"
+                    android:layout_height="64dp"
+                    android:layout_weight="1"
+                    android:text="GUARDAR CAMBIOS"
+                    android:drawableStart="@drawable/ic_save"
+                    android:drawablePadding="8dp"
+                    android:backgroundTint="@color/green"/>
+
+                <Button
+                    android:id="@+id/parcel_selection_notify_button"
+                    android:layout_width="0dp"
+                    android:layout_height="64dp"
+                    android:layout_weight="1"
+                    android:text="NOTIFICAR CLIENTE"
+                    android:drawableStart="@drawable/ic_notify"
+                    android:drawablePadding="8dp"
+                    android:backgroundTint="@color/orange"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/parcel_selection_delete_button"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:text="ELIMINAR RESERVA"
+                android:drawableStart="@drawable/ic_delete"
+                android:drawablePadding="8dp"
+                android:backgroundTint="@color/red"
+                android:layout_marginBottom="16dp"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

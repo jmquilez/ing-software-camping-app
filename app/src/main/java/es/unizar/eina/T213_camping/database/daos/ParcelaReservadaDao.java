@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
+import es.unizar.eina.T213_camping.database.converters.DateConverter;
 
+import java.util.Date;
 import java.util.List;
 
 /** 
@@ -12,6 +14,7 @@ import java.util.List;
  * Gestiona la relación entre parcelas y reservas.
  */
 @Dao
+@TypeConverters(DateConverter.class)
 public interface ParcelaReservadaDao {
 
     /** 
@@ -82,5 +85,5 @@ public interface ParcelaReservadaDao {
            "        (r.fechaSalida >= :fechaInicio AND r.fechaSalida <= :fechaFin)" +
            "    )" +
            ")")
-    LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(String fechaInicio, String fechaFin);
+    LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(Date fechaInicio, Date fechaFin);
 }

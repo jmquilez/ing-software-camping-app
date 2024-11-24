@@ -110,7 +110,7 @@
                 android:id="@+id/modify_reservation_total_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Precio total: 0 €"
+                android:text="Precio total: 0.00€"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="24dp"/>
@@ -133,7 +133,10 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_arrow_left"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
+                    android:backgroundTint="?attr/colorSurface"
+                    android:tint="?attr/colorPrimary"
+                    android:elevation="4dp"
+                    android:background="@drawable/rounded_button_background"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -147,7 +150,10 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:src="@drawable/ic_arrow_right"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
+                    android:backgroundTint="?attr/colorSurface"
+                    android:tint="?attr/colorPrimary"
+                    android:elevation="4dp"
+                    android:background="@drawable/rounded_button_background"/>
             </LinearLayout>
 
             <TextView
@@ -173,29 +179,33 @@
                 <Button
                     android:id="@+id/modify_reservation_save_button"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
                     android:layout_weight="1"
                     android:text="GUARDAR CAMBIOS"
-                    android:backgroundTint="@color/green"
-                    android:textColor="@android:color/white"/>
+                    android:drawableStart="@drawable/ic_save"
+                    android:drawablePadding="8dp"
+                    android:backgroundTint="@color/green"/>
 
                 <Button
                     android:id="@+id/modify_reservation_notify_button"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
                     android:layout_weight="1"
-                    android:text="NOTIFICAR"
-                    android:layout_marginStart="8dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"/>
+                    android:text="NOTIFICAR CLIENTE"
+                    android:drawableStart="@drawable/ic_notify"
+                    android:drawablePadding="8dp"
+                    android:backgroundTint="@color/orange"
+                    android:layout_marginStart="8dp"/>
             </LinearLayout>
 
             <Button
                 android:id="@+id/modify_reservation_delete_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="64dp"
                 android:text="ELIMINAR RESERVA"
-                android:backgroundTint="@android:color/holo_red_dark"
-                android:textColor="@android:color/white"/>
+                android:drawableStart="@drawable/ic_delete"
+                android:drawablePadding="8dp"
+                android:backgroundTint="@color/red"/>
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

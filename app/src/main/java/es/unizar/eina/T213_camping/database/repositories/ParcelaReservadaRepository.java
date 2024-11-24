@@ -2,12 +2,14 @@ package es.unizar.eina.T213_camping.database.repositories;
 
 import android.app.Application;
 import androidx.lifecycle.LiveData;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
+import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 
 /**
@@ -97,5 +99,15 @@ public class ParcelaReservadaRepository {
                 parcelaReservadaDao.insert(parcel);
             }
         });
+    }
+
+    /**
+     * Obtiene las parcelas disponibles en un intervalo de fechas.
+     * @param fechaInicio Fecha de inicio del intervalo
+     * @param fechaFin Fecha de fin del intervalo
+     * @return LiveData con la lista de parcelas disponibles
+     */
+    public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(Date fechaInicio, Date fechaFin) {
+        return parcelaReservadaDao.getParcelasDisponiblesEnIntervalo(fechaInicio, fechaFin);
     }
 }

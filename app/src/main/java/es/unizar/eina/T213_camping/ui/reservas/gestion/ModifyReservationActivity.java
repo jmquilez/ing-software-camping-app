@@ -17,6 +17,7 @@ import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.utils.DateUtils;
+import es.unizar.eina.T213_camping.utils.PriceUtils;
 import es.unizar.eina.T213_camping.utils.ReservationUtils;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaReservadaViewModel;
@@ -59,7 +60,7 @@ public class ModifyReservationActivity extends BaseActivity {
     private ReservaViewModel reservaViewModel;
     private List<ParcelaOccupancy> selectedParcels;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private TextView priceDisplay;
 
     @Override
     protected int getLayoutResourceId() {
@@ -99,6 +100,7 @@ public class ModifyReservationActivity extends BaseActivity {
         deleteReservation = findViewById(R.id.modify_reservation_delete_button);
         checkInDatePicker = findViewById(R.id.modify_reservation_check_in_date_picker);
         checkOutDatePicker = findViewById(R.id.modify_reservation_check_out_date_picker);
+        priceDisplay = findViewById(R.id.modify_reservation_total_price);
     }
 
     /**
@@ -120,15 +122,15 @@ public class ModifyReservationActivity extends BaseActivity {
             if (entryDateStr != null && !entryDateStr.isEmpty() && 
                 departureDateStr != null && !departureDateStr.isEmpty()) {
                 
-                checkInDate = DATE_FORMAT.parse(entryDateStr);
-                checkOutDate = DATE_FORMAT.parse(departureDateStr);
+                checkInDate = DateUtils.DATE_FORMAT.parse(entryDateStr);
+                checkOutDate = DateUtils.DATE_FORMAT.parse(departureDateStr);
                 
                 if (checkInDate == null || checkOutDate == null) {
                     throw new ParseException("Error al parsear las fechas", 0);
                 }
                 
-                checkInDatePicker.setText(DATE_FORMAT.format(checkInDate));
-                checkOutDatePicker.setText(DATE_FORMAT.format(checkOutDate));
+                checkInDatePicker.setText(DateUtils.DATE_FORMAT.format(checkInDate));
+                checkOutDatePicker.setText(DateUtils.DATE_FORMAT.format(checkOutDate));
                 
                 Log.d("ModifyReservationActivity", "Fechas parseadas correctamente - Entry: " + 
                       checkInDate + ", Departure: " + checkOutDate);
@@ -149,6 +151,9 @@ public class ModifyReservationActivity extends BaseActivity {
 
         clientNameInput.setText(clientName);
         clientPhoneInput.setText(clientPhone);
+
+        // Update initial price display
+        PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
     }
 
     /**
@@ -165,7 +170,7 @@ public class ModifyReservationActivity extends BaseActivity {
     private void setupListeners() {
         checkInDatePicker.setOnClickListener(v -> DateUtils.showDatePickerDialog(this, true, checkInDatePicker, () -> {
             try {
-                checkInDate = DATE_FORMAT.parse(checkInDatePicker.getText().toString());
+                checkInDate = DateUtils.DATE_FORMAT.parse(checkInDatePicker.getText().toString());
                 validateDates();
             } catch (ParseException e) {
                 Log.e("ModifyReservationActivity", "Error parsing check-in date", e);
@@ -175,7 +180,7 @@ public class ModifyReservationActivity extends BaseActivity {
 
         checkOutDatePicker.setOnClickListener(v -> DateUtils.showDatePickerDialog(this, false, checkOutDatePicker, () -> {
             try {
-                checkOutDate = DATE_FORMAT.parse(checkOutDatePicker.getText().toString());
+                checkOutDate = DateUtils.DATE_FORMAT.parse(checkOutDatePicker.getText().toString());
                 validateDates();
             } catch (ParseException e) {
                 Log.e("ModifyReservationActivity", "Error parsing check-out date", e);
@@ -225,11 +230,13 @@ public class ModifyReservationActivity extends BaseActivity {
      */
     private void validateDates() {
         if (checkInDate != null && checkOutDate != null) {
-            if (checkOutDate.before(checkInDate)) {
-                errorMessage.setText("La fecha de salida debe ser posterior a la de entrada");
+            String error = DateUtils.validateDates(checkInDate, checkOutDate);
+            if (error != null) {
+                errorMessage.setText(error);
                 errorMessage.setVisibility(View.VISIBLE);
             } else {
                 errorMessage.setVisibility(View.GONE);
+                PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
             }
         }
     }
@@ -248,8 +255,8 @@ public class ModifyReservationActivity extends BaseActivity {
             intent.putExtra(ReservationConstants.RESERVATION_ID, reservationId);
             intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
             intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
-            intent.putExtra(ReservationConstants.ENTRY_DATE, DATE_FORMAT.format(checkInDate));
-            intent.putExtra(ReservationConstants.DEPARTURE_DATE, DATE_FORMAT.format(checkOutDate));
+            intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));
+            intent.putExtra(ReservationConstants.DEPARTURE_DATE, DateUtils.DATE_FORMAT.format(checkOutDate));
             intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
             parcelSelectionLauncher.launch(intent);
         }
@@ -258,6 +265,7 @@ public class ModifyReservationActivity extends BaseActivity {
     /**
      * Muestra un diálogo de error con el mensaje especificado.
      * @param message Mensaje de error a mostrar
+     * @todo move to DialogUtils (use that implementation)
      */
     private void showErrorDialog(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

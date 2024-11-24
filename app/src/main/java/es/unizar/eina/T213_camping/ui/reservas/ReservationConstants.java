@@ -64,6 +64,11 @@ public class ReservationConstants {
     public static final String CLIENT_PHONE = "CLIENT_PHONE";
 
     /**
+     * Precio de la reserva en euros.
+     */
+    public static final String RESERVATION_PRICE = "RESERVATION_PRICE";
+
+    /**
      * Fecha de entrada de la reserva.
      */
     public static final String ENTRY_DATE = "ENTRY_DATE";

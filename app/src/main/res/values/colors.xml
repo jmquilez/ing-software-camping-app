@@ -18,4 +18,6 @@
     <color name="glass_overlay">#40FFFFFF</color>
     <color name="dialog_background_light">#FFFFFF</color>
     <color name="dialog_background_dark">#2C3548</color>
+    <color name="orange">#FFA500</color>
+    <color name="red">#F44336</color>
 </resources>

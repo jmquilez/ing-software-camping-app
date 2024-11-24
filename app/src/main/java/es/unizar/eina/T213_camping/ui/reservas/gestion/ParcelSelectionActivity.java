@@ -25,6 +25,11 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel; // Change to
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.utils.ReservationUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
+import es.unizar.eina.T213_camping.utils.DateUtils;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
+import es.unizar.eina.T213_camping.ui.view_models.ParcelaReservadaViewModel;
+import es.unizar.eina.T213_camping.utils.PriceUtils;
+import android.widget.TextView;
 
 /**
  * Activity que permite gestionar las parcelas asociadas a una reserva existente.
@@ -43,11 +48,10 @@ public class ParcelSelectionActivity extends BaseActivity {
     private List<ParcelaOccupancy> addedParcels;
     private List<Parcela> availableParcels;
 
-    private ParcelaViewModel parcelaViewModel;
+    private ParcelaReservadaViewModel parcelaReservadaViewModel;
     private long reservationId;
     private ImageButton prevButton, nextButton;
-
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+    private TextView priceDisplay;
 
     @Override
     protected int getLayoutResourceId() {
@@ -80,13 +84,14 @@ public class ParcelSelectionActivity extends BaseActivity {
         addedParcelsRecyclerView = findViewById(R.id.parcel_selection_added_parcels_recycler_view);
         prevButton = findViewById(R.id.parcel_selection_prev_button);
         nextButton = findViewById(R.id.parcel_selection_next_button);
+        priceDisplay = findViewById(R.id.parcel_selection_price_display);
     }
 
     /**
      * Configura los ViewModels necesarios.
      */
     private void setupViewModels() {
-        parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
+        parcelaReservadaViewModel = new ViewModelProvider(this).get(ParcelaReservadaViewModel.class);
     }
 
     /**
@@ -110,16 +115,26 @@ public class ParcelSelectionActivity extends BaseActivity {
         availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateParcelSelection);
         availableParcelsRecyclerView.setAdapter(availableParcelsAdapter);
 
-        // Call the method to get parcelas not linked to the specific reservation ID
-        parcelaViewModel.getParcelasNotLinkedToReservation(reservationId).observe(this, liveAvailableParcels -> {
-            // Log.i("PARCELAS_NOT_LINKED_TO_RESERVATION", "are: " + availableParcelas.toString());
-            availableParcels = liveAvailableParcels;
-            availableParcelsAdapter.submitList(liveAvailableParcels);
+        // Get check-in and check-out dates
+        Date checkInDate = getCheckInDate();
+        Date checkOutDate = getCheckOutDate();
 
-            addedParcelsAdapter = new AddedParcelsAdapter(this, availableParcels, this::updateParcelSelection);
-            addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
-            addedParcelsAdapter.submitList(new ArrayList<>(addedParcels));
-        });
+        if (checkInDate != null && checkOutDate != null) {
+            parcelaReservadaViewModel.getParcelasDisponiblesEnIntervalo(checkInDate, checkOutDate)
+                .observe(this, liveAvailableParcels -> {
+                    availableParcels = liveAvailableParcels;
+                    availableParcelsAdapter.submitList(availableParcels);
+
+                    addedParcelsAdapter = new AddedParcelsAdapter(this, availableParcels, this::updateParcelSelection);
+                    addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
+                    addedParcelsAdapter.submitList(new ArrayList<>(addedParcels));
+
+                    // Show initial price
+                    PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, addedParcels);
+                });
+        } else {
+            DialogUtils.showErrorDialog(this, "Error al procesar las fechas");
+        }
 
         addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
@@ -151,8 +166,8 @@ public class ParcelSelectionActivity extends BaseActivity {
 
         try {
             // Parse las fechas a objetos Date
-            Date entryDate = DATE_FORMAT.parse(entryDateStr);
-            Date departureDate = DATE_FORMAT.parse(departureDateStr);
+            Date entryDate = DateUtils.DATE_FORMAT.parse(entryDateStr);
+            Date departureDate = DateUtils.DATE_FORMAT.parse(departureDateStr);
 
             // Pasar directamente los objetos Date
             ReservationUtils.confirmReservation(this, reservationId, clientName, clientPhone, 
@@ -204,6 +219,9 @@ public class ParcelSelectionActivity extends BaseActivity {
         }
 
         // availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
+
+        // Update price after parcels change
+        PriceUtils.updatePriceDisplay(priceDisplay, getCheckInDate(), getCheckOutDate(), addedParcels);
     }
 
     public String getClientPhone() {
@@ -221,7 +239,7 @@ public class ParcelSelectionActivity extends BaseActivity {
     public Date getCheckInDate() {
         try {
             String dateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
-            return DATE_FORMAT.parse(dateStr);
+            return DateUtils.DATE_FORMAT.parse(dateStr);
         } catch (ParseException e) {
             Log.e("ParcelSelectionActivity", "Error parsing check-in date", e);
             return null;
@@ -231,7 +249,7 @@ public class ParcelSelectionActivity extends BaseActivity {
     public Date getCheckOutDate() {
         try{
             String dateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
-            return DATE_FORMAT.parse(dateStr);
+            return DateUtils.DATE_FORMAT.parse(dateStr);
         } catch (ParseException e){
             Log.e("ParcelSelectionActivity", "Error parsing check-in date", e);
             return null;
