@@ -252,8 +252,9 @@ public class ModifyReservationActivity extends BaseActivity {
                 errorMessage.setVisibility(View.GONE);
                 PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
 
-                // Check if current parcels are available for new dates
-                parcelaReservadaViewModel.getParcelasDisponiblesEnIntervalo(checkInDate, checkOutDate)
+                // Get available parcels for new dates, excluding current reservation
+                parcelaReservadaViewModel.getParcelasDisponiblesEnIntervaloExcludingReservation(
+                    checkInDate, checkOutDate, reservationId)
                     .observe(this, availableParcels -> {
                         // Convert to set of names for easy checking
                         Set<String> availableParcelNames = availableParcels.stream()

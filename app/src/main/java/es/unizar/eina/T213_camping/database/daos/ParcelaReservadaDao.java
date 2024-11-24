@@ -74,6 +74,13 @@ public interface ParcelaReservadaDao {
     @Query("DELETE FROM parcela_reservada WHERE reservaId = :reservationId")
     void deleteParcelasForReservation(long reservationId);
 
+    /** 
+     * Obtiene las parcelas disponibles en un intervalo de fechas.
+     * @param fechaInicio Fecha de inicio del intervalo
+     * @param fechaFin Fecha de fin del intervalo
+     * @return LiveData con la lista de parcelas disponibles
+     * @todo Check margen de solapamiento (1 día o 0 días?)
+     */
     @Query("SELECT p.* FROM parcela p " +
            "WHERE p.nombre NOT IN " +
            "(SELECT pr.parcelaNombre FROM parcela_reservada pr " +
@@ -81,4 +88,21 @@ public interface ParcelaReservadaDao {
            "WHERE r.fechaEntrada < :fechaFin " +
            "AND r.fechaSalida > :fechaInicio)")
     LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(Date fechaInicio, Date fechaFin);
+
+    /** 
+     * Obtiene las parcelas disponibles en un intervalo de fechas excluyendo una reserva específica.
+     * @param startDate Fecha de inicio del intervalo
+     * @param endDate Fecha de fin del intervalo
+     * @param excludeReservationId ID de la reserva a excluir
+     * @return LiveData con la lista de parcelas disponibles
+     * @todo Check margen de solapamiento (1 día o 0 días?)
+     */
+    @Query("SELECT p.* FROM parcela p " +
+           "WHERE p.nombre NOT IN " +
+           "(SELECT pr.parcelaNombre FROM parcela_reservada pr " +
+           "JOIN reserva r ON pr.reservaId = r.id " +
+           "WHERE pr.reservaId != :excludeReservationId " +
+           "AND r.fechaEntrada < :endDate " +
+           "AND r.fechaSalida > :startDate)")
+    LiveData<List<Parcela>> getParcelasDisponiblesEnIntervaloExcludingReservation(Date startDate, Date endDate, long excludeReservationId);
 }
