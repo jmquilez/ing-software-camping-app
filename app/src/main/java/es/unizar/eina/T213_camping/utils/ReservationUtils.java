@@ -135,17 +135,19 @@ public class ReservationUtils {
      * @param departureDate Fecha de salida
      * @param selectedParcels Lista de parcelas seleccionadas
      */
-    public static void confirmReservation(BaseActivity activity, long reservationId,
-                                          String clientName, String clientPhone,
-                                          Date entryDate, Date departureDate,
-                                          List<ParcelaOccupancy> selectedParcels) {
+    public static void confirmReservation(BaseActivity activity, long reservationId, 
+                                        String clientName, String clientPhone,
+                                        Date entryDate, Date departureDate,
+                                        List<ParcelaOccupancy> selectedParcels,
+                                        boolean isUpdate) {
         double price = PriceUtils.calculateReservationPrice(entryDate, departureDate, selectedParcels);
         
         DialogUtils.showConfirmationDialog(
             activity,
             "Confirmar cambios",
             String.format(Locale.getDefault(), 
-                "¿Está seguro de que desea guardar los cambios en esta reserva?\n\nPrecio total: %.2f€", 
+                "¿Está seguro de que desea %s esta reserva?\n\nPrecio total: %.2f€", 
+                isUpdate ? "guardar los cambios en" : "crear",
                 price),
             R.drawable.ic_confirm_reservation,
             () -> {
@@ -155,12 +157,10 @@ public class ReservationUtils {
                 resultIntent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhone);
                 resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate.getTime());
                 resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate.getTime());
-                
-                // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
                 resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, 
                     new ArrayList<>(selectedParcels));
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, 
-                    ReservationConstants.OPERATION_UPDATE);
+                    isUpdate ? ReservationConstants.OPERATION_UPDATE : ReservationConstants.OPERATION_INSERT);
                 resultIntent.putExtra(ReservationConstants.RESERVATION_PRICE, price);
                 
                 activity.setResult(RESULT_OK, resultIntent);

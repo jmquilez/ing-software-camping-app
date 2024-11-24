@@ -1,5 +1,6 @@
 package es.unizar.eina.T213_camping.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -47,6 +48,10 @@ public class DialogUtils {
      * @param iconResId ID del recurso del icono (0 para no mostrar icono)
      */
     public static void showSuccessDialog(Context context, String message, int iconResId) {
+        if (context instanceof Activity && (((Activity) context).isFinishing() || ((Activity) context).isDestroyed())) {
+            return;  // Don't show dialog if activity is finishing/destroyed
+        }
+
         Dialog dialog = new Dialog(context);
         View view = LayoutInflater.from(context).inflate(R.layout.success_popup, null);
         ImageView successIcon = view.findViewById(R.id.successIcon);

@@ -2,6 +2,7 @@ package es.unizar.eina.T213_camping.ui.reservas.creacion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -74,11 +75,26 @@ public class CreateReservationActivity extends BaseActivity {
             checkInDate = parseDate(checkInDatePicker.getText().toString());
             validateDates();
         }));
+        
         checkOutDatePicker.setOnClickListener(v -> DateUtils.showDatePickerDialog(this, false, checkOutDatePicker, () -> {
             checkOutDate = parseDate(checkOutDatePicker.getText().toString());
             validateDates();
         }));
-        nextButton.setOnClickListener(v -> validateAndProceed());
+
+        nextButton.setOnClickListener(v -> {
+            if (checkInDate == null || checkOutDate == null) {
+                DialogUtils.showErrorDialog(this, "Por favor, seleccione ambas fechas");
+                return;
+            }
+            
+            String error = DateUtils.validateDates(checkInDate, checkOutDate);
+            if (error != null) {
+                DialogUtils.showErrorDialog(this, error);
+                return;
+            }
+            
+            validateAndProceed();
+        });
     }
 
     /**
@@ -102,14 +118,18 @@ public class CreateReservationActivity extends BaseActivity {
      * Muestra un mensaje de error si las fechas no son válidas.
      */
     private void validateDates() {
-        if (checkInDate != null && checkOutDate != null) {
-            String error = DateUtils.validateDates(checkInDate, checkOutDate);
-            if (error != null) {
-                errorMessage.setText(error);
-                errorMessage.setVisibility(View.VISIBLE);
-            } else {
-                errorMessage.setVisibility(View.GONE);
-            }
+        if (checkInDate == null || checkOutDate == null) {
+            errorMessage.setText("Por favor, seleccione ambas fechas");
+            errorMessage.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        String error = DateUtils.validateDates(checkInDate, checkOutDate);
+        if (error != null) {
+            errorMessage.setText(error);
+            errorMessage.setVisibility(View.VISIBLE);
+        } else {
+            errorMessage.setVisibility(View.GONE);
         }
     }
 
@@ -119,16 +139,26 @@ public class CreateReservationActivity extends BaseActivity {
     private void validateAndProceed() {
         if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
             DialogUtils.showErrorDialog(this, "Por favor, complete todos los campos.");
-        } else if (errorMessage.getVisibility() == View.VISIBLE) {
-            DialogUtils.showErrorDialog(this, "La fecha de salida debe ser posterior a la de entrada.");
-        } else {
-            Intent intent = new Intent(this, NewParcelSelectionActivity.class);
-            intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
-            intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
-            intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));
-            intent.putExtra(ReservationConstants.DEPARTURE_DATE, DateUtils.DATE_FORMAT.format(checkOutDate));
-            newParcelSelectionLauncher.launch(intent);
+            return;
         }
+
+        if (checkInDate == null || checkOutDate == null) {
+            DialogUtils.showErrorDialog(this, "Por favor, seleccione ambas fechas.");
+            return;
+        }
+
+        String error = DateUtils.validateDates(checkInDate, checkOutDate);
+        if (error != null) {
+            DialogUtils.showErrorDialog(this, error);
+            return;
+        }
+
+        Intent intent = new Intent(this, NewParcelSelectionActivity.class);
+        intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
+        intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
+        intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));
+        intent.putExtra(ReservationConstants.DEPARTURE_DATE, DateUtils.DATE_FORMAT.format(checkOutDate));
+        newParcelSelectionLauncher.launch(intent);
     }
 
     /**
@@ -140,7 +170,9 @@ public class CreateReservationActivity extends BaseActivity {
         try {
             return DateUtils.DATE_FORMAT.parse(dateString);
         } catch (ParseException e) {
-            errorMessage.setText("Formato de fecha inválido.");
+            Log.e("CreateReservationActivity", "Error parsing date: " + e.getMessage());
+            errorMessage.setText("Formato de fecha inválido");
+            errorMessage.setVisibility(View.VISIBLE);
             return null;
         }
     }

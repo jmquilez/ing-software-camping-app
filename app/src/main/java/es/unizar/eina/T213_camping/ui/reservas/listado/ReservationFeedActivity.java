@@ -3,6 +3,7 @@ package es.unizar.eina.T213_camping.ui.reservas.listado;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -197,25 +198,29 @@ public class ReservationFeedActivity extends BaseActivity {
         final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, loadingMessage);
 
         new android.os.Handler().postDelayed(() -> {
-            switch (operationType) {
-                case ReservationConstants.OPERATION_INSERT:
-                    insertReservation(extras, selectedParcels);
-                    break;
-                case ReservationConstants.OPERATION_UPDATE:
-                    updateReservation(extras);
-                    break;
-                case ReservationConstants.OPERATION_DELETE:
-                    reservaViewModel.deleteById(reservationId);
-                    DialogUtils.showSuccessDialog(this, "Reserva eliminada con éxito.", R.drawable.ic_delete_success);
-                    break;
-                case ReservationConstants.OPERATION_NOTIFY_CLIENT:
-                    notifyClient(reservationId);
-                    break;
-                default:
-                    Toast.makeText(this, "Operación desconocida", Toast.LENGTH_SHORT).show();
-                    break;
+            if (!isFinishing() && !isDestroyed()) {  // Check if activity is still alive
+                switch (operationType) {
+                    case ReservationConstants.OPERATION_INSERT:
+                        insertReservation(extras, selectedParcels);
+                        break;
+                    case ReservationConstants.OPERATION_UPDATE:
+                        updateReservation(extras);
+                        break;
+                    case ReservationConstants.OPERATION_DELETE:
+                        reservaViewModel.deleteById(reservationId);
+                        DialogUtils.showSuccessDialog(this, "Reserva eliminada con éxito.", R.drawable.ic_delete_success);
+                        break;
+                    case ReservationConstants.OPERATION_NOTIFY_CLIENT:
+                        notifyClient(reservationId);
+                        break;
+                    default:
+                        Toast.makeText(this, "Operación desconocida", Toast.LENGTH_SHORT).show();
+                        break;
+                }
             }
-            loadingDialog.dismiss();
+            if (loadingDialog.isShowing()) {  // Check if dialog is still showing
+                loadingDialog.dismiss();
+            }
         }, 2000);
     }
 
@@ -234,34 +239,31 @@ public class ReservationFeedActivity extends BaseActivity {
      * @param selectedParcels Lista de parcelas seleccionadas
      */
     private void insertReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
-        Log.d("RESERVATION_INSERTION -> client phone", extras.getString(ReservationConstants.CLIENT_PHONE));
-        Log.d("RESERVATION_INSERTION -> entry date", extras.getString(ReservationConstants.ENTRY_DATE));
-        Log.d("RESERVATION_INSERTION -> departure date", extras.getString(ReservationConstants.DEPARTURE_DATE));
-        Log.d("RESERVATION_INSERTION -> date format", DateUtils.DATE_FORMAT.toPattern());
-        
         try {
-            Date entryDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.ENTRY_DATE)));
-            Log.d("RESERVATION_INSERTION", "Entry date parsed successfully: " + entryDate);
+            // Get dates as longs (milliseconds since epoch), consistent with updateReservation
+            long entryDateMillis = extras.getLong(ReservationConstants.ENTRY_DATE);
+            long departureDateMillis = extras.getLong(ReservationConstants.DEPARTURE_DATE);
             
-            Date departureDate = DateUtils.DATE_FORMAT.parse(Objects.requireNonNull(extras.getString(ReservationConstants.DEPARTURE_DATE)));
-            Log.d("RESERVATION_INSERTION", "Departure date parsed successfully: " + departureDate);
+            if (entryDateMillis == 0 || departureDateMillis == 0) {
+                throw new IllegalArgumentException("Fechas no válidas");
+            }
             
-            // Get price from extras
+            Date entryDate = new Date(entryDateMillis);
+            Date departureDate = new Date(departureDateMillis);
             double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
 
-            assert entryDate != null;
-            assert departureDate != null;
             Reserva reservation = new Reserva(
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
                     entryDate,
                     departureDate,
                     Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE)),
-                    price  // Use the calculated price
+                    price
             );
 
-            // Insert the reservation
+            // Insert the reservation and get its ID
             long newReservationId = reservaViewModel.insert(reservation);
 
+            // Insert associated parcels
             assert selectedParcels != null;
             for (ParcelaOccupancy parcelaOccupancy : selectedParcels) {
                 ParcelaReservada parcelaReservada = new ParcelaReservada(
@@ -271,12 +273,12 @@ public class ReservationFeedActivity extends BaseActivity {
                 );
                 parcelaReservadaViewModel.insert(parcelaReservada);
             }
+
             DialogUtils.showSuccessDialog(this, "Reserva creada con éxito.", R.drawable.ic_create_success);
-        } catch (ParseException e) {
-            Log.e("ReservationFeedActivity", "Error parsing date: " + e.getMessage());
-            Toast.makeText(this, 
-                "Error al procesar las fechas: Formato incorrecto o fecha inválida", 
-                Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            Log.e("ReservationFeedActivity", "Error creating reservation: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, "Error al crear la reserva: " + e.getMessage());
         }
     }
 
