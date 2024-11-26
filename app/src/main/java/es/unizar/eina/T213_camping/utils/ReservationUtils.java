@@ -63,7 +63,19 @@ public class ReservationUtils {
             }
         }
         
-        SendAbstraction sender = new SendAbstractionImpl(activity, "SMS");
+        DialogUtils.showChoiceDialog(
+            context,
+            "Método de envío",
+            "Seleccione el método para notificar al cliente",
+            "WhatsApp",
+            "SMS",
+            () -> sendMessage(context, activity, "WHATSAPP"),  // opción WhatsApp
+            () -> sendMessage(context, activity, "SMS")        // opción SMS
+        );
+    }
+
+    private static void sendMessage(Context context, Activity activity, String method) {
+        SendAbstraction sender = new SendAbstractionImpl(activity, method);
         
         String phoneNumber = "";
         String clientName = "";

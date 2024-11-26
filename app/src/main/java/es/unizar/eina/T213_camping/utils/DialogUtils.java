@@ -127,4 +127,15 @@ public class DialogUtils {
         dialog.setContentView(view);
         dialog.show();
     }
+
+    public static void showChoiceDialog(Context context, String title, String message, 
+                                      String option1, String option2, 
+                                      Runnable option1Action, Runnable option2Action) {
+        new AlertDialog.Builder(context)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(option1, (dialog, which) -> option1Action.run())
+            .setNegativeButton(option2, (dialog, which) -> option2Action.run())
+            .show();
+    }
 }
