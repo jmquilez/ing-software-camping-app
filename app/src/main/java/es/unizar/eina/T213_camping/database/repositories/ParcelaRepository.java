@@ -1,6 +1,8 @@
 package es.unizar.eina.T213_camping.database.repositories;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
+import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 
@@ -20,7 +23,12 @@ public class ParcelaRepository {
     /**
      * DAO para acceder a las operaciones de parcelas en la base de datos.
      */
-    private ParcelaDao mParcelaDao;
+    private ParcelaDao parcelaDao;
+
+    /**
+     * DAO para acceder a las operaciones de parcelas reservadas en la base de datos.
+     */
+    private ParcelaReservadaDao parcelaReservadaDao;
 
     /**
      * Servicio ejecutor para realizar operaciones asíncronas.
@@ -33,7 +41,8 @@ public class ParcelaRepository {
      */
     public ParcelaRepository(Application application) {
         AppDatabase db = AppDatabase.getDatabase(application);
-        mParcelaDao = db.parcelaDao();
+        parcelaDao = db.parcelaDao();
+        parcelaReservadaDao = db.parcelaReservadaDao();
         executorService = Executors.newSingleThreadExecutor();
     }
 
@@ -43,7 +52,7 @@ public class ParcelaRepository {
      * @param parcela Parcela a insertar
      */
     public void insert(Parcela parcela) {
-        executorService.execute(() -> mParcelaDao.insert(parcela));
+        executorService.execute(() -> parcelaDao.insert(parcela));
     }
 
     /**
@@ -51,7 +60,7 @@ public class ParcelaRepository {
      * @return LiveData con la lista de todas las parcelas
      */
     public LiveData<List<Parcela>> getAllParcelas() {
-        return mParcelaDao.getAllParcelas();
+        return parcelaDao.getAllParcelas();
     }
 
     /**
@@ -60,7 +69,7 @@ public class ParcelaRepository {
      * @param parcela Parcela con los datos actualizados
      */
     public void update(Parcela parcela) {
-        executorService.execute(() -> mParcelaDao.update(parcela));
+        executorService.execute(() -> parcelaDao.update(parcela));
     }
 
     /**
@@ -69,7 +78,7 @@ public class ParcelaRepository {
      * @param parcela Parcela a eliminar
      */
     public void delete(Parcela parcela) {
-        executorService.execute(() -> mParcelaDao.delete(parcela));
+        executorService.execute(() -> parcelaDao.delete(parcela));
     }
 
     /**
@@ -77,7 +86,7 @@ public class ParcelaRepository {
      * @return LiveData con la lista de parcelas disponibles
      */
     public LiveData<List<Parcela>> getAvailableParcelas() {
-        return mParcelaDao.getAvailableParcelas();
+        return parcelaDao.getAvailableParcelas();
     }
 
     /**
@@ -86,7 +95,7 @@ public class ParcelaRepository {
      * @return LiveData con la lista de parcelas y su ocupación
      */
     public LiveData<List<ParcelaOccupancy>> getParcelasByReservationId(long reservationId) {
-        return mParcelaDao.getParcelasByReservationId(reservationId);
+        return parcelaDao.getParcelasByReservationId(reservationId);
     }
 
     /**
@@ -95,7 +104,7 @@ public class ParcelaRepository {
      * @return LiveData con la lista de parcelas no vinculadas
      */
     public LiveData<List<Parcela>> getParcelasNotLinkedToReservation(long reservationId) {
-        return mParcelaDao.getParcelasNotLinkedToReservation(reservationId);
+        return parcelaDao.getParcelasNotLinkedToReservation(reservationId);
     }
 
     /**
@@ -104,6 +113,37 @@ public class ParcelaRepository {
      * @param nombre Nombre de la parcela a eliminar
      */
     public void deleteByNombre(String nombre) {
-        executorService.execute(() -> mParcelaDao.deleteByNombre(nombre));
+        executorService.execute(() -> parcelaDao.deleteByNombre(nombre));
+    }
+
+    public boolean exists(String nombre) {
+        try {
+            return executorService.submit(() -> parcelaDao.exists(nombre)).get();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public void updateWithNameChange(String oldName, Parcela updatedParcela) {
+        executorService.execute(() -> {
+            // Start transaction to ensure atomicity
+            parcelaDao.runInTransaction(() -> {
+                try {
+                    // 1. Insert new parcela with new name
+                    parcelaDao.insert(updatedParcela);
+
+                    // 2. Update all ParcelaReservada references to point to new name
+                    parcelaReservadaDao.updateParcelaNombre(oldName, updatedParcela.getNombre());
+
+                    // 3. Delete old parcela record
+                    parcelaDao.deleteByNombre(oldName);
+                } catch (Exception e) {
+                    // If anything fails, the transaction will be rolled back
+                    Log.e("ParcelaRepository", "Error updating parcela name: " + e.getMessage());
+                    throw e;
+                }
+            });
+        });
     }
 }

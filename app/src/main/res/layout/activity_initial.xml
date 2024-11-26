@@ -1,63 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@drawable/initial_background_gradient">
 
     <include layout="@layout/custom_toolbar"/>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:gravity="center"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
         android:background="@android:color/transparent">
 
-        <TextView
-            android:id="@+id/welcome_text"
-            android:background="@android:color/transparent"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="¡BIENVENIDO!"
-            android:textSize="32sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:alpha="0.95"
-            android:letterSpacing="0.05"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="24dp"
+            android:background="@android:color/transparent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/logo_container"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="48dp"
-            app:cardCornerRadius="100dp"
-            app:cardElevation="4dp">
+            <TextView
+                android:id="@+id/welcome_text"
+                android:background="@android:color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¡BIENVENIDO!"
+                android:textSize="32sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:alpha="0.95"
+                android:letterSpacing="0.05"/>
 
-            <ImageView
-                android:id="@+id/logo_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/default_logo" />
+            <androidx.cardview.widget.CardView
+                android:id="@+id/logo_container"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginTop="48dp"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="4dp">
 
-        </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/logo_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/camping_logo_cropped_xml"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/entrar_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:text="ENTRAR"
-            android:textSize="18sp"
-            android:paddingHorizontal="64dp"
-            android:paddingVertical="16dp"
-            android:textAllCaps="true"
-            app:cornerRadius="28dp"
-            android:alpha="0.95"
-            app:elevation="4dp"/>
+            </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/entrar_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:text="ENTRAR"
+                android:textSize="18sp"
+                android:paddingHorizontal="64dp"
+                android:paddingVertical="16dp"
+                android:textAllCaps="true"
+                app:cornerRadius="28dp"
+                android:alpha="0.95"
+                app:elevation="4dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
 
-</RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

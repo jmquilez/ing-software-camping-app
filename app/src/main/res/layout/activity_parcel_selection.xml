@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/custom_toolbar"/>
+    <include layout="@layout/custom_toolbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="24dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -22,19 +22,21 @@
                 android:text="PARCELAS DISPONIBLES"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/parcel_selection_available_parcels_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:scrollbars="vertical"/>
+                android:scrollbars="vertical"
+                android:scrollbarStyle="outsideOverlay"
+                android:fadeScrollbars="false" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider"
-                android:layout_marginVertical="24dp"/>
+                android:layout_marginVertical="24dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -42,13 +44,15 @@
                 android:text="PARCELAS AÑADIDAS"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/parcel_selection_added_parcels_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="horizontal"/>
+                android:scrollbars="horizontal"
+                android:scrollbarStyle="outsideOverlay"
+                android:fadeScrollbars="false" />
 
             <TextView
                 android:id="@+id/parcel_selection_price_display"
@@ -57,13 +61,13 @@
                 android:text="Precio total: 0.00€"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginVertical="24dp"/>
+                android:layout_marginVertical="24dp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="24dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -81,7 +85,7 @@
                     android:tint="?attr/colorPrimary"
                     android:elevation="4dp"
                     android:padding="8dp"
-                    android:background="@drawable/rounded_button_background"/>
+                    android:background="@drawable/rounded_button_background" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -89,7 +93,7 @@
                     android:layout_weight="1"
                     android:text="2 / 2\nPARCELAS RESERVADAS"
                     android:textAlignment="center"
-                    android:layout_marginHorizontal="24dp"/>
+                    android:layout_marginHorizontal="24dp" />
 
                 <ImageButton
                     android:id="@+id/parcel_selection_next_button"
@@ -100,14 +104,14 @@
                     android:tint="?attr/colorPrimary"
                     android:elevation="4dp"
                     android:padding="8dp"
-                    android:background="@drawable/rounded_button_background"/>
+                    android:background="@drawable/rounded_button_background" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="?android:attr/listDivider"
-                android:layout_marginBottom="24dp"/>
+                android:layout_marginBottom="24dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -123,7 +127,9 @@
                     android:text="GUARDAR CAMBIOS"
                     android:drawableStart="@drawable/ic_save"
                     android:drawablePadding="8dp"
-                    android:backgroundTint="@color/green"/>
+                    android:backgroundTint="@color/green"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/parcel_selection_notify_button"
@@ -134,7 +140,9 @@
                     android:drawableStart="@drawable/ic_notify"
                     android:drawablePadding="8dp"
                     android:backgroundTint="@color/orange"
-                    android:layout_marginStart="8dp"/>
+                    android:textColor="@android:color/white"
+                    android:layout_marginStart="8dp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <Button
@@ -145,7 +153,9 @@
                 android:drawableStart="@drawable/ic_delete"
                 android:drawablePadding="8dp"
                 android:backgroundTint="@color/red"
-                android:layout_marginBottom="16dp"/>
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="16dp"
+                android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

@@ -110,4 +110,15 @@ public class ParcelaReservadaRepository {
     public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(Date fechaInicio, Date fechaFin) {
         return parcelaReservadaDao.getParcelasDisponiblesEnIntervalo(fechaInicio, fechaFin);
     }
+
+    /**
+     * Obtiene las parcelas disponibles en un intervalo de fechas, excluyendo una reserva específica.
+     * @param startDate Fecha de inicio del intervalo
+     * @param endDate Fecha de fin del intervalo
+     * @param excludeReservationId ID de la reserva a excluir
+     * @return LiveData con la lista de parcelas disponibles
+     */
+    public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervaloExcludingReservation(Date startDate, Date endDate, long excludeReservationId) {
+        return parcelaReservadaDao.getParcelasDisponiblesEnIntervaloExcludingReservation(startDate, endDate, excludeReservationId);
+    }
 }

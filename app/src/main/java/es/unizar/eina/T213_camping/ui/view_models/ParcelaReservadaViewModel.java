@@ -84,11 +84,22 @@ public class ParcelaReservadaViewModel extends AndroidViewModel {
 
     /**
      * Obtiene las parcelas disponibles en un intervalo de fechas.
-     * @param fechaInicio Fecha de inicio del intervalo
-     * @param fechaFin Fecha de fin del intervalo
+     * @param entryDate Fecha de entrada del intervalo
+     * @param departureDate Fecha de salida del intervalo
      * @return LiveData con la lista de parcelas disponibles
      */
-    public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(Date fechaInicio, Date fechaFin) {
-        return mRepository.getParcelasDisponiblesEnIntervalo(fechaInicio, fechaFin);
+    public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervalo(Date entryDate, Date departureDate) {
+        return mRepository.getParcelasDisponiblesEnIntervalo(entryDate, departureDate);
+    }
+
+    /**
+     * Obtiene las parcelas disponibles en un intervalo de fechas, excluyendo una reserva específica.
+     * @param startDate Fecha de inicio del intervalo
+     * @param endDate Fecha de fin del intervalo
+     * @param excludeReservationId ID de la reserva a excluir
+     * @return LiveData con la lista de parcelas disponibles
+     */
+    public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervaloExcludingReservation(Date startDate, Date endDate, long excludeReservationId) {
+        return mRepository.getParcelasDisponiblesEnIntervaloExcludingReservation(startDate, endDate, excludeReservationId);
     }
 }

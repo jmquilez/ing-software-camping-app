@@ -15,8 +15,13 @@
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your app's colors here -->
+        <!-- App font families -->
         <item name="android:fontFamily">@font/nunito_font_family</item>
         <item name="fontFamily">@font/nunito_font_family</item>
+    </style>
+
+    <style name="CustomButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:alpha">1.0</item>
+        <item name="android:disabledAlpha">0.38</item>
     </style>
 </resources>

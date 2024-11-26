@@ -46,7 +46,7 @@ public class InitialActivity extends BaseActivity {
      */
     private void setupLogo() {
         ImageView logoImage = findViewById(R.id.logo_image);
-        logoImage.setImageResource(R.drawable.camping_logo);
+        logoImage.setImageResource(R.drawable.camping_logo_cropped_xml);
     }
 
     @Override

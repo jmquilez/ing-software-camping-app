@@ -28,9 +28,12 @@ import java.util.List;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
+import es.unizar.eina.T213_camping.utils.DialogUtils;
 
 /**
  * Activity que permite modificar una reserva existente.
@@ -61,6 +64,8 @@ public class ModifyReservationActivity extends BaseActivity {
     private List<ParcelaOccupancy> selectedParcels;
 
     private TextView priceDisplay;
+
+    private ParcelaReservadaViewModel parcelaReservadaViewModel;
 
     @Override
     protected int getLayoutResourceId() {
@@ -139,7 +144,7 @@ public class ModifyReservationActivity extends BaseActivity {
             }
         } catch (ParseException e) {
             Log.e("ModifyReservationActivity", "Error parsing dates: " + e.getMessage(), e);
-            showErrorDialog("Error al cargar las fechas de la reserva: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, "Error al cargar las fechas de la reserva: " + e.getMessage());
             checkInDate = new Date();
             checkOutDate = new Date(checkInDate.getTime() + 86400000);
         }
@@ -152,8 +157,15 @@ public class ModifyReservationActivity extends BaseActivity {
         clientNameInput.setText(clientName);
         clientPhoneInput.setText(clientPhone);
 
-        // Update initial price display
-        PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
+        // Get initial price from intent
+        double initialPrice = getIntent().getDoubleExtra(ReservationConstants.RESERVATION_PRICE, 0.0);
+        
+        if (initialPrice >= 0) {
+            priceDisplay.setText(String.format(Locale.getDefault(), "Precio total: %.2f€", initialPrice));
+        } else {
+            // Update initial price display
+            PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
+        }
     }
 
     /**
@@ -161,6 +173,7 @@ public class ModifyReservationActivity extends BaseActivity {
      */
     private void setupViewModels() {
         reservaViewModel = new ViewModelProvider(this).get(ReservaViewModel.class);
+        parcelaReservadaViewModel = new ViewModelProvider(this).get(ParcelaReservadaViewModel.class);
     }
 
     /**
@@ -174,7 +187,7 @@ public class ModifyReservationActivity extends BaseActivity {
                 validateDates();
             } catch (ParseException e) {
                 Log.e("ModifyReservationActivity", "Error parsing check-in date", e);
-                showErrorDialog("Error al procesar la fecha de entrada");
+                DialogUtils.showErrorDialog(this, "Error al procesar la fecha de entrada");
             }
         }));
 
@@ -184,7 +197,7 @@ public class ModifyReservationActivity extends BaseActivity {
                 validateDates();
             } catch (ParseException e) {
                 Log.e("ModifyReservationActivity", "Error parsing check-out date", e);
-                showErrorDialog("Error al procesar la fecha de salida");
+                DialogUtils.showErrorDialog(this, "Error al procesar la fecha de salida");
             }
         }));
 
@@ -227,6 +240,7 @@ public class ModifyReservationActivity extends BaseActivity {
     // TODO: handle error states and navigation
     /**
      * Valida que las fechas de entrada y salida sean correctas.
+     * @return true si las fechas son válidas, false en caso contrario
      */
     private void validateDates() {
         if (checkInDate != null && checkOutDate != null) {
@@ -237,6 +251,36 @@ public class ModifyReservationActivity extends BaseActivity {
             } else {
                 errorMessage.setVisibility(View.GONE);
                 PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
+
+                // Get available parcels for new dates, excluding current reservation
+                parcelaReservadaViewModel.getParcelasDisponiblesEnIntervaloExcludingReservation(
+                    checkInDate, checkOutDate, reservationId)
+                    .observe(this, availableParcels -> {
+                        // Convert to set of names for easy checking
+                        Set<String> availableParcelNames = availableParcels.stream()
+                            .map(Parcela::getNombre)
+                            .collect(Collectors.toSet());
+
+                        // Get unavailable parcels
+                        List<String> unavailableParcels = selectedParcels.stream()
+                            .map(po -> po.getParcela().getNombre())
+                            .filter(name -> !availableParcelNames.contains(name))
+                            .collect(Collectors.toList());
+
+                        if (!unavailableParcels.isEmpty()) {
+                            String parcelList = unavailableParcels.stream()
+                                .limit(3)  // Take only first 3
+                                .collect(Collectors.joining(", "));
+                            
+                            String message = "Las siguientes parcelas no están disponibles: " + parcelList;
+                            if (unavailableParcels.size() > 3) {
+                                message += " y " + (unavailableParcels.size() - 3) + " más";
+                            }
+                            
+                            errorMessage.setText(message);
+                            errorMessage.setVisibility(View.VISIBLE);
+                        }
+                    });
             }
         }
     }
@@ -247,31 +291,28 @@ public class ModifyReservationActivity extends BaseActivity {
      */
     private void validateAndProceed() {
         if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
-            showErrorDialog("Por favor, complete todos los campos.");
-        } else if (errorMessage.getVisibility() == View.VISIBLE) {
-            showErrorDialog("La fecha de salida debe ser posterior a la de entrada.");
-        } else {
-            Intent intent = new Intent(this, ParcelSelectionActivity.class);
-            intent.putExtra(ReservationConstants.RESERVATION_ID, reservationId);
-            intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
-            intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
-            intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));
-            intent.putExtra(ReservationConstants.DEPARTURE_DATE, DateUtils.DATE_FORMAT.format(checkOutDate));
-            intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
-            parcelSelectionLauncher.launch(intent);
+            DialogUtils.showErrorDialog(this, "Por favor, complete todos los campos.");
+            return;
         }
-    }
 
-    /**
-     * Muestra un diálogo de error con el mensaje especificado.
-     * @param message Mensaje de error a mostrar
-     * @todo move to DialogUtils (use that implementation)
-     */
-    private void showErrorDialog(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(message);
-        builder.setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss());
-        builder.show();
+        if (errorMessage.getVisibility() == View.VISIBLE) {
+            DialogUtils.showErrorDialog(this, errorMessage.getText().toString());
+            return;
+        }
+
+        Intent intent = new Intent(this, ParcelSelectionActivity.class);
+        intent.putExtra(ReservationConstants.RESERVATION_ID, reservationId);
+        intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
+        intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
+        intent.putExtra(ReservationConstants.ENTRY_DATE, DateUtils.DATE_FORMAT.format(checkInDate));
+        intent.putExtra(ReservationConstants.DEPARTURE_DATE, DateUtils.DATE_FORMAT.format(checkOutDate));
+        intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(selectedParcels));
+        
+        // Calculate and pass the current price
+        double currentPrice = PriceUtils.calculateReservationPrice(checkInDate, checkOutDate, selectedParcels);
+        intent.putExtra(ReservationConstants.RESERVATION_PRICE, currentPrice);
+        
+        parcelSelectionLauncher.launch(intent);
     }
 
     /**
@@ -280,7 +321,12 @@ public class ModifyReservationActivity extends BaseActivity {
     private void confirmReservation() {
         try {
             if (checkInDate == null || checkOutDate == null) {
-                showErrorDialog("Las fechas no son válidas");
+                DialogUtils.showErrorDialog(this, "Las fechas no son válidas");
+                return;
+            }
+            
+            if (errorMessage.getVisibility() == View.VISIBLE) {
+                DialogUtils.showErrorDialog(this, errorMessage.getText().toString());
                 return;
             }
             
@@ -289,10 +335,10 @@ public class ModifyReservationActivity extends BaseActivity {
                 clientPhoneInput.getText().toString(), 
                 checkInDate,    // Usamos directamente los objetos Date
                 checkOutDate,   // Usamos directamente los objetos Date
-                selectedParcels);
+                selectedParcels, true);
         } catch (Exception e) {
             Log.e("ModifyReservationActivity", "Error al confirmar la reserva: " + e.getMessage(), e);
-            showErrorDialog("Error al procesar la reserva");
+            DialogUtils.showErrorDialog(this, "Error al procesar la reserva");
         }
     }
 

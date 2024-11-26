@@ -129,8 +129,13 @@ public class ParcelSelectionActivity extends BaseActivity {
                     addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
                     addedParcelsAdapter.submitList(new ArrayList<>(addedParcels));
 
-                    // Show initial price
-                    PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, addedParcels);
+                    // Show initial price from intent or calculate if not provided
+                    double initialPrice = getIntent().getDoubleExtra(ReservationConstants.RESERVATION_PRICE, -1);
+                    if (initialPrice >= 0) {
+                        priceDisplay.setText(String.format(Locale.getDefault(), "Precio total: %.2f€", initialPrice));
+                    } else {
+                        PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, addedParcels);
+                    }
                 });
         } else {
             DialogUtils.showErrorDialog(this, "Error al procesar las fechas");
@@ -161,31 +166,17 @@ public class ParcelSelectionActivity extends BaseActivity {
         String clientName = getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
         String clientPhone = getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
         
-        String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
-        String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
-
         try {
-            // Parse las fechas a objetos Date
-            Date entryDate = DateUtils.DATE_FORMAT.parse(entryDateStr);
-            Date departureDate = DateUtils.DATE_FORMAT.parse(departureDateStr);
+            Date entryDate = DateUtils.DATE_FORMAT.parse(getIntent().getStringExtra(ReservationConstants.ENTRY_DATE));
+            Date departureDate = DateUtils.DATE_FORMAT.parse(getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE));
 
-            // Pasar directamente los objetos Date
             ReservationUtils.confirmReservation(this, reservationId, clientName, clientPhone, 
-                entryDate,  // Pasar el objeto Date directamente
-                departureDate,  // Pasar el objeto Date directamente
-                addedParcels);
+                entryDate, departureDate, addedParcels, true);  // true for update
                 
         } catch (ParseException e) {
             Log.e("ParcelSelectionActivity", "Error parsing dates", e);
-            showErrorDialog("Error al procesar las fechas de la reserva");
+            DialogUtils.showErrorDialog(this, "Error al procesar las fechas de la reserva");
         }
-    }
-
-    private void showErrorDialog(String message) {
-        new AlertDialog.Builder(this)
-            .setMessage(message)
-            .setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss())
-            .show();
     }
 
     /**

@@ -90,4 +90,22 @@ public class ParcelaViewModel extends AndroidViewModel {
     public void deleteByNombre(String nombre) {
         mRepository.deleteByNombre(nombre);
     }
+
+    /**
+     * Verifica si existe una parcela con el nombre especificado.
+     * @param nombre Nombre de la parcela a verificar
+     * @return true si existe una parcela con ese nombre, false en caso contrario
+     */
+    public boolean exists(String nombre) {
+        return mRepository.exists(nombre);
+    }
+
+    /**
+     * Actualiza una parcela incluyendo su nombre, manteniendo las referencias en ParcelaReservada.
+     * @param oldName Nombre actual de la parcela
+     * @param updatedParcela Parcela con los datos actualizados
+     */
+    public void updateWithNameChange(String oldName, Parcela updatedParcela) {
+        mRepository.updateWithNameChange(oldName, updatedParcela);
+    }
 }

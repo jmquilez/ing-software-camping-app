@@ -169,7 +169,8 @@ public class ParcelFeedActivity extends BaseActivity {
 
         if (Objects.requireNonNull(operationType).equals(ParcelConstants.OPERATION_INSERT)) {
             loadingMessage = "CREANDO PARCELA...";
-        } else if (operationType.equals(ParcelConstants.OPERATION_UPDATE)) {
+        } else if (operationType.equals(ParcelConstants.OPERATION_UPDATE) || 
+                   operationType.equals(ParcelConstants.OPERATION_UPDATE_WITH_NAME)) {
             loadingMessage = "ACTUALIZANDO PARCELA...";
         } else if (operationType.equals(ParcelConstants.OPERATION_DELETE)) {
             loadingMessage = "ELIMINANDO PARCELA...";
@@ -185,9 +186,13 @@ public class ParcelFeedActivity extends BaseActivity {
                 case ParcelConstants.OPERATION_UPDATE:
                     updateParcel(extras);
                     break;
+                case ParcelConstants.OPERATION_UPDATE_WITH_NAME:
+                    updateWithNameChange(extras);
+                    break;
                 case ParcelConstants.OPERATION_DELETE:
                     parcelaViewModel.deleteByNombre(parcelName);
-                    DialogUtils.showSuccessDialog(this, "Parcela eliminada con éxito.", R.drawable.ic_delete_success);
+                    DialogUtils.showSuccessDialog(this, "Parcela eliminada con éxito.", 
+                        R.drawable.ic_delete_success);
                     break;
                 default:
                     Toast.makeText(this, "Operación desconocida", Toast.LENGTH_SHORT).show();
@@ -203,15 +208,22 @@ public class ParcelFeedActivity extends BaseActivity {
      * @param extras Bundle con los datos de la nueva parcela
      */
     private void insertParcel(Bundle extras) {
-        Parcela parcela = new Parcela(
+        try {
+            Parcela parcela = new Parcela(
                 Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
                 Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
-            extras.getInt(ParcelConstants.MAX_OCCUPANTS),
-            extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
-        );
-        parcelaViewModel.insert(parcela);
-        // TODO: conditional?
-        DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
+                Integer.parseInt(Objects.requireNonNull(extras.getString(ParcelConstants.MAX_OCCUPANTS))),
+                Double.parseDouble(Objects.requireNonNull(extras.getString(ParcelConstants.PRICE_PER_PERSON)))
+            );
+            parcelaViewModel.insert(parcela);
+            DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
+        } catch (NumberFormatException e) {
+            Log.e("ParcelFeedActivity", "Error parsing parcel data: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, "Error al procesar los datos de la parcela");
+        } catch (Exception e) {
+            Log.e("ParcelFeedActivity", "Error creating parcel: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, "Error al crear la parcela");
+        }
     }
 
     /**
@@ -220,15 +232,42 @@ public class ParcelFeedActivity extends BaseActivity {
      * @param extras Bundle con los datos actualizados de la parcela
      */
     private void updateParcel(Bundle extras) {
+        String operationType = extras.getString(ParcelConstants.OPERATION_TYPE);
+        
         Parcela parcela = new Parcela(
-                Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
-                Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
+            Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
+            Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
             extras.getInt(ParcelConstants.MAX_OCCUPANTS),
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
-        parcelaViewModel.update(parcela);
-        // TODO: conditional?
-        DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", R.drawable.ic_update_success);
+
+        if (operationType.equals(ParcelConstants.OPERATION_UPDATE_WITH_NAME)) {
+            String oldName = extras.getString(ParcelConstants.OLD_PARCEL_NAME);
+            parcelaViewModel.updateWithNameChange(oldName, parcela);
+        } else {
+            parcelaViewModel.update(parcela);
+        }
+
+        DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", 
+            R.drawable.ic_update_success);
+    }
+
+    /**
+     * Actualiza una parcela existente, incluyendo su nombre.
+     * Actualiza primero las referencias en ParcelaReservada y luego la parcela.
+     * @param extras Bundle con los datos actualizados de la parcela
+     */
+    private void updateWithNameChange(Bundle extras) {
+        String oldName = extras.getString(ParcelConstants.OLD_PARCEL_NAME);
+        Parcela parcela = new Parcela(
+            Objects.requireNonNull(extras.getString(ParcelConstants.PARCEL_NAME)),
+            Objects.requireNonNull(extras.getString(ParcelConstants.DESCRIPTION)),
+            extras.getInt(ParcelConstants.MAX_OCCUPANTS),
+            extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
+        );
+        parcelaViewModel.updateWithNameChange(oldName, parcela);
+        DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", 
+            R.drawable.ic_update_success);
     }
 
     /**

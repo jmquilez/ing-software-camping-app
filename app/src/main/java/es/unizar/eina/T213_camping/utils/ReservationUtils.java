@@ -40,30 +40,47 @@ public class ReservationUtils {
      * @param context Contexto de la aplicación
      * @param currentActivity Actividad actual
      */
-    // TODO: revise R.drawable
     public static void notifyClient(Context context, Activity activity) {
+        // Validate dates first
+        Date entryDate = null;
+        Date departureDate = null;
+        
+        if (activity instanceof ModifyReservationActivity) {
+            ModifyReservationActivity act = (ModifyReservationActivity) activity;
+            entryDate = act.getCheckInDate();
+            departureDate = act.getCheckOutDate();
+            
+            // Validate dates before proceeding
+            if (entryDate == null || departureDate == null) {
+                DialogUtils.showErrorDialog(context, "Las fechas no son válidas");
+                return;
+            }
+            
+            String error = DateUtils.validateDates(entryDate, departureDate);
+            if (error != null) {
+                DialogUtils.showErrorDialog(context, "La fecha de salida debe ser posterior a la de entrada");
+                return;
+            }
+        }
+        
         SendAbstraction sender = new SendAbstractionImpl(activity, "SMS");
         
         String phoneNumber = "";
         String clientName = "";
-        Date entryDate = new Date();
-        Date departureDate = new Date();
         List<ParcelaOccupancy> parcelas = new ArrayList<>();
         
         if (activity instanceof ModifyReservationActivity) {
             ModifyReservationActivity act = (ModifyReservationActivity) activity;
             phoneNumber = act.getClientPhone();
             clientName = act.getClientName();
-            entryDate = act.getCheckInDate();
-            departureDate = act.getCheckOutDate();
             parcelas = act.getSelectedParcels();
         } else if (activity instanceof ParcelSelectionActivity) {
             ParcelSelectionActivity act = (ParcelSelectionActivity) activity;
             phoneNumber = act.getClientPhone();
             clientName = act.getClientName();
+            parcelas = act.getAddedParcels();
             entryDate = act.getCheckInDate();
             departureDate = act.getCheckOutDate();
-            parcelas = act.getAddedParcels();
         }
         
         // Construir el mensaje
@@ -118,17 +135,19 @@ public class ReservationUtils {
      * @param departureDate Fecha de salida
      * @param selectedParcels Lista de parcelas seleccionadas
      */
-    public static void confirmReservation(BaseActivity activity, long reservationId,
-                                          String clientName, String clientPhone,
-                                          Date entryDate, Date departureDate,
-                                          List<ParcelaOccupancy> selectedParcels) {
+    public static void confirmReservation(BaseActivity activity, long reservationId, 
+                                        String clientName, String clientPhone,
+                                        Date entryDate, Date departureDate,
+                                        List<ParcelaOccupancy> selectedParcels,
+                                        boolean isUpdate) {
         double price = PriceUtils.calculateReservationPrice(entryDate, departureDate, selectedParcels);
         
         DialogUtils.showConfirmationDialog(
             activity,
             "Confirmar cambios",
             String.format(Locale.getDefault(), 
-                "¿Está seguro de que desea guardar los cambios en esta reserva?\n\nPrecio total: %.2f€", 
+                "¿Está seguro de que desea %s esta reserva?\n\nPrecio total: %.2f€", 
+                isUpdate ? "guardar los cambios en" : "crear",
                 price),
             R.drawable.ic_confirm_reservation,
             () -> {
@@ -138,12 +157,10 @@ public class ReservationUtils {
                 resultIntent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhone);
                 resultIntent.putExtra(ReservationConstants.ENTRY_DATE, entryDate.getTime());
                 resultIntent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDate.getTime());
-                
-                // NOTE: See https://stackoverflow.com/questions/51805648/unchecked-cast-java-io-serializable-to-java-util-arraylist
                 resultIntent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, 
                     new ArrayList<>(selectedParcels));
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, 
-                    ReservationConstants.OPERATION_UPDATE);
+                    isUpdate ? ReservationConstants.OPERATION_UPDATE : ReservationConstants.OPERATION_INSERT);
                 resultIntent.putExtra(ReservationConstants.RESERVATION_PRICE, price);
                 
                 activity.setResult(RESULT_OK, resultIntent);

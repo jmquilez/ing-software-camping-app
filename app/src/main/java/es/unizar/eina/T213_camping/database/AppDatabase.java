@@ -7,6 +7,8 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,11 +22,13 @@ import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
 import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
 import es.unizar.eina.T213_camping.database.daos.ReservaDao;
 import es.unizar.eina.T213_camping.database.models.Parcela;
+import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import androidx.room.TypeConverters;
 import es.unizar.eina.T213_camping.database.converters.DateConverter;
 import es.unizar.eina.T213_camping.utils.DateUtils;
+import es.unizar.eina.T213_camping.utils.PriceUtils;
 
 /**
  * Clase principal de la base de datos de la aplicación.
@@ -115,44 +119,57 @@ public abstract class AppDatabase extends RoomDatabase {
                 parcelaDao.insert(parcela5);
 
                 try {
-                    // Insert initial Reservas
+                    // Create dates for reservations
+                    Date entryDate1 = DateUtils.DATE_FORMAT.parse("01/10/2024");
+                    Date departureDate1 = DateUtils.DATE_FORMAT.parse("07/10/2024");
+                    Date entryDate2 = DateUtils.DATE_FORMAT.parse("10/10/2024");
+                    Date departureDate2 = DateUtils.DATE_FORMAT.parse("15/10/2024");
+                    Date entryDate3 = DateUtils.DATE_FORMAT.parse("05/11/2024");
+                    Date departureDate3 = DateUtils.DATE_FORMAT.parse("10/11/2024");
+
+                    // Create ParcelaOccupancy lists for each reservation
+                    List<ParcelaOccupancy> parcelas1 = new ArrayList<>();
+                    parcelas1.add(new ParcelaOccupancy(parcela1, 2)); // Parcela A with 2 people
+
+                    List<ParcelaOccupancy> parcelas2 = new ArrayList<>();
+                    parcelas2.add(new ParcelaOccupancy(parcela2, 4)); // Parcela B with 4 people
+                    parcelas2.add(new ParcelaOccupancy(parcela3, 3)); // Parcela C with 3 people
+
+                    List<ParcelaOccupancy> parcelas3 = new ArrayList<>();
+                    parcelas3.add(new ParcelaOccupancy(parcela4, 4)); // Parcela D with 4 people
+
+                    // Calculate prices using PriceUtils
+                    double price1 = PriceUtils.calculateReservationPrice(entryDate1, departureDate1, parcelas1);
+                    double price2 = PriceUtils.calculateReservationPrice(entryDate2, departureDate2, parcelas2);
+                    double price3 = PriceUtils.calculateReservationPrice(entryDate3, departureDate3, parcelas3);
+
+                    // Insert Reservas with calculated prices
                     Reserva reserva1 = new Reserva("Juan Pérez",
-                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("01/10/2024")),
-                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("07/10/2024")),
+                            entryDate1,
+                            departureDate1,
                             "123456789",
-                            120.0);
+                            price1);
                     long res1Id = reservaDao.insert(reserva1);
 
                     Reserva reserva2 = new Reserva("María López",
-                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("10/10/2024")),
-                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("15/10/2024")),
+                            entryDate2,
+                            departureDate2,
                             "987654321",
-                            150.0);
+                            price2);
                     long res2Id = reservaDao.insert(reserva2);
 
                     Reserva reserva3 = new Reserva("Carlos Ruiz",
-                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("05/11/2024")),
-                            Objects.requireNonNull(DateUtils.DATE_FORMAT.parse("10/11/2024")),
+                            entryDate3,
+                            departureDate3,
                             "555666777",
-                            175.0);
+                            price3);
                     long res3Id = reservaDao.insert(reserva3);
 
-                    // Insert initial ParcelaReservadas
-                    ParcelaReservada parcelaReservada1 = new ParcelaReservada("Parcela A",
-                            res1Id, 2);
-                    parcelaReservadaDao.insert(parcelaReservada1);
-
-                    ParcelaReservada parcelaReservada2 = new ParcelaReservada("Parcela B",
-                            res2Id, 4);
-                    parcelaReservadaDao.insert(parcelaReservada2);
-
-                    ParcelaReservada parcelaReservada3 = new ParcelaReservada("Parcela C",
-                            res2Id, 3);
-                    parcelaReservadaDao.insert(parcelaReservada3);
-
-                    ParcelaReservada parcelaReservada4 = new ParcelaReservada("Parcela D",
-                            res3Id, 4);
-                    parcelaReservadaDao.insert(parcelaReservada4);
+                    // Insert ParcelaReservadas
+                    parcelaReservadaDao.insert(new ParcelaReservada("Parcela A", res1Id, 2));
+                    parcelaReservadaDao.insert(new ParcelaReservada("Parcela B", res2Id, 4));
+                    parcelaReservadaDao.insert(new ParcelaReservada("Parcela C", res2Id, 3));
+                    parcelaReservadaDao.insert(new ParcelaReservada("Parcela D", res3Id, 4));
 
                 } catch (ParseException e) {
                     Log.e("AppDatabase", "Error parsing dates for initial data", e);

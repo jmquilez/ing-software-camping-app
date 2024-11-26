@@ -54,6 +54,9 @@ public class NewParcelSelectionActivity extends BaseActivity {
 
     private TextView priceDisplay;
 
+    private Date entryDate;
+    private Date departureDate;
+
     @Override
     protected int getLayoutResourceId() {
         return R.layout.activity_new_parcel_selection;
@@ -105,28 +108,24 @@ public class NewParcelSelectionActivity extends BaseActivity {
         availableParcelsAdapter = new AvailableParcelsAdapter(this, addedParcels, this::updateParcelSelection);
         availableParcelsRecyclerView.setAdapter(availableParcelsAdapter);
 
-        // Get dates from intent
-        String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
-        String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
+        entryDate = getCheckInDate();
+        departureDate = getCheckOutDate();
 
-        try {
-            Date entryDate = DateUtils.DATE_FORMAT.parse(entryDateStr);
-            Date departureDate = DateUtils.DATE_FORMAT.parse(departureDateStr);
-
-            // Get available parcels for the date range
-            parcelaReservadaViewModel.getParcelasDisponiblesEnIntervalo(entryDate, departureDate)
-                .observe(this, parcelas -> {
-                    availableParcels = parcelas;
-                    availableParcelsAdapter.submitList(availableParcels);
-
-                    addedParcelsAdapter = new AddedParcelsAdapter(this, availableParcels, this::updateParcelSelection);
-                    addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
-                    addedParcelsAdapter.submitList(addedParcels);
-                });
-
-        } catch (ParseException e) {
-            DialogUtils.showErrorDialog(this, "Error al procesar las fechas");
+        if (entryDate == null || departureDate == null) {
+            DialogUtils.showErrorDialog(this, "Error: fechas no válidas");
+            return;
         }
+
+        // Get available parcels for the date range
+        parcelaReservadaViewModel.getParcelasDisponiblesEnIntervalo(entryDate, departureDate)
+            .observe(this, parcelas -> {
+                availableParcels = parcelas;
+                availableParcelsAdapter.submitList(availableParcels);
+
+                addedParcelsAdapter = new AddedParcelsAdapter(this, availableParcels, this::updateParcelSelection);
+                addedParcelsRecyclerView.setAdapter(addedParcelsAdapter);
+                addedParcelsAdapter.submitList(addedParcels);
+            });
 
         addedParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
     }
@@ -146,19 +145,8 @@ public class NewParcelSelectionActivity extends BaseActivity {
         String clientName = getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
         String clientPhone = getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
         
-        try {
-            Date entryDate = DateUtils.DATE_FORMAT.parse(
-                getIntent().getStringExtra(ReservationConstants.ENTRY_DATE));
-            Date departureDate = DateUtils.DATE_FORMAT.parse(
-                getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE));
-
-            // Use 0L as reservationId for new reservations
-            ReservationUtils.confirmReservation(this, 0L, clientName, clientPhone, 
-                entryDate, departureDate, addedParcels);
-            
-        } catch (ParseException e) {
-            DialogUtils.showErrorDialog(this, "Error al procesar las fechas");
-        }
+        ReservationUtils.confirmReservation(this, 0L, clientName, clientPhone, 
+            entryDate, departureDate, addedParcels, false);
     }
 
     /**
@@ -195,15 +183,26 @@ public class NewParcelSelectionActivity extends BaseActivity {
         // availableParcelsAdapter.submitList(availableParcelsAdapter.getCurrentList());
 
         // Update price after parcels change
+        PriceUtils.updatePriceDisplay(priceDisplay, entryDate, departureDate, addedParcels);
+    }
+
+    public Date getCheckInDate() {
         try {
-            Date entryDate = DateUtils.DATE_FORMAT.parse(
-                getIntent().getStringExtra(ReservationConstants.ENTRY_DATE));
-            Date departureDate = DateUtils.DATE_FORMAT.parse(
-                getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE));
-            
-            PriceUtils.updatePriceDisplay(priceDisplay, entryDate, departureDate, addedParcels);
+            String dateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
+            return DateUtils.DATE_FORMAT.parse(dateStr);
         } catch (ParseException e) {
-            Log.e("NewParcelSelection", "Error calculating price", e);
+            Log.e("NewParcelSelection", "Error parsing check-in date", e);
+            return null;
+        }
+    }
+
+    public Date getCheckOutDate() {
+        try {
+            String dateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
+            return DateUtils.DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            Log.e("NewParcelSelection", "Error parsing check-out date", e);
+            return null;
         }
     }
 }

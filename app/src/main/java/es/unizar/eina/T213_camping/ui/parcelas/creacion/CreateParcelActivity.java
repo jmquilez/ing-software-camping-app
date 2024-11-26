@@ -10,6 +10,8 @@ import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.utils.ParcelUtils;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
+import androidx.lifecycle.ViewModelProvider;
+import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 
 /**
  * Activity que permite crear una nueva parcela en el sistema.
@@ -36,10 +38,12 @@ public class CreateParcelActivity extends BaseActivity {
     private EditText parcelNameInput, maxOccupantsInput, pricePerPersonInput, descriptionInput;
     private TextView errorMessage;
     private Dialog loadingDialog;
+    private ParcelaViewModel parcelaViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
 
         parcelNameInput = findViewById(R.id.create_parcel_name_input);
         maxOccupantsInput = findViewById(R.id.create_parcel_max_occupants_input);
@@ -78,18 +82,20 @@ public class CreateParcelActivity extends BaseActivity {
      *    - Mantiene al usuario en la pantalla de creación
      */
     private void createParcel() {
-        if (!ParcelUtils.validateInputs(this, parcelNameInput, maxOccupantsInput, pricePerPersonInput, errorMessage)) {
-            return;
-        }
+        ParcelUtils.validateInputsAsync(this, parcelNameInput, maxOccupantsInput, 
+            pricePerPersonInput, errorMessage, parcelaViewModel, null, 
+            isValid -> {
+                if (isValid) {
+                    Intent replyIntent = new Intent();
+                    replyIntent.putExtra(ParcelConstants.PARCEL_NAME, parcelNameInput.getText().toString());
+                    replyIntent.putExtra(ParcelConstants.MAX_OCCUPANTS, maxOccupantsInput.getText().toString());
+                    replyIntent.putExtra(ParcelConstants.PRICE_PER_PERSON, pricePerPersonInput.getText().toString());
+                    replyIntent.putExtra(ParcelConstants.DESCRIPTION, descriptionInput.getText().toString());
+                    replyIntent.putExtra(ParcelConstants.OPERATION_TYPE, ParcelConstants.OPERATION_INSERT);
 
-        Intent replyIntent = new Intent();
-        replyIntent.putExtra(ParcelConstants.PARCEL_NAME, parcelNameInput.getText().toString());
-        replyIntent.putExtra(ParcelConstants.MAX_OCCUPANTS, maxOccupantsInput.getText().toString());
-        replyIntent.putExtra(ParcelConstants.PRICE_PER_PERSON, pricePerPersonInput.getText().toString());
-        replyIntent.putExtra(ParcelConstants.DESCRIPTION, descriptionInput.getText().toString());
-        replyIntent.putExtra(ParcelConstants.OPERATION_TYPE, ParcelConstants.OPERATION_INSERT);
-
-        setResult(RESULT_OK, replyIntent);
-        finish();
+                    setResult(RESULT_OK, replyIntent);
+                    finish();
+                }
+            });
     }
 }
