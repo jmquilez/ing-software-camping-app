@@ -59,7 +59,18 @@ public class ReservationAdapter extends ListAdapter<Reserva, ReservationAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Reserva reservation = getItem(position);
-        holder.itemReservationId.setText(String.valueOf(reservation.getId()));
+        String reservationId = String.valueOf(reservation.getId());
+        holder.itemReservationId.setText(reservationId);
+
+        // Adjust text size based on the number of digits in the reservation ID
+        int idLength = reservationId.length();
+        if (idLength <= 2) {
+            holder.itemReservationId.setTextSize(16); // Larger text size for shorter IDs
+        } else if (idLength <= 3) {
+            holder.itemReservationId.setTextSize(13); // Medium text size for medium-length IDs
+        } else {
+            holder.itemReservationId.setTextSize(10); // Smaller text size for longer IDs
+        }
 
         switch (sortingCriteria) {
             case ReservationConstants.SORT_CLIENT_NAME:

@@ -9,6 +9,7 @@ import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Arrays;
 
 public class TestUtils {
     private static final String TAG = "TestUtils";
@@ -54,16 +55,16 @@ public class TestUtils {
 
     // Prueba de sobrecarga
     public static void stressTest(Context context, ParcelaViewModel parcelaViewModel) {
-        final int STEP_SIZE = 1000; // Incremento de caracteres en cada iteración
+        final int STEP_SIZE = 10000; // Incremento de caracteres en cada iteración
         final StringBuilder description = new StringBuilder();
         final AtomicInteger currentSize = new AtomicInteger(0);
 
         try {
             while (true) {
-                // Añadir STEP_SIZE caracteres
-                for (int i = 0; i < STEP_SIZE; i++) {
-                    description.append('a');
-                }
+                // Añadir STEP_SIZE caracteres de manera eficiente
+                char[] chars = new char[STEP_SIZE];
+                Arrays.fill(chars, 'a');
+                description.append(chars);
                 currentSize.addAndGet(STEP_SIZE);
 
                 Parcela parcela = new Parcela(
@@ -74,10 +75,18 @@ public class TestUtils {
                 );
 
                 try {
+                    // Insertar la parcela
                     parcelaViewModel.insert(parcela);
                     Log.d(TAG, "Insertada parcela con descripción de " + currentSize.get() + " caracteres");
+                    
+                    // Borrar la parcela después de la inserción exitosa
+                    parcelaViewModel.delete(parcela);
+                    Log.d(TAG, "Borrada parcela de prueba con descripción de " + currentSize.get() + " caracteres");
+                    
                 } catch (Exception e) {
-                    Log.e(TAG, "Fallo al insertar parcela con " + currentSize.get() + " caracteres: " + e.getMessage());
+                    Log.e(TAG, "Fallo al insertar parcela con " + currentSize.get() + " caracteres");
+                    Log.e(TAG, "Mensaje de error: " + e.getMessage());
+                    Log.e(TAG, "Longitud máxima soportada: " + (currentSize.get() - STEP_SIZE) + " caracteres");
                     break;
                 }
             }
