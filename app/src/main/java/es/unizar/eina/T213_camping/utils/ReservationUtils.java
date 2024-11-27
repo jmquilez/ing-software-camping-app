@@ -5,6 +5,7 @@ import static android.app.Activity.RESULT_OK;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,7 +57,9 @@ public class ReservationUtils {
                 return;
             }
             
+            Log.d("NOTIFYCLIENT", "EntryDate: " + entryDate.toString() + ", departureDate: " + departureDate.toString());
             String error = DateUtils.validateDates(entryDate, departureDate);
+            Log.d("NOTIFYCLIENT", "Error: " + error);
             if (error != null) {
                 DialogUtils.showErrorDialog(context, "La fecha de salida debe ser posterior a la de entrada");
                 return;
@@ -80,12 +83,18 @@ public class ReservationUtils {
         String phoneNumber = "";
         String clientName = "";
         List<ParcelaOccupancy> parcelas = new ArrayList<>();
+
+        // To make sure dates aren't null
+        Date entryDate = new Date();
+        Date departureDate = new Date();
         
         if (activity instanceof ModifyReservationActivity) {
             ModifyReservationActivity act = (ModifyReservationActivity) activity;
             phoneNumber = act.getClientPhone();
             clientName = act.getClientName();
             parcelas = act.getSelectedParcels();
+            entryDate = act.getCheckInDate();
+            departureDate = act.getCheckOutDate();
         } else if (activity instanceof ParcelSelectionActivity) {
             ParcelSelectionActivity act = (ParcelSelectionActivity) activity;
             phoneNumber = act.getClientPhone();
