@@ -65,8 +65,8 @@ public class ParcelUtils {
                 // Rest of validations
                 try {
                     int occupants = Integer.parseInt(maxOccupantsInput.getText().toString().trim());
-                    if (occupants <= 0) {
-                        showError(context, errorMessage, "El número máximo de ocupantes debe ser mayor que cero.");
+                    if (occupants <= 0 || occupants > 999) {
+                        showError(context, errorMessage, "El número máximo de ocupantes debe estar entre 1 y 999.");
                         callback.onValidationResult(false);
                         return;
                     }
