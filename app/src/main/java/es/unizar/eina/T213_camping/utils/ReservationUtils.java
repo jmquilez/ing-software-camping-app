@@ -103,6 +103,8 @@ public class ReservationUtils {
             entryDate = act.getCheckInDate();
             departureDate = act.getCheckOutDate();
         }
+
+        Log.d("RESERVATIONUTILS > sendMessage", "entryDate: " + entryDate + ", departureDate: " + departureDate);
         
         // Construir el mensaje
         StringBuilder messageBuilder = new StringBuilder();
@@ -126,7 +128,7 @@ public class ReservationUtils {
         
         try {
             sender.send(phoneNumber, message);
-            Toast.makeText(context, "Mensaje enviado con éxito", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Enviando mensaje...", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(context, "Error al enviar el mensaje", Toast.LENGTH_SHORT).show();
         }

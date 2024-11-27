@@ -95,14 +95,6 @@ public class DateUtils {
             return "Por favor, seleccione ambas fechas";
         }
 
-        // Get current date and set all time components to start of day
-        Calendar currentCal = Calendar.getInstance();
-        currentCal.set(Calendar.HOUR_OF_DAY, 0);
-        currentCal.set(Calendar.MINUTE, 0);
-        currentCal.set(Calendar.SECOND, 0);
-        currentCal.set(Calendar.MILLISECOND, 0);
-        Date currentDate = currentCal.getTime();
-
         // Set check-in date to start of day for comparison
         Calendar checkInCal = Calendar.getInstance();
         checkInCal.setTime(checkInDate);
@@ -111,10 +103,6 @@ public class DateUtils {
         checkInCal.set(Calendar.SECOND, 0);
         checkInCal.set(Calendar.MILLISECOND, 0);
         checkInDate = checkInCal.getTime();
-        
-        if (checkInDate.before(currentDate)) {
-            return "La fecha de entrada no puede ser anterior al día actual";
-        }
 
         // Calculate difference in days using normalized dates
         Calendar checkOutCal = Calendar.getInstance();
