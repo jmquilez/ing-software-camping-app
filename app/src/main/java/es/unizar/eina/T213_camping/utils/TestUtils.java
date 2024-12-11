@@ -122,4 +122,380 @@ public class TestUtils {
             Log.e(TAG, "Error al limpiar datos de prueba: " + e.getMessage());
         }
     }
+
+    public static void testInsertarParcela1(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+
+    public static void testInsertarParcela2(){
+        Parcela parcela = new Parcela(
+            null,
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+
+    public static void testInsertarParcela3(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada".repeat(60),
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+
+    public static void testInsertarParcela4(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela2 = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+        parcelaRepository.insert(parcela2);
+    }
+    public static void testInsertarParcela5(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            null,
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+    public static void testInsertarParcela6(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal".repeat(300),
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+    public static void testInsertarParcela7(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            null,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+    public static void testInsertarParcela8(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            -1,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+    public static void testInsertarParcela9(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            100000,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+    public static void testInsertarParcela10(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            null
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+    public static void testInsertarParcela11(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            -1
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+
+    public static void testInsertarParcela12(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            100000
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+    }
+
+    public static void testModificarParcela1(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela2(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            null,
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela3(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada".repeat(60),
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela4(){
+        Parcela parcela2 = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela5(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            null,
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela6(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal".repeat(300),
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela7(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            null,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela8(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            -1,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela9(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            100000,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela10(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            null
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela11(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            -1.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testModificarParcela12(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            100000.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.update(parcela);
+    }
+
+    public static void testEliminarParcela1(){
+        Parcela parcela = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcela);
+        parcelaRepository.delete(parcela);
+    }
+
+    public static void testEliminarParcela2(){
+        Parcela parcelaOrig = new Parcela(
+            "Fuenlabrada",
+            "costal",
+            15,
+            60.0
+        );
+        Parcela parcela = new Parcela(
+            null,
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.insert(parcelaOrig);
+        parcelaRepository.delete(parcela);
+    }
+
+    public static void testEliminarParcela3(){
+        Parcela parcela = new Parcela(
+            "hola",
+            "costal",
+            15,
+            60.0
+        );
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        parcelaRepository.delete(parcela);
+    }
 } 

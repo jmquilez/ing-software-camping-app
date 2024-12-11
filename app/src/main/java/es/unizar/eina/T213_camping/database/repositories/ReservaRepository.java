@@ -79,8 +79,15 @@ public class ReservaRepository {
      * La operación se realiza de forma asíncrona.
      * @param reserva Reserva con los datos actualizados
      */
-    public void update(Reserva reserva) {
-        executorService.execute(() -> mReservaDao.update(reserva));
+    public long update(Reserva reserva) {
+        Future<Long>  future = AppDatabase.databaseWriteExecutor.submit(
+            () -> mReservaDao.update(reserva));
+        try {
+            return future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.d("ReservaRepository", e.getClass().getSimpleName() + ex.getMessage());
+            return -1;
+        }
     }
 
     /**
@@ -89,7 +96,14 @@ public class ReservaRepository {
      * @param reserva Reserva a eliminar
      */
     public void delete(Reserva reserva) {
-        executorService.execute(() -> mReservaDao.delete(reserva));
+        Future<Long>  future = AppDatabase.databaseWriteExecutor.submit(
+            () -> mReservaDao.delete(reserva));
+        try {
+            return future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.d("ReservaRepository", e.getClass().getSimpleName() + ex.getMessage());
+            return -1;
+        }       
     }
 
     /**

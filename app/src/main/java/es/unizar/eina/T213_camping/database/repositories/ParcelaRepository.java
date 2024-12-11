@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
@@ -51,8 +52,14 @@ public class ParcelaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcela Parcela a insertar
      */
-    public void insert(Parcela parcela) {
-        executorService.execute(() -> parcelaDao.insert(parcela));
+    public long insert(Parcela parcela) {
+        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(() -> parcelaDao.insert(parcela));
+        try {
+            return future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.d("ParcelaRepository", e.getClass().getSimpleName() + ex.getMessage());
+            return -1;
+        }
     }
 
     /**
@@ -68,8 +75,14 @@ public class ParcelaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcela Parcela con los datos actualizados
      */
-    public void update(Parcela parcela) {
-        executorService.execute(() -> parcelaDao.update(parcela));
+    public long update(Parcela parcela) {
+        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(() -> parcelaDao.update(parcela));
+        try {
+            return future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.d("ParcelaRepository", e.getClass().getSimpleName() + ex.getMessage());
+            return -1;
+        }
     }
 
     /**
@@ -77,8 +90,14 @@ public class ParcelaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcela Parcela a eliminar
      */
-    public void delete(Parcela parcela) {
-        executorService.execute(() -> parcelaDao.delete(parcela));
+    public long delete(Parcela parcela) {
+        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(() -> parcelaDao.delete(parcela));
+        try {
+            return future.get(TIMEOUT, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            Log.d("ParcelaRepository", e.getClass().getSimpleName() + ex.getMessage());
+            return -1;
+        }
     }
 
     /**
