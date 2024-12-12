@@ -19,7 +19,7 @@ public interface ParcelaDao {
      * @param parcela Parcela a insertar
      */
     @Insert
-    void insert(Parcela parcela);
+    long insert(Parcela parcela);
 
     /** 
      * Obtiene todas las parcelas ordenadas por defecto.
@@ -33,20 +33,20 @@ public interface ParcelaDao {
      * @param parcela Parcela con los datos actualizados
      */
     @Update
-    void update(Parcela parcela);
+    int update(Parcela parcela);
 
     /** 
      * Elimina una parcela de la base de datos.
      * @param parcela Parcela a eliminar
      */
     @Delete
-    void delete(Parcela parcela);
+    int delete(Parcela parcela);
 
     /** 
      * Elimina todas las parcelas de la base de datos.
      */
     @Query("DELETE FROM parcela")
-    void deleteAll();
+    int deleteAll();
 
     /** 
      * Obtiene las parcelas que no están reservadas.
@@ -78,7 +78,7 @@ public interface ParcelaDao {
      * @param nombre Nombre de la parcela a eliminar
      */
     @Query("DELETE FROM parcela WHERE nombre = :nombre")
-    void deleteByNombre(String nombre);
+    int deleteByNombre(String nombre);
 
     /** 
      * Verifica si una parcela con el nombre dado existe en la base de datos.

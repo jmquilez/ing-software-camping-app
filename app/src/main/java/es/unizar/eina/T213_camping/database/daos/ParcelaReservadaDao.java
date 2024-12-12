@@ -22,7 +22,7 @@ public interface ParcelaReservadaDao {
      * @param parcelaReservada ParcelaReservada a insertar
      */
     @Insert
-    void insert(ParcelaReservada parcelaReservada);
+    long insert(ParcelaReservada parcelaReservada);
 
     /** 
      * Obtiene todas las relaciones parcela-reserva.
@@ -44,14 +44,14 @@ public interface ParcelaReservadaDao {
      * @param parcelaReservada ParcelaReservada con los datos actualizados
      */
     @Update
-    void update(ParcelaReservada parcelaReservada);
+    int update(ParcelaReservada parcelaReservada);
 
     /** 
      * Elimina una relación parcela-reserva.
      * @param parcelaReservada ParcelaReservada a eliminar
      */
     @Delete
-    void delete(ParcelaReservada parcelaReservada);
+    int delete(ParcelaReservada parcelaReservada);
 
     /** 
      * Elimina todas las relaciones parcela-reserva.
@@ -72,7 +72,7 @@ public interface ParcelaReservadaDao {
      * @param reservationId ID de la reserva
      */
     @Query("DELETE FROM parcela_reservada WHERE reservaId = :reservationId")
-    void deleteParcelasForReservation(long reservationId);
+    int deleteParcelasForReservation(long reservationId);
 
     /** 
      * Obtiene las parcelas disponibles en un intervalo de fechas.
@@ -112,5 +112,5 @@ public interface ParcelaReservadaDao {
      * @param newName Nuevo nombre de la parcela
      */
     @Query("UPDATE parcela_reservada SET parcelaNombre = :newName WHERE parcelaNombre = :oldName")
-    void updateParcelaNombre(String oldName, String newName);
+    int updateParcelaNombre(String oldName, String newName);
 }

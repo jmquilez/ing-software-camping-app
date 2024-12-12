@@ -4,6 +4,7 @@ import androidx.room.TypeConverter;
 import java.util.Date;
 
 public class DateConverter {
+    // Note: See https://betulnecanli.medium.com/how-to-store-date-in-room-database-d06dec3a2d7e
     @TypeConverter
     public static Date fromTimestamp(Long value) {
         return value == null ? null : new Date(value);

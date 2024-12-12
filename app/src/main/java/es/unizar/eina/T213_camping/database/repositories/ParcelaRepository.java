@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
@@ -21,20 +23,22 @@ import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
  */
 public class ParcelaRepository {
 
+    private static final long TIMEOUT = 3000; // 3 seconds in milliseconds
+
     /**
      * DAO para acceder a las operaciones de parcelas en la base de datos.
      */
-    private ParcelaDao parcelaDao;
+    private final ParcelaDao parcelaDao;
 
     /**
      * DAO para acceder a las operaciones de parcelas reservadas en la base de datos.
      */
-    private ParcelaReservadaDao parcelaReservadaDao;
+    private final ParcelaReservadaDao parcelaReservadaDao;
 
     /**
      * Servicio ejecutor para realizar operaciones asíncronas.
      */
-    private ExecutorService executorService;
+    private final ExecutorService executorService;
 
     /**
      * Constructor del repositorio.
@@ -53,12 +57,19 @@ public class ParcelaRepository {
      * @param parcela Parcela a insertar
      */
     public long insert(Parcela parcela) {
-        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(() -> parcelaDao.insert(parcela));
+        Future<Long> future = executorService.submit(() -> parcelaDao.insert(parcela));
         try {
-            return future.get(TIMEOUT, TimeUnit.SECONDS);
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Log.e("ParcelaRepository", "Insert interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ParcelaRepository", "Insert timed out: " + e.getMessage());
+            return -2L;
         } catch (Exception e) {
-            Log.d("ParcelaRepository", e.getClass().getSimpleName() + ex.getMessage());
-            return -1;
+            Log.e("ParcelaRepository", "Error inserting: " + e.getMessage());
+            return -3L;
         }
     }
 
@@ -75,13 +86,20 @@ public class ParcelaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcela Parcela con los datos actualizados
      */
-    public long update(Parcela parcela) {
-        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(() -> parcelaDao.update(parcela));
+    public Long update(Parcela parcela) {
+        Future<Integer> future = executorService.submit(() -> parcelaDao.update(parcela));
         try {
-            return future.get(TIMEOUT, TimeUnit.SECONDS);
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ParcelaRepository", "Update interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ParcelaRepository", "Update timed out: " + e.getMessage());
+            return -2L;
         } catch (Exception e) {
-            Log.d("ParcelaRepository", e.getClass().getSimpleName() + ex.getMessage());
-            return -1;
+            Log.e("ParcelaRepository", "Error updating: " + e.getMessage());
+            return -3L;
         }
     }
 
@@ -90,13 +108,20 @@ public class ParcelaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcela Parcela a eliminar
      */
-    public long delete(Parcela parcela) {
-        Future<Long> future = AppDatabase.databaseWriteExecutor.submit(() -> parcelaDao.delete(parcela));
+    public Long delete(Parcela parcela) {
+        Future<Integer> future = executorService.submit(() -> parcelaDao.delete(parcela));
         try {
-            return future.get(TIMEOUT, TimeUnit.SECONDS);
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ParcelaRepository", "Delete interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ParcelaRepository", "Delete timed out: " + e.getMessage());
+            return -2L;
         } catch (Exception e) {
-            Log.d("ParcelaRepository", e.getClass().getSimpleName() + ex.getMessage());
-            return -1;
+            Log.e("ParcelaRepository", "Error deleting: " + e.getMessage());
+            return -3L;
         }
     }
 
@@ -131,8 +156,21 @@ public class ParcelaRepository {
      * La operación se realiza de forma asíncrona.
      * @param nombre Nombre de la parcela a eliminar
      */
-    public void deleteByNombre(String nombre) {
-        executorService.execute(() -> parcelaDao.deleteByNombre(nombre));
+    public Long deleteByNombre(String nombre) {
+        Future<Integer> future = executorService.submit(() -> parcelaDao.deleteByNombre(nombre));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ParcelaRepository", "DeleteByNombre interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ParcelaRepository", "DeleteByNombre timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Log.e("ParcelaRepository", "Error deleting by nombre: " + e.getMessage());
+            return -3L;
+        }
     }
 
     public boolean exists(String nombre) {

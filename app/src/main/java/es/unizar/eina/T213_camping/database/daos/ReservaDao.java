@@ -34,25 +34,25 @@ public interface ReservaDao {
      * @param reserva Reserva con los datos actualizados
      */
     @Update
-    void update(Reserva reserva);
+    int update(Reserva reserva);
 
     /** 
      * Elimina una reserva de la base de datos.
      * @param reserva Reserva a eliminar
      */
     @Delete
-    void delete(Reserva reserva);
+    int delete(Reserva reserva);
 
     /** 
      * Elimina todas las reservas de la base de datos.
      */
     @Query("DELETE FROM reserva")
-    void deleteAll();
+    int deleteAll();
 
     /** 
      * Elimina una reserva por su ID.
      * @param reservationId ID de la reserva a eliminar
      */
     @Query("DELETE FROM reserva WHERE id = :reservationId")
-    void deleteById(long reservationId);
+    int deleteById(long reservationId);
 }

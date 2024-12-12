@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.ColumnInfo;
 import androidx.room.Index;
+import androidx.room.IntRange;
 
 /**
  * Representa la relación entre una parcela y una reserva.
@@ -49,6 +50,7 @@ public class ParcelaReservada {
      */
     @NonNull
     @ColumnInfo(name = "numOcupantes")
+    @IntRange(from = 1, to = 999)
     private Integer numOcupantes;
 
     /**

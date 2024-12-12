@@ -6,6 +6,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
@@ -18,15 +21,9 @@ import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
  */
 public class ParcelaReservadaRepository {
 
-    /**
-     * DAO para acceder a las operaciones de parcelas reservadas en la base de datos.
-     */
-    private ParcelaReservadaDao parcelaReservadaDao;
-
-    /**
-     * Servicio ejecutor para realizar operaciones asíncronas.
-     */
-    private ExecutorService executorService;
+    private static final long TIMEOUT = 3000; // 3 seconds in milliseconds
+    private final ParcelaReservadaDao parcelaReservadaDao;
+    private final ExecutorService executorService;
 
     /**
      * Constructor del repositorio.
@@ -43,8 +40,21 @@ public class ParcelaReservadaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcelaReservada ParcelaReservada a insertar
      */
-    public void insert(ParcelaReservada parcelaReservada) {
-        executorService.execute(() -> parcelaReservadaDao.insert(parcelaReservada));
+    public long insert(ParcelaReservada parcelaReservada) {
+        Future<Long> future = executorService.submit(() -> parcelaReservadaDao.insert(parcelaReservada));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Insert interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Insert timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error inserting: " + e.getMessage());
+            return -3L;
+        }
     }
 
     /**
@@ -69,8 +79,21 @@ public class ParcelaReservadaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcelaReservada ParcelaReservada con los datos actualizados
      */
-    public void update(ParcelaReservada parcelaReservada) {
-        executorService.execute(() -> parcelaReservadaDao.update(parcelaReservada));
+    public Long update(ParcelaReservada parcelaReservada) {
+        Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.update(parcelaReservada));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Update interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Update timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error updating: " + e.getMessage());
+            return -3L;
+        }
     }
 
     /**
@@ -78,8 +101,21 @@ public class ParcelaReservadaRepository {
      * La operación se realiza de forma asíncrona.
      * @param parcelaReservada ParcelaReservada a eliminar
      */
-    public void delete(ParcelaReservada parcelaReservada) {
-        executorService.execute(() -> parcelaReservadaDao.delete(parcelaReservada));
+    public Long delete(ParcelaReservada parcelaReservada) {
+        Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.delete(parcelaReservada));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Delete interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Delete timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error deleting: " + e.getMessage());
+            return -3L;
+        }
     }
 
     /**
@@ -120,5 +156,50 @@ public class ParcelaReservadaRepository {
      */
     public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervaloExcludingReservation(Date startDate, Date endDate, long excludeReservationId) {
         return parcelaReservadaDao.getParcelasDisponiblesEnIntervaloExcludingReservation(startDate, endDate, excludeReservationId);
+    }
+
+    /**
+     * Elimina las parcelas asociadas a una reserva.
+     * La operación se realiza de forma asíncrona.
+     * @param reservationId ID de la reserva
+     */
+    public Long deleteParcelasForReservation(long reservationId) {
+        Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.deleteParcelasForReservation(reservationId));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("DeleteForReservation interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("DeleteForReservation timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error deleting for reservation: " + e.getMessage());
+            return -3L;
+        }
+    }
+
+    /**
+     * Actualiza el nombre de una parcela.
+     * La operación se realiza de forma asíncrona.
+     * @param oldName Nombre actual de la parcela
+     * @param newName Nuevo nombre de la parcela
+     */
+    public Long updateParcelaNombre(String oldName, String newName) {
+        Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.updateParcelaNombre(oldName, newName));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("UpdateNombre interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("UpdateNombre timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error updating nombre: " + e.getMessage());
+            return -3L;
+        }
     }
 }

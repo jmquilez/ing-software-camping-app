@@ -1,6 +1,8 @@
 package es.unizar.eina.T213_camping.database.repositories;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -8,6 +10,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ReservaDao;
@@ -19,10 +23,12 @@ import es.unizar.eina.T213_camping.database.models.Reserva;
  */
 public class ReservaRepository {
 
+    private static final long TIMEOUT = 3000;
+
     /**
      * DAO para acceder a las operaciones de reservas en la base de datos.
      */
-    private ReservaDao mReservaDao;
+    private final ReservaDao mReservaDao;
 
     /**
      * LiveData que contiene todas las reservas.
@@ -32,7 +38,7 @@ public class ReservaRepository {
     /**
      * Servicio ejecutor para realizar operaciones asíncronas.
      */
-    private ExecutorService executorService;
+    private final ExecutorService executorService;
 
     /**
      * Constructor del repositorio.
@@ -51,18 +57,19 @@ public class ReservaRepository {
      * @return ID generado para la nueva reserva, o -1 si ocurre un error
      */
     public long insert(Reserva reserva) {
-        Future<Long> future = executorService.submit(new Callable<Long>() {
-            @Override
-            public Long call() throws Exception {
-                return mReservaDao.insert(reserva);
-            }
-        });
-
+        Future<Long> future = executorService.submit(() -> mReservaDao.insert(reserva));
         try {
-            return future.get(); // Espera el resultado
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-            return -1;
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            Log.e("ReservaRepository", "Insert interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt(); // Restore interrupted status
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ReservaRepository", "Insert timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Log.e("ReservaRepository", "Error inserting: " + e.getMessage());
+            return -3L;
         }
     }
 
@@ -79,14 +86,20 @@ public class ReservaRepository {
      * La operación se realiza de forma asíncrona.
      * @param reserva Reserva con los datos actualizados
      */
-    public long update(Reserva reserva) {
-        Future<Long>  future = AppDatabase.databaseWriteExecutor.submit(
-            () -> mReservaDao.update(reserva));
+    public Long update(Reserva reserva) {
+        Future<Integer> future = executorService.submit(() -> mReservaDao.update(reserva));
         try {
-            return future.get(TIMEOUT, TimeUnit.SECONDS);
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ReservaRepository", "Update interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ReservaRepository", "Update timed out: " + e.getMessage());
+            return -2L;
         } catch (Exception e) {
-            Log.d("ReservaRepository", e.getClass().getSimpleName() + ex.getMessage());
-            return -1;
+            Log.e("ReservaRepository", "Error updating: " + e.getMessage());
+            return -3L;
         }
     }
 
@@ -95,15 +108,21 @@ public class ReservaRepository {
      * La operación se realiza de forma asíncrona.
      * @param reserva Reserva a eliminar
      */
-    public void delete(Reserva reserva) {
-        Future<Long>  future = AppDatabase.databaseWriteExecutor.submit(
-            () -> mReservaDao.delete(reserva));
+    public Long delete(Reserva reserva) {
+        Future<Integer> future = executorService.submit(() -> mReservaDao.delete(reserva));
         try {
-            return future.get(TIMEOUT, TimeUnit.SECONDS);
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ReservaRepository", "Delete interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ReservaRepository", "Delete timed out: " + e.getMessage());
+            return -2L;
         } catch (Exception e) {
-            Log.d("ReservaRepository", e.getClass().getSimpleName() + ex.getMessage());
-            return -1;
-        }       
+            Log.e("ReservaRepository", "Error deleting: " + e.getMessage());
+            return -3L;
+        }
     }
 
     /**
@@ -111,7 +130,42 @@ public class ReservaRepository {
      * La operación se realiza de forma asíncrona.
      * @param reservationId ID de la reserva a eliminar
      */
-    public void deleteById(long reservationId) {
-        executorService.execute(() -> mReservaDao.deleteById(reservationId));
+    public Long deleteById(long reservationId) {
+        Future<Integer> future = executorService.submit(() -> mReservaDao.deleteById(reservationId));
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ReservaRepository", "DeleteById interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ReservaRepository", "DeleteById timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Log.e("ReservaRepository", "Error deleting by id: " + e.getMessage());
+            return -3L;
+        }
+    }
+
+    /**
+     * Elimina todas las reservas de la base de datos.
+     * La operación se realiza de forma asíncrona.
+     * @return Número de reservas eliminadas
+     */
+    public Long deleteAll() {
+        Future<Integer> future = executorService.submit(() -> mReservaDao.deleteAll());
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
+        } catch (InterruptedException e) {
+            Log.e("ReservaRepository", "DeleteAll interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+            return -1L;
+        } catch (TimeoutException e) {
+            Log.e("ReservaRepository", "DeleteAll timed out: " + e.getMessage());
+            return -2L;
+        } catch (Exception e) {
+            Log.e("ReservaRepository", "Error deleting all: " + e.getMessage());
+            return -3L;
+        }
     }
 }

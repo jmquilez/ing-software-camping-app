@@ -5,12 +5,24 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.util.Date;
+import androidx.annotation.IntRange;
+import androidx.annotation.Size;
+import androidx.room.Index;
+import androidx.room.Check;
 
+// TODO: longitud de `precio`?
 /**
  * Representa una reserva en el camping.
  * Almacena la información relacionada con una reserva específica, incluyendo datos del cliente y fechas.
  */
-@Entity(tableName = "reserva")
+@Entity(
+    tableName = "reserva",
+    indices = {@Index("id")},
+    // Ensure fechaEntrada is before fechaSalida
+    checks = {
+        @Check(constraint = "CAST(fechaEntrada AS INTEGER) < CAST(fechaSalida AS INTEGER)")
+    }
+)
 public class Reserva {
 
     /**
@@ -18,6 +30,8 @@ public class Reserva {
      */
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
+    @NonNull
+    @IntRange(from = 1, to = 9999)
     private long id;
 
     /**
@@ -25,6 +39,7 @@ public class Reserva {
      */
     @NonNull
     @ColumnInfo(name = "nombreCliente")
+    @Size(max = 40)
     private String nombreCliente;
 
     /**
@@ -46,6 +61,7 @@ public class Reserva {
      */
     @NonNull
     @ColumnInfo(name = "telefonoCliente")
+    @Size(max = 15)
     private String telefonoCliente;
 
     /**
@@ -70,7 +86,8 @@ public class Reserva {
      * Obtiene el ID único de la reserva.
      * @return ID de la reserva
      */
-    public long getId() {
+    @NonNull
+    public Long getId() {
         return id;
     }
 
@@ -78,7 +95,7 @@ public class Reserva {
      * Establece el ID de la reserva.
      * @param id Nuevo ID para la reserva
      */
-    public void setId(long id) { this.id = id; }
+    public void setId(@NonNull Long id) { this.id = id; }
 
     // NOTE: the id is immutable, it cannot be set
 

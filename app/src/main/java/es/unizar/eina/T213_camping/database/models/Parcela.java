@@ -6,6 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.IntRange;
+import androidx.room.FloatRange;
+import androidx.room.Size;
 
 /**
  * Representa una parcela en el camping.
@@ -19,6 +22,7 @@ public class Parcela implements Parcelable {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "nombre")
+    @Size(max = 60)
     private String nombre;
 
     /**
@@ -26,6 +30,7 @@ public class Parcela implements Parcelable {
      */
     @NonNull
     @ColumnInfo(name = "descripcion")
+    @Size(max = 300)
     private String descripcion;
 
     /**
@@ -33,6 +38,7 @@ public class Parcela implements Parcelable {
      */
     @NonNull
     @ColumnInfo(name = "maxOcupantes")
+    @IntRange(from = 1, to = 999)
     private Integer maxOcupantes;
 
     /**
@@ -40,6 +46,7 @@ public class Parcela implements Parcelable {
      */
     @NonNull
     @ColumnInfo(name = "eurPorPersona")
+    @FloatRange(from = 0.0, to = 999.0)
     private Double eurPorPersona;
 
     /**

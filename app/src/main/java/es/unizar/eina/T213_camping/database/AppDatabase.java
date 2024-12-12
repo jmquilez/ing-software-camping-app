@@ -70,7 +70,7 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Servicio ejecutor para operaciones asíncronas de escritura en la base de datos.
      */
-    static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+    public static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 
     /**
      * Callback que se ejecuta al crear la base de datos.
