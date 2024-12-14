@@ -268,4 +268,16 @@ public class ParcelaRepository {
             return -1;
         }
     }
+
+    /**
+     * Elimina todas las parcelas cuyos nombres empiezan con el prefijo dado.
+     * La operación se realiza de forma asíncrona.
+     * 
+     * @param prefix Prefijo de los nombres de las parcelas a eliminar
+     * @return Número de parcelas eliminadas (o -1 si hubo un error)
+     */
+    public Long deleteParcelasWithPrefix(String prefix) {
+        Future<Integer> future = executorService.submit(() -> parcelaDao.deleteParcelasWithPrefix(prefix));
+        return handleFutureResult(future, "DeleteParcelasWithPrefix");
+    }
 }

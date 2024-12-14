@@ -1,3 +1,157 @@
 <resources>
     <string name="app_name">Camping</string>
+    <!-- Test Categories -->
+    <string name="test_category_individual">// Tests Individuales</string>
+    <string name="test_category_batch">// Tests por Lotes</string>
+    <string name="test_category_complete">// Tests Completos</string>
+    <string name="test_category_system">// Pruebas de Sistema</string>
+
+    <!-- Test Options -->
+    <string name="test_individual_title">Tests Individuales (Parcelas, Reservas y Parcelas Reservadas)</string>
+    <string name="test_parcelas_title">Tests de Parcelas (Inserción, Modificación y Eliminación)</string>
+    <string name="test_reservas_title">Tests de Reservas (Inserción, Modificación y Eliminación)</string>
+    <string name="test_parcelas_reservadas_title">Tests de Parcelas Reservadas (Inserción, Modificación y Eliminación)</string>
+    <string name="test_all_title">Todos los Tests Unitarios</string>
+    <string name="test_volume_title">Prueba de Volumen (1000 parcelas, 10000 reservas)</string>
+    <string name="test_stress_title">Prueba de Sobrecarga (Límite de caracteres)</string>
+
+    <!-- Dialog Messages -->
+    <string name="dialog_test_select_type">Seleccione tipo de prueba</string>
+    <string name="dialog_test_select_unit">Seleccione prueba unitaria</string>
+    <string name="dialog_loading_volume">Ejecutando prueba de volumen…</string>
+    <string name="dialog_loading_stress">Ejecutando prueba de sobrecarga…</string>
+    <string name="dialog_confirm_parcelas">¿Desea ejecutar todos los tests de parcelas?</string>
+    <string name="dialog_confirm_reservas">¿Desea ejecutar todos los tests de reservas?</string>
+    <string name="dialog_confirm_parcelas_reservadas">¿Desea ejecutar todos los tests de parcelas reservadas?</string>
+    <string name="dialog_confirm_all">¿Desea ejecutar todos los tests unitarios?</string>
+    <string name="dialog_confirm_volume">¿Desea ejecutar la prueba de volumen? Esta operación puede tardar varios minutos.</string>
+    <string name="dialog_confirm_stress">¿Desea ejecutar la prueba de sobrecarga? Esta operación puede causar inestabilidad en la aplicación.</string>
+
+    <!-- Success Messages -->
+    <string name="test_success">Test ejecutado correctamente</string>
+    <string name="test_volume_success">Prueba de volumen completada exitosamente</string>
+    <string name="test_stress_success">Prueba de sobrecarga completada exitosamente</string>
+    <string name="test_parcelas_success">Tests de parcelas completados con éxito</string>
+    <string name="test_reservas_success">Tests de reservas completados con éxito</string>
+    <string name="test_parcelas_reservadas_success">Tests de parcelas reservadas completados con éxito</string>
+
+    <!-- Error Messages -->
+    <string name="test_failed">El test ha fallado</string>
+    <string name="test_volume_failed">La prueba de volumen ha fallado</string>
+    <string name="test_stress_failed">La prueba de sobrecarga ha fallado</string>
+    <string name="test_error">Error al ejecutar el test: %1$s</string>
+    <string name="test_parcelas_error">Error en tests de parcelas: %1$s</string>
+    <string name="test_reservas_error">Error en tests de reservas: %1$s</string>
+    <string name="test_parcelas_reservadas_error">Error en tests de parcelas reservadas: %1$s</string>
+    <string name="test_error_type">Error en test de %1$s de %2$s %3$d</string>
+
+    <!-- Test Types -->
+    <string name="test_type_insercion">Inserción</string>
+    <string name="test_type_modificacion">Modificación</string>
+    <string name="test_type_eliminacion">Eliminación</string>
+
+    <!-- Entity Names -->
+    <string name="entity_parcela">Parcela</string>
+    <string name="entity_reserva">Reserva</string>
+    <string name="entity_parcela_reservada">Parcela Reservada</string>
+
+    <!-- Test Options - Parcelas -->
+    <string name="test_insert_parcela_1">Test Insertar Parcela 1 (Caso válido - Clases 1-9)</string>
+    <string name="test_insert_parcela_2">Test Insertar Parcela 2 (Nombre null - Clase 10)</string>
+    <string name="test_insert_parcela_3">Test Insertar Parcela 3 (Nombre muy largo - Clase 11)</string>
+    <string name="test_insert_parcela_4">Test Insertar Parcela 4 (Nombre vacío - Clase 12)</string>
+    <string name="test_insert_parcela_5">Test Insertar Parcela 5 (Parcela duplicada - Clase 13)</string>
+    <string name="test_insert_parcela_6">Test Insertar Parcela 6 (Descripción null - Clase 14)</string>
+    <string name="test_insert_parcela_7">Test Insertar Parcela 7 (Descripción muy larga - Clase 15)</string>
+    <string name="test_insert_parcela_8">Test Insertar Parcela 8 (Ocupantes null - Clase 16)</string>
+    <string name="test_insert_parcela_9">Test Insertar Parcela 9 (Ocupantes negativos - Clase 17)</string>
+    <string name="test_insert_parcela_10">Test Insertar Parcela 10 (Ocupantes muy grandes - Clase 18)</string>
+    <string name="test_insert_parcela_11">Test Insertar Parcela 11 (Precio null - Clase 19)</string>
+    <string name="test_insert_parcela_12">Test Insertar Parcela 12 (Precio negativo - Clase 20)</string>
+    <string name="test_insert_parcela_13">Test Insertar Parcela 13 (Precio muy grande - Clase 21)</string>
+
+    <!-- Modify tests -->
+    <string name="test_modify_parcela_1">Test Modificar Parcela 1 (Caso válido - Clases 1-9)</string>
+    <string name="test_modify_parcela_2">Test Modificar Parcela 2 (Nombre null - Clase 10)</string>
+    <string name="test_modify_parcela_3">Test Modificar Parcela 3 (Nombre muy largo - Clase 11)</string>
+    <string name="test_modify_parcela_4">Test Modificar Parcela 4 (Nombre vacío - Clase 12)</string>
+    <string name="test_modify_parcela_5">Test Modificar Parcela 5 (Parcela inexistente - Clase 13)</string>
+    <string name="test_modify_parcela_6">Test Modificar Parcela 6 (Descripción null - Clase 14)</string>
+    <string name="test_modify_parcela_7">Test Modificar Parcela 7 (Descripción muy larga - Clase 15)</string>
+    <string name="test_modify_parcela_8">Test Modificar Parcela 8 (Ocupantes null - Clase 16)</string>
+    <string name="test_modify_parcela_9">Test Modificar Parcela 9 (Ocupantes negativos - Clase 17)</string>
+    <string name="test_modify_parcela_10">Test Modificar Parcela 10 (Ocupantes muy grandes - Clase 18)</string>
+    <string name="test_modify_parcela_11">Test Modificar Parcela 11 (Precio null - Clase 19)</string>
+    <string name="test_modify_parcela_12">Test Modificar Parcela 12 (Precio negativo - Clase 20)</string>
+    <string name="test_modify_parcela_13">Test Modificar Parcela 13 (Precio muy grande - Clase 21)</string>
+
+    <!-- Delete tests -->
+    <string name="test_delete_parcela_1">Test Eliminar Parcela 1 (Caso válido - Clases 1,2)</string>
+    <string name="test_delete_parcela_2">Test Eliminar Parcela 2 (Nombre null - Clase 3)</string>
+    <string name="test_delete_parcela_3">Test Eliminar Parcela 3 (Parcela inexistente - Clase 4)</string>
+
+    <!-- Test Options - Reservas -->
+    <string name="test_insert_reserva_1">Test Insertar Reserva 1 (Caso válido - Clases 1-12)</string>
+    <string name="test_insert_reserva_2">Test Insertar Reserva 2 (ID null - Clase 13)</string>
+    <string name="test_insert_reserva_3">Test Insertar Reserva 3 (ID muy grande - Clase 14)</string>
+    <string name="test_insert_reserva_4">Test Insertar Reserva 4 (ID cero - Clase 15)</string>
+    <string name="test_insert_reserva_5">Test Insertar Reserva 5 (ID duplicado - Clase 16)</string>
+    <string name="test_insert_reserva_6">Test Insertar Reserva 6 (Nombre cliente null - Clase 17)</string>
+    <string name="test_insert_reserva_7">Test Insertar Reserva 7 (Nombre cliente cadena vacía - Clase 18)</string>
+    <string name="test_insert_reserva_8">Test Insertar Reserva 8 (Nombre cliente muy largo - Clase 19)</string>
+    <string name="test_insert_reserva_9">Test Insertar Reserva 9 (Fecha entrada null - Clase 20)</string>
+    <string name="test_insert_reserva_10">Test Insertar Reserva 10 (Fecha salida anterior - Clase 21)</string>
+    <string name="test_insert_reserva_11">Test Insertar Reserva 11 (Fecha salida null - Clase 22)</string>
+    <string name="test_insert_reserva_12">Test Insertar Reserva 12 (Teléfono null - Clase 23)</string>
+    <string name="test_insert_reserva_13">Test Insertar Reserva 13 (Teléfono inválido - Clase 24)</string>
+    <string name="test_insert_reserva_14">Test Insertar Reserva 14 (Precio null - Clase 25)</string>
+    <string name="test_insert_reserva_15">Test Insertar Reserva 15 (Precio cero - Clase 26)</string>
+    <string name="test_insert_reserva_16">Test Insertar Reserva 16 (Precio muy grande - Clase 27)</string>
+
+    <!-- Modify tests -->
+    <string name="test_modify_reserva_1">Test Modificar Reserva 1 (Caso válido - Clases 1-12)</string>
+    <string name="test_modify_reserva_2">Test Modificar Reserva 2 (ID null - Clase 13)</string>
+    <string name="test_modify_reserva_3">Test Modificar Reserva 3 (ID muy grande - Clase 14)</string>
+    <string name="test_modify_reserva_4">Test Modificar Reserva 4 (ID cero - Clase 15)</string>
+    <string name="test_modify_reserva_5">Test Modificar Reserva 5 (ID inexistente - Clase 16)</string>
+    <string name="test_modify_reserva_6">Test Modificar Reserva 6 (Nombre cliente null - Clase 17)</string>
+    <string name="test_modify_reserva_7">Test Modificar Reserva 7 (Nombre cliente cadena vacía - Clase 18)</string>
+    <string name="test_modify_reserva_8">Test Modificar Reserva 8 (Nombre cliente muy largo - Clase 19)</string>
+    <string name="test_modify_reserva_9">Test Modificar Reserva 9 (Fecha entrada null - Clase 20)</string>
+    <string name="test_modify_reserva_10">Test Modificar Reserva 10 (Fecha salida anterior - Clase 21)</string>
+    <string name="test_modify_reserva_11">Test Modificar Reserva 11 (Fecha salida null - Clase 22)</string>
+    <string name="test_modify_reserva_12">Test Modificar Reserva 12 (Teléfono null - Clase 23)</string>
+    <string name="test_modify_reserva_13">Test Modificar Reserva 13 (Teléfono inválido - Clase 24)</string>
+    <string name="test_modify_reserva_14">Test Modificar Reserva 14 (Precio null - Clase 25)</string>
+    <string name="test_modify_reserva_15">Test Modificar Reserva 15 (Precio cero - Clase 26)</string>
+    <string name="test_modify_reserva_16">Test Modificar Reserva 16 (Precio muy grande - Clase 27)</string>
+
+    <!-- Delete tests -->
+    <string name="test_delete_reserva_1">Test Eliminar Reserva 1 (Caso válido - Clases 1,2)</string>
+    <string name="test_delete_reserva_2">Test Eliminar Reserva 2 (ID null - Clase 3)</string>
+    <string name="test_delete_reserva_3">Test Eliminar Reserva 3 (Reserva inexistente - Clase 4)</string>
+
+    <!-- Test Options - Parcelas Reservadas -->
+    <string name="test_insert_parcela_reservada_1">Test Insertar Parcela Reservada 1 (Caso válido - Clases 1-5)</string>
+    <string name="test_insert_parcela_reservada_2">Test Insertar Parcela Reservada 2 (Parcela inexistente - Clase 6)</string>
+    <string name="test_insert_parcela_reservada_3">Test Insertar Parcela Reservada 3 (Reserva inexistente - Clase 7)</string>
+    <string name="test_insert_parcela_reservada_4">Test Insertar Parcela Reservada 4 (Duplicada - Clase 8)</string>
+    <string name="test_insert_parcela_reservada_5">Test Insertar Parcela Reservada 5 (Ocupantes null - Clase 9)</string>
+    <string name="test_insert_parcela_reservada_6">Test Insertar Parcela Reservada 6 (Ocupantes cero - Clase 10)</string>
+    <string name="test_insert_parcela_reservada_7">Test Insertar Parcela Reservada 7 (Ocupantes muy grandes - Clase 11)</string>
+
+    <!-- Modify tests -->
+    <string name="test_modify_parcela_reservada_1">Test Modificar Parcela Reservada 1 (Caso válido - Clases 1-5)</string>
+    <string name="test_modify_parcela_reservada_2">Test Modificar Parcela Reservada 2 (Parcela inexistente - Clase 6)</string>
+    <string name="test_modify_parcela_reservada_3">Test Modificar Parcela Reservada 3 (Reserva inexistente - Clase 7)</string>
+    <string name="test_modify_parcela_reservada_4">Test Modificar Parcela Reservada 4 (Inexistente - Clase 8)</string>
+    <string name="test_modify_parcela_reservada_5">Test Modificar Parcela Reservada 5 (Ocupantes null - Clase 9)</string>
+    <string name="test_modify_parcela_reservada_6">Test Modificar Parcela Reservada 6 (Ocupantes cero - Clase 10)</string>
+    <string name="test_modify_parcela_reservada_7">Test Modificar Parcela Reservada 7 (Ocupantes muy grandes - Clase 11)</string>
+
+    <!-- Delete tests -->
+    <string name="test_delete_parcela_reservada_1">Test Eliminar Parcela Reservada 1 (Caso válido - Clases 1-3)</string>
+    <string name="test_delete_parcela_reservada_2">Test Eliminar Parcela Reservada 2 (Nombre null - Clase 4)</string>
+    <string name="test_delete_parcela_reservada_3">Test Eliminar Parcela Reservada 3 (ID Reserva null - Clase 5)</string>
+    <string name="test_delete_parcela_reservada_4">Test Eliminar Parcela Reservada 4 (Inexistente - Clase 6)</string>
 </resources>

@@ -118,4 +118,8 @@ public class ParcelaViewModel extends AndroidViewModel {
     public int getParcelasCount() {
         return mRepository.getParcelasCount();
     }
+
+    public void deleteParcelasWithPrefix(String prefix) {
+        mRepository.deleteParcelasWithPrefix(prefix);
+    }
 }

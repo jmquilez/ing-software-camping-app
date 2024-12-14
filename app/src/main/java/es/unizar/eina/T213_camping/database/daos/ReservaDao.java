@@ -70,4 +70,12 @@ public interface ReservaDao {
      */
     @Query("SELECT COUNT(*) FROM reserva")
     int countReservas();
+
+    /** 
+     * Elimina todas las reservas de la base de datos que tienen un nombreCliente que comienza con el prefijo especificado.
+     * @param prefix Prefijo del nombreCliente de la reserva a eliminar
+     * @return Número de reservas eliminadas
+     */
+    @Query("DELETE FROM reserva WHERE nombreCliente IN (SELECT nombreCliente FROM reserva WHERE CAST(nombreCliente AS TEXT) LIKE :prefix || '%')")
+    int deleteReservasWithClientNamePrefix(String prefix);
 }

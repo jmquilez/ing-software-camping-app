@@ -87,21 +87,21 @@ public class HomeActivity extends BaseActivity {
 
     private void showTestOptions() {
         String[] options = new String[] {
-            "// Tests Individuales",
-            "Tests Individuales (Parcelas, Reservas y Parcelas Reservadas)",
-            "// Tests por Lotes",
-            "Tests de Parcelas (Inserción, Modificación y Eliminación)",
-            "Tests de Reservas (Inserción, Modificación y Eliminación)",
-            "Tests de Parcelas Reservadas (Inserción, Modificación y Eliminación)",
-            "// Tests Completos",
-            "Todos los Tests Unitarios",
-            "// Pruebas de Sistema",
-            "Prueba de Volumen (1000 parcelas, 10000 reservas)",
-            "Prueba de Sobrecarga (Límite de caracteres)"
+            getString(R.string.test_category_individual),
+            getString(R.string.test_individual_title),
+            getString(R.string.test_category_batch),
+            getString(R.string.test_parcelas_title),
+            getString(R.string.test_reservas_title),
+            getString(R.string.test_parcelas_reservadas_title),
+            getString(R.string.test_category_complete),
+            getString(R.string.test_all_title),
+            getString(R.string.test_category_system),
+            getString(R.string.test_volume_title),
+            getString(R.string.test_stress_title)
         };
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle("Seleccione tipo de prueba");
+        builder.setTitle(getString(R.string.dialog_test_select_type));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.test_item, android.R.id.text1, options) {
             @Override
@@ -129,29 +129,29 @@ public class HomeActivity extends BaseActivity {
                         break;
                     case 3: // Tests de Parcelas
                         DialogUtils.showConfirmationDialog(this,
-                                "Tests de Parcelas",
-                                "¿Desea ejecutar todos los tests de parcelas?",
+                                getString(R.string.test_parcelas_title),
+                                getString(R.string.dialog_confirm_parcelas),
                                 R.drawable.ic_warning,
                                 () -> executeAllParcelTests(getApplication()));
                         break;
                     case 4: // Tests de Reservas
                         DialogUtils.showConfirmationDialog(this,
-                                "Tests de Reservas",
-                                "¿Desea ejecutar todos los tests de reservas?",
+                                getString(R.string.test_reservas_title),
+                                getString(R.string.dialog_confirm_reservas),
                                 R.drawable.ic_warning,
                                 () -> executeAllReservationTests(getApplication()));
                         break;
                     case 5: // Tests de Parcelas Reservadas
                         DialogUtils.showConfirmationDialog(this,
-                                "Tests de Parcelas Reservadas",
-                                "¿Desea ejecutar todos los tests de parcelas reservadas?",
+                                getString(R.string.test_parcelas_reservadas_title),
+                                getString(R.string.dialog_confirm_parcelas_reservadas),
                                 R.drawable.ic_warning,
                                 () -> executeAllParcelaReservadaTests(getApplication()));
                         break;
                     case 7: // Todos los Tests
                         DialogUtils.showConfirmationDialog(this,
-                                "Todos los Tests",
-                                "¿Desea ejecutar todos los tests unitarios?",
+                                getString(R.string.test_all_title),
+                                getString(R.string.dialog_confirm_all),
                                 R.drawable.ic_warning,
                                 () -> {
                                     executeAllParcelTests(getApplication());
@@ -161,42 +161,42 @@ public class HomeActivity extends BaseActivity {
                         break;
                     case 9: // Prueba de Volumen
                         DialogUtils.showConfirmationDialog(this,
-                                "Prueba de Volumen",
-                                "¿Desea ejecutar la prueba de volumen? Esta operación puede tardar varios minutos.",
+                                getString(R.string.test_volume_title),
+                                getString(R.string.dialog_confirm_volume),
                                 R.drawable.ic_warning,
                                 () -> {
-                                    final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, "Ejecutando prueba de volumen...");
+                                    final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, getString(R.string.dialog_loading_volume));
                                     new android.os.Handler().postDelayed(() -> {
                                         boolean result = VolumeTests.volumeTest(this, parcelaViewModel, reservaViewModel);
                                         loadingDialog.dismiss();
                                         if (result) {
                                             DialogUtils.showSuccessDialog(this, 
-                                                "Prueba de volumen completada exitosamente", 
+                                                getString(R.string.test_volume_success), 
                                                 R.drawable.ic_create_success);
                                         } else {
                                             DialogUtils.showErrorDialog(this, 
-                                                "La prueba de volumen ha fallado");
+                                                getString(R.string.test_volume_failed));
                                         }
                                     }, 500);
                                 });
                         break;
                     case 10: // Prueba de Sobrecarga
                         DialogUtils.showConfirmationDialog(this,
-                                "Prueba de Sobrecarga",
-                                "¿Desea ejecutar la prueba de sobrecarga? Esta operación puede causar inestabilidad en la aplicación.",
+                                getString(R.string.test_stress_title),
+                                getString(R.string.dialog_confirm_stress),
                                 R.drawable.ic_warning,
                                 () -> {
-                                    final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, "Ejecutando prueba de sobrecarga...");
+                                    final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, getString(R.string.dialog_loading_stress));
                                     new android.os.Handler().postDelayed(() -> {
                                         boolean result = StressTests.stressTest(getApplication(), parcelaViewModel);
                                         loadingDialog.dismiss();
                                         if (result) {
                                             DialogUtils.showSuccessDialog(this, 
-                                                "Prueba de sobrecarga completada exitosamente", 
+                                                getString(R.string.test_stress_success), 
                                                 R.drawable.ic_create_success);
                                         } else {
                                             DialogUtils.showErrorDialog(this, 
-                                                "La prueba de sobrecarga ha fallado");
+                                                getString(R.string.test_stress_failed));
                                         }
                                     }, 500);
                                 });
@@ -235,20 +235,23 @@ public class HomeActivity extends BaseActivity {
             }
 
             if (success) {
-                DialogUtils.showSuccessDialog(this, "Tests de parcelas completados con éxito", R.drawable.ic_create_success);
+                DialogUtils.showSuccessDialog(this, getString(R.string.test_parcelas_success), R.drawable.ic_create_success);
             } else {
-                String testType = failedTest <= 13 ? "Inserción" : 
-                                failedTest <= 26 ? "Modificación" : 
-                                "Eliminación";
+                String testType = failedTest <= 13 ? getString(R.string.test_type_insercion) : 
+                                failedTest <= 26 ? getString(R.string.test_type_modificacion) : 
+                                getString(R.string.test_type_eliminacion);
                 int testNumber = failedTest <= 13 ? failedTest : 
                                failedTest <= 26 ? failedTest - 13 : 
                                failedTest - 26;
                 
                 DialogUtils.showErrorDialog(this, 
-                    "Error en test de " + testType + " de Parcela " + testNumber);
+                    getString(R.string.test_error_type, 
+                        getString(getTestTypeStringResource(testType)), 
+                        getTestEntityName("Parcela"), 
+                        testNumber));
             }
         } catch (Exception e) {
-            DialogUtils.showErrorDialog(this, "Error en tests de parcelas: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, getString(R.string.test_parcelas_error, e.getMessage()));
         }
     }
 
@@ -279,128 +282,114 @@ public class HomeActivity extends BaseActivity {
             }
 
             if (success) {
-                DialogUtils.showSuccessDialog(this, "Tests de reservas completados con éxito", R.drawable.ic_create_success);
+                DialogUtils.showSuccessDialog(this, getString(R.string.test_reservas_success), R.drawable.ic_create_success);
             } else {
-                String testType = failedTest <= 16 ? "Inserción" : 
-                                failedTest <= 32 ? "Modificación" : 
-                                "Eliminación";
+                String testType = failedTest <= 16 ? getString(R.string.test_type_insercion) : 
+                                failedTest <= 32 ? getString(R.string.test_type_modificacion) : 
+                                getString(R.string.test_type_eliminacion);
                 int testNumber = failedTest <= 16 ? failedTest : 
                                failedTest <= 32 ? failedTest - 16 : 
                                failedTest - 32;
                 
                 DialogUtils.showErrorDialog(this, 
-                    "Error en test de " + testType + " de Reserva " + testNumber);
+                    getString(R.string.test_error_type, 
+                        getString(getTestTypeStringResource(testType)), 
+                        getTestEntityName("Reserva"), 
+                        testNumber));
             }
         } catch (Exception e) {
-            DialogUtils.showErrorDialog(this, "Error en tests de reservas: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, getString(R.string.test_reservas_error, e.getMessage()));
         }
     }
 
     private void showUnitTestOptions() {
         String[] options = new String[] {
-                // Tests de inserción de parcelas
-                "Test Insertar Parcela 1 (Caso válido - Clases 1-9)",
-                "Test Insertar Parcela 2 (Nombre null - Clase 10)",
-                "Test Insertar Parcela 3 (Nombre muy largo - Clase 11)",
-                "Test Insertar Parcela 4 (Nombre vacío - Clase 12)",
-                "Test Insertar Parcela 5 (Parcela duplicada - Clase 13)",
-                "Test Insertar Parcela 6 (Descripción null - Clase 14)",
-                "Test Insertar Parcela 7 (Descripción muy larga - Clase 15)",
-                "Test Insertar Parcela 8 (Ocupantes null - Clase 16)",
-                "Test Insertar Parcela 9 (Ocupantes negativos - Clase 17)",
-                "Test Insertar Parcela 10 (Ocupantes muy grandes - Clase 18)",
-                "Test Insertar Parcela 11 (Precio null - Clase 19)",
-                "Test Insertar Parcela 12 (Precio negativo - Clase 20)",
-                "Test Insertar Parcela 13 (Precio muy grande - Clase 21)",
-
-                // Tests de modificación de parcelas
-                "Test Modificar Parcela 1 (Caso válido - Clases 1-9)",
-                "Test Modificar Parcela 2 (Nombre null - Clase 10)",
-                "Test Modificar Parcela 3 (Nombre muy largo - Clase 11)",
-                "Test Modificar Parcela 4 (Nombre vacío - Clase 12)",
-                "Test Modificar Parcela 5 (Parcela inexistente - Clase 13)",
-                "Test Modificar Parcela 6 (Descripción null - Clase 14)",
-                "Test Modificar Parcela 7 (Descripción muy larga - Clase 15)",
-                "Test Modificar Parcela 8 (Ocupantes null - Clase 16)",
-                "Test Modificar Parcela 9 (Ocupantes negativos - Clase 17)",
-                "Test Modificar Parcela 10 (Ocupantes muy grandes - Clase 18)",
-                "Test Modificar Parcela 11 (Precio null - Clase 19)",
-                "Test Modificar Parcela 12 (Precio negativo - Clase 20)",
-                "Test Modificar Parcela 13 (Precio muy grande - Clase 21)",
-
-                // Tests de eliminación de parcelas
-                "Test Eliminar Parcela 1 (Caso válido - Clases 1,2)",
-                "Test Eliminar Parcela 2 (Nombre null - Clase 3)",
-                "Test Eliminar Parcela 3 (Parcela inexistente - Clase 4)",
-
-                // Tests de inserción de reservas
-                "Test Insertar Reserva 1 (Caso válido - Clases 1-12)",
-                "Test Insertar Reserva 2 (ID null - Clase 13)",
-                "Test Insertar Reserva 3 (ID muy grande - Clase 14)",
-                "Test Insertar Reserva 4 (ID cero - Clase 15)",
-                "Test Insertar Reserva 5 (ID duplicado - Clase 16)",
-                "Test Insertar Reserva 6 (Nombre cliente null - Clase 17)",
-                "Test Insertar Reserva 7 (Nombre cliente cadena vacía - Clase 18)",
-                "Test Insertar Reserva 8 (Nombre cliente muy largo - Clase 19)",
-                "Test Insertar Reserva 9 (Fecha entrada null - Clase 20)",
-                "Test Insertar Reserva 10 (Fecha salida anterior - Clase 21)",
-                "Test Insertar Reserva 11 (Fecha salida null - Clase 22)",
-                "Test Insertar Reserva 12 (Teléfono null - Clase 23)",
-                "Test Insertar Reserva 13 (Teléfono inválido - Clase 24)",
-                "Test Insertar Reserva 14 (Precio null - Clase 25)",
-                "Test Insertar Reserva 15 (Precio cero - Clase 26)",
-                "Test Insertar Reserva 16 (Precio muy grande - Clase 27)",
-
-                // Tests de modificación de reservas
-                "Test Modificar Reserva 1 (Caso válido - Clases 1-12)",
-                "Test Modificar Reserva 2 (ID null - Clase 13)",
-                "Test Modificar Reserva 3 (ID muy grande - Clase 14)",
-                "Test Modificar Reserva 4 (ID cero - Clase 15)",
-                "Test Modificar Reserva 5 (ID inexistente - Clase 16)",
-                "Test Modificar Reserva 6 (Nombre cliente null - Clase 17)",
-                "Test Modificar Reserva 7 (Nombre cliente cadena vacía - Clase 18)",
-                "Test Modificar Reserva 8 (Nombre cliente muy largo - Clase 19)",
-                "Test Modificar Reserva 9 (Fecha entrada null - Clase 20)",
-                "Test Modificar Reserva 10 (Fecha salida anterior - Clase 21)",
-                "Test Modificar Reserva 11 (Fecha salida null - Clase 22)",
-                "Test Modificar Reserva 12 (Teléfono null - Clase 23)",
-                "Test Modificar Reserva 13 (Teléfono inválido - Clase 24)",
-                "Test Modificar Reserva 14 (Precio null - Clase 25)",
-                "Test Modificar Reserva 15 (Precio cero - Clase 26)",
-                "Test Modificar Reserva 16 (Precio muy grande - Clase 27)",
-
-                // Tests de eliminación de reservas
-                "Test Eliminar Reserva 1 (Caso válido - Clases 1,2)",
-                "Test Eliminar Reserva 2 (ID null - Clase 3)",
-                "Test Eliminar Reserva 3 (Reserva inexistente - Clase 4)",
-
-                // Tests de inserción de parcelas reservadas
-                "Test Insertar Parcela Reservada 1 (Caso válido - Clases 1-5)",
-                "Test Insertar Parcela Reservada 2 (Parcela inexistente - Clase 6)",
-                "Test Insertar Parcela Reservada 3 (Reserva inexistente - Clase 7)",
-                "Test Insertar Parcela Reservada 4 (Duplicada - Clase 8)",
-                "Test Insertar Parcela Reservada 5 (Ocupantes null - Clase 9)",
-                "Test Insertar Parcela Reservada 6 (Ocupantes cero - Clase 10)",
-                "Test Insertar Parcela Reservada 7 (Ocupantes muy grandes - Clase 11)",
-
-                // Tests de modificación de parcelas reservadas
-                "Test Modificar Parcela Reservada 1 (Caso válido - Clases 1-5)",
-                "Test Modificar Parcela Reservada 2 (Parcela inexistente - Clase 6)",
-                "Test Modificar Parcela Reservada 3 (Reserva inexistente - Clase 7)",
-                "Test Modificar Parcela Reservada 4 (Inexistente - Clase 8)",
-                "Test Modificar Parcela Reservada 5 (Ocupantes null - Clase 9)",
-                "Test Modificar Parcela Reservada 6 (Ocupantes cero - Clase 10)",
-                "Test Modificar Parcela Reservada 7 (Ocupantes muy grandes - Clase 11)",
-
-                // Tests de eliminación de parcelas reservadas
-                "Test Eliminar Parcela Reservada 1 (Caso válido - Clases 1-3)",
-                "Test Eliminar Parcela Reservada 2 (Nombre null - Clase 4)",
-                "Test Eliminar Parcela Reservada 3 (ID Reserva null - Clase 5)",
-                "Test Eliminar Parcela Reservada 4 (Inexistente - Clase 6)"
+            getString(R.string.test_insert_parcela_1),
+            getString(R.string.test_insert_parcela_2),
+            getString(R.string.test_insert_parcela_3),
+            getString(R.string.test_insert_parcela_4),
+            getString(R.string.test_insert_parcela_5),
+            getString(R.string.test_insert_parcela_6),
+            getString(R.string.test_insert_parcela_7),
+            getString(R.string.test_insert_parcela_8),
+            getString(R.string.test_insert_parcela_9),
+            getString(R.string.test_insert_parcela_10),
+            getString(R.string.test_insert_parcela_11),
+            getString(R.string.test_insert_parcela_12),
+            getString(R.string.test_insert_parcela_13),
+            getString(R.string.test_modify_parcela_1),
+            getString(R.string.test_modify_parcela_2),
+            getString(R.string.test_modify_parcela_3),
+            getString(R.string.test_modify_parcela_4),
+            getString(R.string.test_modify_parcela_5),
+            getString(R.string.test_modify_parcela_6),
+            getString(R.string.test_modify_parcela_7),
+            getString(R.string.test_modify_parcela_8),
+            getString(R.string.test_modify_parcela_9),
+            getString(R.string.test_modify_parcela_10),
+            getString(R.string.test_modify_parcela_11),
+            getString(R.string.test_modify_parcela_12),
+            getString(R.string.test_modify_parcela_13),
+            getString(R.string.test_delete_parcela_1),
+            getString(R.string.test_delete_parcela_2),
+            getString(R.string.test_delete_parcela_3),
+            getString(R.string.test_insert_reserva_1),
+            getString(R.string.test_insert_reserva_2),
+            getString(R.string.test_insert_reserva_3),
+            getString(R.string.test_insert_reserva_4),
+            getString(R.string.test_insert_reserva_5),
+            getString(R.string.test_insert_reserva_6),
+            getString(R.string.test_insert_reserva_7),
+            getString(R.string.test_insert_reserva_8),
+            getString(R.string.test_insert_reserva_9),
+            getString(R.string.test_insert_reserva_10),
+            getString(R.string.test_insert_reserva_11),
+            getString(R.string.test_insert_reserva_12),
+            getString(R.string.test_insert_reserva_13),
+            getString(R.string.test_insert_reserva_14),
+            getString(R.string.test_insert_reserva_15),
+            getString(R.string.test_insert_reserva_16),
+            getString(R.string.test_modify_reserva_1),
+            getString(R.string.test_modify_reserva_2),
+            getString(R.string.test_modify_reserva_3),
+            getString(R.string.test_modify_reserva_4),
+            getString(R.string.test_modify_reserva_5),
+            getString(R.string.test_modify_reserva_6),
+            getString(R.string.test_modify_reserva_7),
+            getString(R.string.test_modify_reserva_8),
+            getString(R.string.test_modify_reserva_9),
+            getString(R.string.test_modify_reserva_10),
+            getString(R.string.test_modify_reserva_11),
+            getString(R.string.test_modify_reserva_12),
+            getString(R.string.test_modify_reserva_13),
+            getString(R.string.test_modify_reserva_14),
+            getString(R.string.test_modify_reserva_15),
+            getString(R.string.test_modify_reserva_16),
+            getString(R.string.test_delete_reserva_1),
+            getString(R.string.test_delete_reserva_2),
+            getString(R.string.test_delete_reserva_3),
+            getString(R.string.test_insert_parcela_reservada_1),
+            getString(R.string.test_insert_parcela_reservada_2),
+            getString(R.string.test_insert_parcela_reservada_3),
+            getString(R.string.test_insert_parcela_reservada_4),
+            getString(R.string.test_insert_parcela_reservada_5),
+            getString(R.string.test_insert_parcela_reservada_6),
+            getString(R.string.test_insert_parcela_reservada_7),
+            getString(R.string.test_modify_parcela_reservada_1),
+            getString(R.string.test_modify_parcela_reservada_2),
+            getString(R.string.test_modify_parcela_reservada_3),
+            getString(R.string.test_modify_parcela_reservada_4),
+            getString(R.string.test_modify_parcela_reservada_5),
+            getString(R.string.test_modify_parcela_reservada_6),
+            getString(R.string.test_modify_parcela_reservada_7),
+            getString(R.string.test_delete_parcela_reservada_1),
+            getString(R.string.test_delete_parcela_reservada_2),
+            getString(R.string.test_delete_parcela_reservada_3),
+            getString(R.string.test_delete_parcela_reservada_4)
         };
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
-        builder.setTitle("Seleccione prueba unitaria");
+        builder.setTitle(getString(R.string.dialog_test_select_unit));
 
         // Create adapter with custom layout
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.test_item, android.R.id.text1, options) {
@@ -723,13 +712,13 @@ public class HomeActivity extends BaseActivity {
                 }
 
                 if (result) {
-                    DialogUtils.showSuccessDialog(this, "Test ejecutado correctamente",
+                    DialogUtils.showSuccessDialog(this, getString(R.string.test_success),
                             R.drawable.ic_create_success);
                 } else {
-                    DialogUtils.showErrorDialog(this, "El test ha fallado");
+                    DialogUtils.showErrorDialog(this, getString(R.string.test_failed));
                 }
             } catch (Exception e) {
-                DialogUtils.showErrorDialog(this, "Error al ejecutar el test: " + e.getMessage());
+                DialogUtils.showErrorDialog(this, getString(R.string.test_error, e.getMessage()));
             }
         });
 
@@ -763,21 +752,24 @@ public class HomeActivity extends BaseActivity {
             }
 
             if (success) {
-                DialogUtils.showSuccessDialog(this, "Tests de parcelas reservadas completados con éxito", 
+                DialogUtils.showSuccessDialog(this, getString(R.string.test_parcelas_reservadas_success), 
                         R.drawable.ic_create_success);
             } else {
-                String testType = failedTest <= 7 ? "Inserción" : 
-                                failedTest <= 14 ? "Modificación" : 
-                                "Eliminación";
+                String testType = failedTest <= 7 ? getString(R.string.test_type_insercion) : 
+                                failedTest <= 14 ? getString(R.string.test_type_modificacion) : 
+                                getString(R.string.test_type_eliminacion);
                 int testNumber = failedTest <= 7 ? failedTest : 
                                failedTest <= 14 ? failedTest - 7 : 
                                failedTest - 14;
                 
                 DialogUtils.showErrorDialog(this, 
-                    "Error en test de " + testType + " de Parcela Reservada " + testNumber);
+                    getString(R.string.test_error_type, 
+                        getString(getTestTypeStringResource(testType)), 
+                        getTestEntityName("ParcelaReservada"), 
+                        testNumber));
             }
         } catch (Exception e) {
-            DialogUtils.showErrorDialog(this, "Error en tests de parcelas reservadas: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, getString(R.string.test_parcelas_reservadas_error, e.getMessage()));
         }
     }
 
@@ -789,5 +781,23 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected String getToolbarTitle() {
         return "Home";
+    }
+
+    private int getTestTypeStringResource(String type) {
+        switch(type) {
+            case "Inserción": return R.string.test_type_insercion;
+            case "Modificación": return R.string.test_type_modificacion;
+            case "Eliminación": return R.string.test_type_eliminacion;
+            default: return R.string.test_type_insercion;
+        }
+    }
+
+    private String getTestEntityName(String entity) {
+        switch(entity) {
+            case "Parcela": return getString(R.string.entity_parcela);
+            case "Reserva": return getString(R.string.entity_reserva);
+            case "ParcelaReservada": return getString(R.string.entity_parcela_reservada);
+            default: return "";
+        }
     }
 }

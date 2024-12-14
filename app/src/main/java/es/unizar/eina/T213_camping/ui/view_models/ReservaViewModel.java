@@ -88,4 +88,12 @@ public class ReservaViewModel extends AndroidViewModel {
     public int getReservasCount() {
         return mRepository.getReservasCount();
     }
+
+    /**
+     * Elimina reservas del sistema con un prefijo específico.
+     * @param prefix Prefijo para filtrar las reservas a eliminar
+     */
+    public void deleteReservasWithClientNamePrefix(String prefix) {
+        mRepository.deleteReservasWithClientNamePrefix(prefix);
+    }
 }

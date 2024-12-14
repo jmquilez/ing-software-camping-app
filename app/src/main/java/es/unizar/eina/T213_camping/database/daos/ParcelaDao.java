@@ -107,4 +107,12 @@ public interface ParcelaDao {
     default void runInTransaction(Runnable action) {
         action.run();
     }
+
+    /** 
+     * Elimina todas las parcelas de la base de datos que tienen un nombre que comienza con el prefijo dado.
+     * @param prefix Prefijo de los nombres de las parcelas a eliminar
+     * @return Número de parcelas eliminadas
+     */
+    @Query("DELETE FROM parcela WHERE nombre LIKE :prefix || '%'")
+    int deleteParcelasWithPrefix(String prefix);
 }

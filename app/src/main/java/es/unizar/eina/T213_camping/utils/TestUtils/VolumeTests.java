@@ -102,10 +102,11 @@ public class VolumeTests {
             }
 
             return true;
-
         } catch (Exception e) {
             DialogUtils.showErrorDialog(context, "Error en prueba de volumen: " + e.getMessage());
             return false;
+        } finally {
+            cleanTestData(parcelaViewModel, reservaViewModel);
         }
     }
 }

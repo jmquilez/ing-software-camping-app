@@ -17,25 +17,13 @@ public class Common {
         try {
             // Borrar parcelas de prueba
             if (parcelaViewModel != null) {
-                parcelaViewModel.getAllParcelas().observeForever(parcelas -> {
-                    for (Parcela parcela : parcelas) {
-                        if (parcela.getNombre().startsWith("TEST_") ||
-                                parcela.getNombre().startsWith("STRESS_")) {
-                            parcelaViewModel.delete(parcela);
-                        }
-                    }
-                });
+                parcelaViewModel.deleteParcelasWithPrefix("TEST_");
+                parcelaViewModel.deleteParcelasWithPrefix("STRESS_");
             }
 
             // Borrar reservas de prueba
             if (reservaViewModel != null) {
-                reservaViewModel.getAllReservas().observeForever(reservas -> {
-                    for (Reserva reserva : reservas) {
-                        if (reserva.getNombreCliente().startsWith("TEST_")) {
-                            reservaViewModel.delete(reserva);
-                        }
-                    }
-                });
+                reservaViewModel.deleteReservasWithClientNamePrefix("TEST_");
             }
 
             Log.d(TAG, "Datos de prueba eliminados");

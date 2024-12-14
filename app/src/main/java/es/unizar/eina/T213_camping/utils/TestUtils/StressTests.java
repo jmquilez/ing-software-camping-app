@@ -10,60 +10,70 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 
 public class StressTests {
     private static final String TAG = "StressTests";
+    
     /**
      * Prueba de sobrecarga: Verifica el límite de caracteres en la descripción de
-     * parcelas
+     * parcelas de forma incremental
      */
     public static boolean stressTest(Application context, ParcelaViewModel parcelaViewModel) {
         try {
             cleanTestData(parcelaViewModel, null);
             final int MAX_DESCRIPCION_LENGTH = 300;
-            String nombreParcela = "STRESS_TEST_PARCELA";
-
-            // Clean up first
-            parcelaViewModel.deleteByNombre(nombreParcela);
-
-            // Test with valid description (exactly MAX_DESCRIPCION_LENGTH)
-            StringBuilder validDescription = new StringBuilder();
-            validDescription.append("a".repeat(MAX_DESCRIPCION_LENGTH));
-
-            Parcela validParcela = new Parcela(
-                    nombreParcela,
-                    validDescription.toString(),
-                    4,
-                    20.0);
-
-            long validResult = parcelaViewModel.insert(validParcela);
-            if (validResult == -1) {
-                Log.e(TAG, "Test fallido: No se pudo insertar parcela con descripción de longitud máxima válida");
+            final String BASE_NOMBRE = "STRESS_TEST_PARCELA_";
+            
+            // Check if there's space for at least one parcela
+            int currentCount = parcelaViewModel.getParcelasCount();
+            if (currentCount >= 100) { // Using MAX_PARCELAS constant from ParcelaRepository
+                Log.e(TAG, "Test fallido: No hay espacio para insertar parcelas de prueba");
                 return false;
             }
 
-            // Clean up the valid test
-            parcelaViewModel.deleteByNombre(nombreParcela);
+            String lastNombreParcela = null;
 
-            // Test with invalid description (MAX_DESCRIPCION_LENGTH + 1)
-            StringBuilder invalidDescription = new StringBuilder();
-            invalidDescription.append("a".repeat(MAX_DESCRIPCION_LENGTH + 1));
+            // Test with incrementing description lengths
+            for (int length = 0; length <= MAX_DESCRIPCION_LENGTH + 10; length++) {
+                // Delete previous test parcela if it exists
+                if (lastNombreParcela != null) {
+                    parcelaViewModel.deleteByNombre(lastNombreParcela);
+                }
 
-            Parcela invalidParcela = new Parcela(
+                String nombreParcela = BASE_NOMBRE + length;
+                lastNombreParcela = nombreParcela;
+                String description = "a".repeat(length);
+
+                Parcela parcela = new Parcela(
                     nombreParcela,
-                    invalidDescription.toString(),
+                    description,
                     4,
-                    20.0);
+                    20.0
+                );
 
-            long invalidResult = parcelaViewModel.insert(invalidParcela);
-            if (invalidResult != -1) {
-                Log.e(TAG, "Test fallido: Se permitió insertar parcela con descripción demasiado larga");
-                return false;
+                long result = parcelaViewModel.insert(parcela);
+                
+                // Check if the result matches expectations
+                if (length <= MAX_DESCRIPCION_LENGTH) {
+                    if (result == -1) {
+                        Log.e(TAG, "Test fallido: No se pudo insertar parcela con descripción válida de longitud " + length);
+                        return false;
+                    }
+                    Log.d(TAG, "Insertada correctamente parcela con descripción de longitud " + length);
+                } else {
+                    if (result != -1) {
+                        Log.e(TAG, "Test fallido: Se permitió insertar parcela con descripción inválida de longitud " + length);
+                        return false;
+                    }
+                    Log.d(TAG, "Rechazada correctamente parcela con descripción de longitud " + length);
+                }
             }
 
-            Log.d(TAG, "Test de sobrecarga completado exitosamente");
+            Log.d(TAG, "Test de sobrecarga incremental completado exitosamente");
             return true;
 
         } catch (Exception e) {
             Log.e(TAG, "Error en prueba de sobrecarga: " + e.getMessage());
             return false;
+        } finally {
+            cleanTestData(parcelaViewModel, null);
         }
     }
 }

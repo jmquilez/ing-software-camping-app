@@ -207,4 +207,15 @@ public class ReservaRepository {
                 reserva.getFechaSalida() == null ||
                 !reserva.getFechaEntrada().before(reserva.getFechaSalida());
     }
+
+    /**
+     * Elimina todas las reservas de la base de datos cuyos IDs (convertidos a texto) comiencen con el prefijo especificado.
+     * La operación se realiza de forma asíncrona.
+     * @param prefix Prefijo de los IDs de las reservas a eliminar
+     * @return Número de reservas eliminadas
+     */
+    public Long deleteReservasWithClientNamePrefix(String prefix) {
+        Future<Integer> future = executorService.submit(() -> mReservaDao.deleteReservasWithClientNamePrefix(prefix));
+        return handleFutureResult(future, "DeleteReservasWithNombreClientePrefix");
+    }
 }
