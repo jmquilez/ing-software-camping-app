@@ -42,19 +42,7 @@ public class ParcelaReservadaRepository {
      */
     public long insert(ParcelaReservada parcelaReservada) {
         Future<Long> future = executorService.submit(() -> parcelaReservadaDao.insert(parcelaReservada));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Insert interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Insert timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error inserting: " + e.getMessage());
-            return -3L;
-        }
+        return handleFutureResult(future, "Insert");
     }
 
     /**
@@ -81,19 +69,7 @@ public class ParcelaReservadaRepository {
      */
     public Long update(ParcelaReservada parcelaReservada) {
         Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.update(parcelaReservada));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Update interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Update timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error updating: " + e.getMessage());
-            return -3L;
-        }
+        return handleFutureResult(future, "Update");
     }
 
     /**
@@ -103,19 +79,7 @@ public class ParcelaReservadaRepository {
      */
     public Long delete(ParcelaReservada parcelaReservada) {
         Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.delete(parcelaReservada));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Delete interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Delete timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error deleting: " + e.getMessage());
-            return -3L;
-        }
+        return handleFutureResult(future, "Delete");
     }
 
     /**
@@ -165,19 +129,7 @@ public class ParcelaReservadaRepository {
      */
     public Long deleteParcelasForReservation(long reservationId) {
         Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.deleteParcelasForReservation(reservationId));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("DeleteForReservation interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("DeleteForReservation timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error deleting for reservation: " + e.getMessage());
-            return -3L;
-        }
+        return handleFutureResult(future, "DeleteForReservation");
     }
 
     /**
@@ -188,18 +140,39 @@ public class ParcelaReservadaRepository {
      */
     public Long updateParcelaNombre(String oldName, String newName) {
         Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.updateParcelaNombre(oldName, newName));
+        return handleFutureResult(future, "UpdateNombre");
+    }
+
+    /**
+     * Verifica si existe una relación específica parcela-reserva.
+     * @param parcelaNombre Nombre de la parcela
+     * @param reservaId ID de la reserva
+     * @return true si existe la relación, false en caso contrario
+     */
+    public boolean exists(String parcelaNombre, long reservaId) {
+        Future<Boolean> future = executorService.submit(() -> 
+            parcelaReservadaDao.exists(parcelaNombre, reservaId));
         try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("UpdateNombre interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("UpdateNombre timed out: " + e.getMessage());
-            return -2L;
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe("Error updating nombre: " + e.getMessage());
-            return -3L;
+            Logger.getLogger(ParcelaReservadaRepository.class.getName())
+                  .severe("Error checking if ParcelaReservada exists: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return false;
+        }
+    }
+
+    private <T> Long handleFutureResult(Future<T> future, String operation) {
+        try {
+            return ((Number) future.get(TIMEOUT, TimeUnit.MILLISECONDS)).longValue();
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName()).severe(operation + " error: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return -1L;
         }
     }
 }

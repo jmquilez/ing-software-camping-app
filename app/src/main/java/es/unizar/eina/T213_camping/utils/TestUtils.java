@@ -5,8 +5,10 @@ import android.content.Context;
 import android.util.Log;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.Reserva;
+import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.database.repositories.ParcelaRepository;
 import es.unizar.eina.T213_camping.database.repositories.ReservaRepository;
+import es.unizar.eina.T213_camping.database.repositories.ParcelaReservadaRepository;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import java.util.Date;
@@ -20,21 +22,22 @@ public class TestUtils {
     /**********************
      * PRUEBAS DE SISTEMA
      **********************/
-    
+
     /**
-     * Prueba de volumen: Verifica el funcionamiento con 100 parcelas y 10000 reservas
+     * Prueba de volumen: Verifica el funcionamiento con 100 parcelas y 10000
+     * reservas
      */
-    public static void volumeTest(Context context, ParcelaViewModel parcelaViewModel, ReservaViewModel reservaViewModel) {
+    public static void volumeTest(Context context, ParcelaViewModel parcelaViewModel,
+            ReservaViewModel reservaViewModel) {
         // Test con límites válidos: 100 parcelas y 10000 reservas
         try {
             // Crear 100 parcelas
             for (int i = 1; i <= 100; i++) {
                 Parcela parcela = new Parcela(
-                    "TEST_PARCELA_" + i,
-                    "Parcela de prueba " + i,
-                    4,
-                    20.0
-                );
+                        "TEST_PARCELA_" + i,
+                        "Parcela de prueba " + i,
+                        4,
+                        20.0);
                 parcelaViewModel.insert(parcela);
                 Log.d(TAG, "Creada parcela " + i);
             }
@@ -48,12 +51,11 @@ public class TestUtils {
                 Date departureDate = cal.getTime();
 
                 Reserva reserva = new Reserva(
-                    "TEST_CLIENTE_" + i,
-                    entryDate,
-                    departureDate,
-                    "600" + String.format("%07d", i),
-                    140.0
-                );
+                        "TEST_CLIENTE_" + i,
+                        entryDate,
+                        departureDate,
+                        "600" + String.format("%07d", i),
+                        140.0);
                 reservaViewModel.insert(reserva);
                 Log.d(TAG, "Creada reserva " + i);
             }
@@ -63,7 +65,8 @@ public class TestUtils {
     }
 
     /**
-     * Prueba de sobrecarga: Verifica el límite de caracteres en la descripción de parcelas
+     * Prueba de sobrecarga: Verifica el límite de caracteres en la descripción de
+     * parcelas
      */
     public static void stressTest(Application context, ParcelaViewModel parcelaViewModel) {
         final int STEP_SIZE = 10000; // Incremento de caracteres en cada iteración
@@ -79,21 +82,20 @@ public class TestUtils {
                 currentSize.addAndGet(STEP_SIZE);
 
                 Parcela parcela = new Parcela(
-                    "STRESS_TEST_" + currentSize.get(),
-                    description.toString(),
-                    4,
-                    20.0
-                );
+                        "STRESS_TEST_" + currentSize.get(),
+                        description.toString(),
+                        4,
+                        20.0);
 
                 try {
                     // Insertar la parcela
                     parcelaViewModel.insert(parcela);
                     Log.d(TAG, "Insertada parcela con descripción de " + currentSize.get() + " caracteres");
-                    
+
                     // Borrar la parcela después de la inserción exitosa
                     parcelaViewModel.delete(parcela);
                     Log.d(TAG, "Borrada parcela de prueba con descripción de " + currentSize.get() + " caracteres");
-                    
+
                 } catch (Exception e) {
                     Log.e(TAG, "Fallo al insertar parcela con " + currentSize.get() + " caracteres");
                     Log.e(TAG, "Mensaje de error: " + e.getMessage());
@@ -114,8 +116,8 @@ public class TestUtils {
             // Borrar parcelas de prueba
             parcelaViewModel.getAllParcelas().observeForever(parcelas -> {
                 for (Parcela parcela : parcelas) {
-                    if (parcela.getNombre().startsWith("TEST_") || 
-                        parcela.getNombre().startsWith("STRESS_")) {
+                    if (parcela.getNombre().startsWith("TEST_") ||
+                            parcela.getNombre().startsWith("STRESS_")) {
                         parcelaViewModel.delete(parcela);
                     }
                 }
@@ -146,16 +148,15 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
+
         if (result <= 0) {
             Log.e(TAG, "Test fallido: No se pudo insertar una parcela válida");
             return false;
@@ -167,17 +168,16 @@ public class TestUtils {
     public static boolean testInsertarParcela2(Application context) {
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
         // No cleanup needed for null name
-        
+
         // Test - nombre null
         Parcela parcela = new Parcela(
-            null,
-            "costal",
-            15,
-            60.0
-        );
+                null,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear parcela con nombre null");
             return false;
         }
@@ -190,17 +190,16 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada3".repeat(60);
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test - nombre muy largo
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear parcela con nombre muy largo");
             return false;
         }
@@ -210,21 +209,39 @@ public class TestUtils {
 
     public static boolean testInsertarParcela4(Application context) {
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
-        String nombreParcela = "fuenlabrada4";
+
+        // Test - nombre cadena vacía
+        Parcela parcela = new Parcela(
+                "",
+                "costal",
+                15,
+                60.0);
+        long result = parcelaRepository.insert(parcela);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear una parcela con nombre null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió crear una parcela con nombre null");
+        return true;
+    }
+
+    public static boolean testInsertarParcela5(Application context) {
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        String nombreParcela = "fuenlabrada5";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test - nombre duplicado
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcela);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear parcela con nombre duplicado");
             return false;
         }
@@ -232,50 +249,27 @@ public class TestUtils {
         return true;
     }
 
-    // TODO: move to valid class tests, modify valid classes and corresponding test in doc tables
-    public static boolean testInsertarParcela5(Application context) {
-        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
-        String nombreParcela = "fuenlabrada5";
-        // Clean up first
-        parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - descripción null
-        Parcela parcela = new Parcela(
-            nombreParcela,
-            null,
-            15,
-            60.0
-        );
-        long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con descripción null");
-            return false;
-        }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con descripción null");
-        return true;
-    }
-
+    // TODO: move to valid class tests, modify valid classes and corresponding test
+    // in doc tables
     public static boolean testInsertarParcela6(Application context) {
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
         String nombreParcela = "fuenlabrada6";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - descripción muy larga
+
+        // Test - descripción null
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal".repeat(300),
-            15,
-            60.0
-        );
+                nombreParcela,
+                null,
+                15,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con descripción muy larga");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con descripción null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con descripción muy larga");
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con descripción null");
         return true;
     }
 
@@ -284,21 +278,20 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada7";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - capacidad null
+
+        // Test - descripción muy larga
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            null,
-            60.0
-        );
+                nombreParcela,
+                "costal".repeat(300),
+                15,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con capacidad null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con descripción muy larga");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con capacidad null");
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con descripción muy larga");
         return true;
     }
 
@@ -307,21 +300,20 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada8";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - capacidad negativa
+
+        // Test - capacidad null
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            -1,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                null,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con capacidad negativa");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con capacidad null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con capacidad negativa");
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con capacidad null");
         return true;
     }
 
@@ -330,21 +322,20 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada9";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - capacidad muy grande
+
+        // Test - capacidad negativa
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            100000,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                -1,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con capacidad muy grande");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con capacidad negativa");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con capacidad muy grande");
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con capacidad negativa");
         return true;
     }
 
@@ -353,21 +344,20 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada10";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - precio null
+
+        // Test - capacidad muy grande
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            null
-        );
+                nombreParcela,
+                "costal",
+                100000,
+                60.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con precio null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con capacidad muy grande");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con precio null");
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con capacidad muy grande");
         return true;
     }
 
@@ -376,21 +366,20 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada11";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - precio negativo
+
+        // Test - precio null
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            -1.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                null);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear parcela con precio negativo");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con precio null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear parcela con precio negativo");
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con precio null");
         return true;
     }
 
@@ -399,17 +388,38 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada12";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
+        // Test - precio <= 0
+        Parcela parcela = new Parcela(
+                nombreParcela,
+                "costal",
+                15,
+                0.0);
+        long result = parcelaRepository.insert(parcela);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear parcela con precio por persona igual a 0");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió crear parcela con precio por persona igual a 0");
+        return true;
+    }
+
+    public static boolean testInsertarParcela13(Application context) {
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        String nombreParcela = "fuenlabrada13";
+        // Clean up first
+        parcelaRepository.deleteByNombre(nombreParcela);
+
         // Test - precio muy grande
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            100000.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                100000.0);
         long result = parcelaRepository.insert(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear parcela con precio muy grande");
             return false;
         }
@@ -423,26 +433,24 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test - Caso válido
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcela);
-        
+
         Parcela parcelaM = new Parcela(
-            nombreParcela,
-            "montaña",
-            21,
-            42.0
-        );
+                nombreParcela,
+                "montaña",
+                21,
+                42.0);
         long result = parcelaRepository.update(parcelaM);
-        
+
         if (result <= 0) {
-            Log.e(TAG, "Test fallido: No se pudo modificar una parcela válida");
+            Log.e(TAG, "Test fallido: No se pudo modificar una parcela válida y existente");
             return false;
         }
         Log.d(TAG, "Test exitoso: Se modificó correctamente la parcela");
@@ -454,25 +462,23 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada2M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test - nombre null
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            null,
-            "costal",
-            15,
-            60.0
-        );
+                null,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar parcela con nombre null");
             return false;
         }
@@ -487,25 +493,23 @@ public class TestUtils {
         // Clean up first
         parcelaRepository.deleteByNombre(nombreOriginal);
         parcelaRepository.deleteByNombre(nombreNuevo);
-        
+
         // Test - nombre muy largo
         Parcela parcelaOrig = new Parcela(
-            nombreOriginal,
-            "costal",
-            15,
-            60.0
-        );
+                nombreOriginal,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreNuevo,
-            "costal",
-            12,
-            24.0
-        );
+                nombreNuevo,
+                "costal",
+                12,
+                24.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar parcela con nombre muy largo");
             return false;
         }
@@ -515,24 +519,30 @@ public class TestUtils {
 
     public static boolean testModificarParcela4(Application context) {
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
-        String nombreParcela = "fuenlabrada4M";
+        String nombreOriginal = "fuenlabrada4M";
         // Clean up first
-        parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - parcela inexistente
+        parcelaRepository.deleteByNombre(nombreOriginal);
+
+        // Test - parcela con nombre null
+        Parcela parcelaOrig = new Parcela(
+                nombreOriginal,
+                "costal",
+                15,
+                60.0);
+        parcelaRepository.insert(parcelaOrig);
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                "",
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar una parcela inexistente");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela con nombre null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela inexistente");
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela con nombre null");
         return true;
     }
 
@@ -541,29 +551,20 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada5M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - descripción null
-        Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
-        parcelaRepository.insert(parcelaOrig);
-        
+
+        // Test - parcela inexistente
         Parcela parcela = new Parcela(
-            nombreParcela,
-            null,
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con descripción null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela inexistente");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con descripción null");
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela inexistente");
         return true;
     }
 
@@ -572,29 +573,27 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada6M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - descripción muy larga
+
+        // Test - descripción null
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal".repeat(300),
-            15,
-            60.0
-        );
+                nombreParcela,
+                null,
+                15,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con descripción muy larga");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con descripción null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con descripción muy larga");
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con descripción null");
         return true;
     }
 
@@ -603,29 +602,27 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada7M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - capacidad null
+
+        // Test - descripción muy larga
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            null,
-            60.0
-        );
+                nombreParcela,
+                "costal".repeat(300),
+                15,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con capacidad null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con descripción muy larga");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con capacidad null");
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con descripción muy larga");
         return true;
     }
 
@@ -634,29 +631,27 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada8M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - capacidad negativa
+
+        // Test - capacidad null
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            -1,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                null,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con capacidad negativa");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con capacidad null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con capacidad negativa");
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con capacidad null");
         return true;
     }
 
@@ -665,29 +660,27 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada9M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - capacidad muy grande
+
+        // Test - capacidad negativa
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            100000,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                -1,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con capacidad muy grande");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con capacidad negativa");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con capacidad muy grande");
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con capacidad negativa");
         return true;
     }
 
@@ -696,29 +689,27 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada10M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - precio null
+
+        // Test - capacidad muy grande
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            null
-        );
+                nombreParcela,
+                "costal",
+                100000,
+                60.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con precio null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con capacidad muy grande");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con precio null");
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con capacidad muy grande");
         return true;
     }
 
@@ -727,29 +718,27 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada11M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
-        // Test - Precio por persona negativo
+
+        // Test - precio null
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            -1.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                null);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió modificar parcela con precio por persona negativo");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con precio null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con precio por persona negativo");
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con precio null");
         return true;
     }
 
@@ -758,25 +747,52 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada12M";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
+        // Test - Precio por persona <= 0
+        Parcela parcelaOrig = new Parcela(
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
+        parcelaRepository.insert(parcelaOrig);
+
+        Parcela parcela = new Parcela(
+                nombreParcela,
+                "costal",
+                15,
+                0.0);
+        long result = parcelaRepository.update(parcela);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar parcela con precio por persona igual a 0");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar parcela con precio por persona igual a 0");
+        return true;
+    }
+
+    public static boolean testModificarParcela13(Application context) {
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        String nombreParcela = "fuenlabrada13M";
+        // Clean up first
+        parcelaRepository.deleteByNombre(nombreParcela);
+
         // Test - Precio por persona muy grande
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            100000.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                100000.0);
         long result = parcelaRepository.update(parcela);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar parcela con precio por persona demasiado grande");
             return false;
         }
@@ -790,17 +806,16 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1D";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcela);
         long result = parcelaRepository.delete(parcela);
-        
+
         if (result <= 0) {
             Log.e(TAG, "Test fallido: No se pudo eliminar una parcela válida");
             return false;
@@ -814,24 +829,22 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada2D";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test - nombre null
         Parcela parcelaOrig = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         parcelaRepository.insert(parcelaOrig);
-        
+
         Parcela parcela = new Parcela(
-            null,
-            "costal",
-            15,
-            60.0
-        );
+                null,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.delete(parcela);
-        
+
         if (result > 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar parcela con nombre null");
             return false;
@@ -845,16 +858,15 @@ public class TestUtils {
         String nombreParcela = "hola";
         // Clean up first
         parcelaRepository.deleteByNombre(nombreParcela);
-        
+
         // Test - parcela inexistente
         Parcela parcela = new Parcela(
-            nombreParcela,
-            "costal",
-            15,
-            60.0
-        );
+                nombreParcela,
+                "costal",
+                15,
+                60.0);
         long result = parcelaRepository.delete(parcela);
-        
+
         if (result > 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una parcela inexistente");
             return false;
@@ -873,18 +885,17 @@ public class TestUtils {
         long reservaId = 1L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
+
         // Test - Caso válido
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L), // 17/10/2024
-            new Date(1729612800000L), // 20/10/2024
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L), // 17/10/2024
+                new Date(1729612800000L), // 20/10/2024
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
+
         if (result <= 0) {
             Log.e(TAG, "Test fallido: No se pudo insertar una reserva válida");
             return false;
@@ -896,19 +907,18 @@ public class TestUtils {
     public static boolean testInsertarReserva2(Application context) {
         ReservaRepository reservaRepository = new ReservaRepository(context);
         // No cleanup needed for null ID
-        
+
         // Test - ID null
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(null);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear reserva con ID null");
             return false;
         }
@@ -918,22 +928,21 @@ public class TestUtils {
 
     public static boolean testInsertarReserva3(Application context) {
         ReservaRepository reservaRepository = new ReservaRepository(context);
-        long reservaId = 1002L;
+        long reservaId = 10001L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
+
         // Test - ID muy grande
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear reserva con ID muy grande");
             return false;
         }
@@ -946,19 +955,18 @@ public class TestUtils {
         long reservaId = 0L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
+
         // Test - ID cero
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear reserva con ID cero");
             return false;
         }
@@ -971,29 +979,27 @@ public class TestUtils {
         long reservaId = 5L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
+
         // Test - ID duplicado
         Reserva reserva1 = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva1.setId(reservaId);
         reservaRepository.insert(reserva1);
-        
+
         Reserva reserva2 = new Reserva(
-            "Juan",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "987654321",
-            50.0
-        );
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                50.0);
         reserva2.setId(reservaId);
         long result = reservaRepository.insert(reserva2);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear reserva con ID duplicado");
             return false;
         }
@@ -1006,19 +1012,18 @@ public class TestUtils {
         long reservaId = 6L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
+
         // Test - Nombre cliente null
         Reserva reserva = new Reserva(
-            null,
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                null,
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear reserva con nombre cliente null");
             return false;
         }
@@ -1031,23 +1036,22 @@ public class TestUtils {
         long reservaId = 7L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Nombre cliente muy largo
+
+        // Test - Nombre cliente == cadena vacía
         Reserva reserva = new Reserva(
-            "Pedro".repeat(40),
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con nombre cliente muy largo");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con cadena vacía como nombre de cliente");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con nombre cliente muy largo");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con cadena vacía como nombre de cliente");
         return true;
     }
 
@@ -1056,23 +1060,22 @@ public class TestUtils {
         long reservaId = 8L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Fecha entrada null
+
+        // Test - Nombre cliente muy largo
         Reserva reserva = new Reserva(
-            "Pedro",
-            null,
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro".repeat(40),
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con fecha entrada null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con nombre cliente muy largo");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con fecha entrada null");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con nombre cliente muy largo");
         return true;
     }
 
@@ -1081,23 +1084,22 @@ public class TestUtils {
         long reservaId = 9L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Fecha salida anterior a entrada
+
+        // Test - Fecha entrada null
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729612800000L), // 20/10/2024
-            new Date(1729353600000L), // 17/10/2024
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                null,
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con fecha salida anterior a entrada");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con fecha entrada null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con fecha salida anterior a entrada");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con fecha entrada null");
         return true;
     }
 
@@ -1106,23 +1108,22 @@ public class TestUtils {
         long reservaId = 10L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Fecha salida null
+
+        // Test - Fecha salida anterior a entrada
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            null,
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729612800000L), // 20/10/2024
+                new Date(1729353600000L), // 17/10/2024
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con fecha salida null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con fecha salida anterior a entrada");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con fecha salida null");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con fecha salida anterior a entrada");
         return true;
     }
 
@@ -1131,23 +1132,22 @@ public class TestUtils {
         long reservaId = 11L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Teléfono null
+
+        // Test - Fecha salida null
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            null,
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                null,
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con teléfono null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con fecha salida null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con teléfono null");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con fecha salida null");
         return true;
     }
 
@@ -1156,23 +1156,22 @@ public class TestUtils {
         long reservaId = 12L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Teléfono inválido
+
+        // Test - Teléfono null
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "a23456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                null,
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con teléfono inválido");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con teléfono null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con teléfono inválido");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con teléfono null");
         return true;
     }
 
@@ -1181,23 +1180,22 @@ public class TestUtils {
         long reservaId = 13L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Precio null
+
+        // Test - Teléfono inválido
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            null
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "a23456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
-            Log.e(TAG, "Test fallido: Se permitió crear reserva con precio null");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con teléfono inválido");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se impidió crear reserva con precio null");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con teléfono inválido");
         return true;
     }
 
@@ -1206,23 +1204,22 @@ public class TestUtils {
         long reservaId = 14L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Precio cero
+
+        // Test - Precio null
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            0.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                null);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result <= 0) {
-            Log.e(TAG, "Test fallido: No se permitió crear reserva con precio cero");
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió crear reserva con precio null");
             return false;
         }
-        Log.d(TAG, "Test exitoso: Se permitió crear reserva con precio cero");
+        Log.d(TAG, "Test exitoso: Se impidió crear reserva con precio null");
         return true;
     }
 
@@ -1231,23 +1228,553 @@ public class TestUtils {
         long reservaId = 15L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
-        // Test - Precio muy grande
+
+        // Test - Precio cero
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            200000.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                0.0);
         reserva.setId(reservaId);
         long result = reservaRepository.insert(reserva);
-        
-        if (result > 0) {
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: S permitió crear reserva con precio cero");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se permitió crear reserva con precio cero");
+        return true;
+    }
+
+    public static boolean testInsertarReserva16(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 16L;
+        // Clean up first
+        reservaRepository.deleteById(reservaId);
+
+        // Test - Precio muy grande
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                200000.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió crear reserva con precio muy grande");
             return false;
         }
         Log.d(TAG, "Test exitoso: Se impidió crear reserva con precio muy grande");
+        return true;
+    }
+
+    /* Tests de Modificación */
+    public static boolean testModificarReserva1(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 1L;
+        // Clean up first
+        reservaRepository.deleteById(reservaId);
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Caso válido
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L), // 17/10/2024
+                new Date(1729612800000L), // 20/10/2024
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result <= 0) {
+            Log.e(TAG, "Test fallido: No se pudo modificar una reserva válida");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se modificó correctamente la reserva");
+        return true;
+    }
+
+    public static boolean testModificarReserva2(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 2L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - ID null
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(null);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con ID null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con ID null");
+        return true;
+    }
+
+    public static boolean testModificarReserva3(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 3L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - ID muy grande
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(10001L);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con ID muy grande");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con ID muy grande");
+        return true;
+    }
+
+    public static boolean testModificarReserva4(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 4L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - ID cero
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(0L);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con ID cero");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con ID cero");
+        return true;
+    }
+
+    public static boolean testModificarReserva5(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 5L;
+        // Clean up first to ensure it doesn't exist
+        reservaRepository.deleteById(reservaId);
+
+        // Test - Modificar reserva inexistente
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva inexistente");
+        return true;
+    }
+
+    public static boolean testModificarReserva6(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 6L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Nombre cliente null
+        Reserva reserva = new Reserva(
+                null,
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con nombre cliente null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con nombre cliente null");
+        return true;
+    }
+
+    public static boolean testModificarReserva7(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 7L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Nombre cliente == cadena vacía
+        Reserva reserva = new Reserva(
+                "",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con cadena vacía como nombre de cliente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con cadena vacía como nombre de cliente");
+        return true;
+    }
+
+    public static boolean testModificarReserva8(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 8L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Nombre cliente muy largo
+        Reserva reserva = new Reserva(
+                "Pedro".repeat(40),
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con nombre cliente muy largo");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con nombre cliente muy largo");
+        return true;
+    }
+
+    public static boolean testModificarReserva9(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 9L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Fecha entrada null
+        Reserva reserva = new Reserva(
+                "Pedro",
+                null,
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con fecha entrada null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con fecha entrada null");
+        return true;
+    }
+
+    public static boolean testModificarReserva10(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 10L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Fecha salida anterior a entrada
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729612800000L), // 20/10/2024
+                new Date(1729353600000L), // 17/10/2024
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con fecha salida anterior a entrada");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con fecha salida anterior a entrada");
+        return true;
+    }
+
+    public static boolean testModificarReserva11(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 11L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Fecha salida null
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                null,
+                "123456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con fecha salida null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con fecha salida null");
+        return true;
+    }
+
+    public static boolean testModificarReserva12(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 12L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Teléfono null
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                null,
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con teléfono null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con teléfono null");
+        return true;
+    }
+
+    public static boolean testModificarReserva13(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 13L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Teléfono inválido
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "a23456789",
+                50.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con teléfono inválido");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con teléfono inválido");
+        return true;
+    }
+
+    public static boolean testModificarReserva14(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 14L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Precio null
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                null);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con precio null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con precio null");
+        return true;
+    }
+
+    public static boolean testModificarReserva15(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 15L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Precio cero
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                0.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con precio cero");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con precio cero");
+        return true;
+    }
+
+    public static boolean testModificarReserva16(Application context) {
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        long reservaId = 16L;
+
+        // Insert valid reserva first
+        Reserva reservaOrig = new Reserva(
+                "Juan",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "987654321",
+                40.0);
+        reservaOrig.setId(reservaId);
+        reservaRepository.insert(reservaOrig);
+
+        // Test - Precio muy grande
+        Reserva reserva = new Reserva(
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                200000.0);
+        reserva.setId(reservaId);
+        long result = reservaRepository.insert(reserva);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar reserva con precio muy grande");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar reserva con precio muy grande");
         return true;
     }
 
@@ -1257,18 +1784,17 @@ public class TestUtils {
         long reservaId = 1L;
         // Clean up first
         reservaRepository.deleteById(reservaId);
-        
+
         // Test - Caso válido
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
-        
+
         long result = reservaRepository.delete(reserva);
         if (result <= 0) {
             Log.e(TAG, "Test fallido: No se pudo eliminar una reserva válida");
@@ -1282,14 +1808,13 @@ public class TestUtils {
         ReservaRepository reservaRepository = new ReservaRepository(context);
         // Test - ID null
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(null);
-        
+
         long result = reservaRepository.delete(reserva);
         if (result > 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar reserva con ID null");
@@ -1302,23 +1827,514 @@ public class TestUtils {
     public static boolean testEliminarReserva3(Application context) {
         ReservaRepository reservaRepository = new ReservaRepository(context);
         long reservaId = 999L;
-        
+
         // Test - Reserva inexistente
         Reserva reserva = new Reserva(
-            "Pedro",
-            new Date(1729353600000L),
-            new Date(1729612800000L),
-            "123456789",
-            50.0
-        );
+                "Pedro",
+                new Date(1729353600000L),
+                new Date(1729612800000L),
+                "123456789",
+                50.0);
         reserva.setId(reservaId);
         long result = reservaRepository.delete(reserva);
-        
+
         if (result > 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una reserva inexistente");
             return false;
         }
         Log.d(TAG, "Test exitoso: Se impidió eliminar una reserva inexistente");
+        return true;
+    }
+
+    /**************************************************************************
+     *                                                                         *
+     *                   PRUEBAS UNITARIAS DE PARCELAS RESERVADAS             *
+     *                                                                         *
+     **************************************************************************/
+
+    /*========================================================================
+     * Tests de Inserción - Casos Válidos
+     *========================================================================*/
+    public static boolean testInsertarParcelaReservada1(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        parcelaRepository.deleteByNombre(nombreParcela);
+        reservaRepository.deleteById(reservaId);
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result <= 0) {
+            Log.e(TAG, "Test fallido: No se pudo insertar una parcela reservada válida");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se insertó correctamente la parcela reservada");
+        return true;
+    }
+
+    /*========================================================================
+     * Tests de Inserción - Casos Inválidos
+     *========================================================================*/
+    public static boolean testInsertarParcelaReservada2(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+        String nombreParcela = "moncayo";
+        long reservaId = 1L;
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test - parcela inexistente
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió insertar una parcela reservada con parcela inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió insertar una parcela reservada con parcela inexistente");
+        return true;
+    }
+
+    public static boolean testInsertarParcelaReservada3(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 120L;
+
+        // Preparar parcela válida
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        // Test - reserva inexistente
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió insertar una parcela reservada con reserva inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió insertar una parcela reservada con reserva inexistente");
+        return true;
+    }
+
+    public static boolean testInsertarParcelaReservada4(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Insertar primera vez
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.insert(parcelaReservada);
+
+        // Test - insertar duplicado
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió insertar una parcela reservada duplicada");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió insertar una parcela reservada duplicada");
+        return true;
+    }
+
+    public static boolean testInsertarParcelaReservada5(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test - número de ocupantes null
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, null);
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió insertar una parcela reservada con número de ocupantes null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió insertar una parcela reservada con número de ocupantes null");
+        return true;
+    }
+
+    public static boolean testInsertarParcelaReservada6(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test - número de ocupantes cero
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 0);
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió insertar una parcela reservada con número de ocupantes cero");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió insertar una parcela reservada con número de ocupantes cero");
+        return true;
+    }
+
+    public static boolean testInsertarParcelaReservada7(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test - número de ocupantes muy grande
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 1000);
+        long result = parcelaReservadaRepository.insert(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió insertar una parcela reservada con número de ocupantes muy grande");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió insertar una parcela reservada con número de ocupantes muy grande");
+        return true;
+    }
+
+    /*========================================================================
+     * Tests de Modificación - Casos Válidos
+     *========================================================================*/
+    public static boolean testModificarParcelaReservada1(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1M";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.insert(parcelaReservada);
+
+        // Test
+        parcelaReservada.setNumOcupantes(12);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result <= 0) {
+            Log.e(TAG, "Test fallido: No se pudo modificar una parcela reservada válida");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se modificó correctamente la parcela reservada");
+        return true;
+    }
+
+    /*========================================================================
+     * Tests de Modificación - Casos Inválidos
+     *========================================================================*/
+    public static boolean testModificarParcelaReservada2(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "moncayo";
+        long reservaId = 1L;
+
+        // Preparar reserva válida
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test - parcela inexistente
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con parcela inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela reservada con parcela inexistente");
+        return true;
+    }
+
+    public static boolean testModificarParcelaReservada3(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 120L;
+
+        // Preparar parcela válida
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        // Test - reserva inexistente
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con reserva inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela reservada con reserva inexistente");
+        return true;
+    }
+
+    public static boolean testModificarParcelaReservada4(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        // Test - modificar parcela reservada inexistente
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela reservada inexistente");
+        return true;
+    }
+
+    public static boolean testModificarParcelaReservada5(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba y crear parcela reservada válida
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        ParcelaReservada parcelaReservadaOrig = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.insert(parcelaReservadaOrig);
+
+        // Test - número de ocupantes null
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, null);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con número de ocupantes null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela reservada con número de ocupantes null");
+        return true;
+    }
+
+    public static boolean testModificarParcelaReservada6(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba y crear parcela reservada válida
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        ParcelaReservada parcelaReservadaOrig = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.insert(parcelaReservadaOrig);
+
+        // Test - número de ocupantes cero
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 0);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con número de ocupantes cero");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela reservada con número de ocupantes cero");
+        return true;
+    }
+
+    public static boolean testModificarParcelaReservada7(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba y crear parcela reservada válida
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        ParcelaReservada parcelaReservadaOrig = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.insert(parcelaReservadaOrig);
+
+        // Test - número de ocupantes muy grande
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 1000);
+        long result = parcelaReservadaRepository.update(parcelaReservada);
+
+        if (result != -1) {
+            Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con número de ocupantes muy grande");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió modificar una parcela reservada con número de ocupantes muy grande");
+        return true;
+    }
+
+    /*========================================================================
+     * Tests de Eliminación - Casos Válidos
+     *========================================================================*/
+    public static boolean testEliminarParcelaReservada1(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+        ParcelaRepository parcelaRepository = new ParcelaRepository(context);
+        ReservaRepository reservaRepository = new ReservaRepository(context);
+
+        String nombreParcela = "fuenlabrada1";
+        long reservaId = 1L;
+
+        // Preparar datos de prueba
+        Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
+        parcelaRepository.insert(parcela);
+
+        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        reserva.setId(reservaId);
+        reservaRepository.insert(reserva);
+
+        ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.insert(parcelaReservada);
+
+        // Test
+        long result = parcelaReservadaRepository.delete(parcelaReservada);
+
+        if (result <= 0) {
+            Log.e(TAG, "Test fallido: No se pudo eliminar una parcela reservada válida");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se eliminó correctamente la parcela reservada");
+        return true;
+    }
+
+    /*========================================================================
+     * Tests de Eliminación - Casos Inválidos
+     *========================================================================*/
+    public static boolean testEliminarParcelaReservada2(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+
+        // Test - nombre parcela null
+        ParcelaReservada parcelaReservada = new ParcelaReservada(null, 1L, 10);
+        long result = parcelaReservadaRepository.delete(parcelaReservada);
+
+        if (result > 0) {
+            Log.e(TAG, "Test fallido: Se permitió eliminar una parcela reservada con nombre null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió eliminar una parcela reservada con nombre null");
+        return true;
+    }
+
+    public static boolean testEliminarParcelaReservada3(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+
+        // Test - ID reserva null
+        ParcelaReservada parcelaReservada = new ParcelaReservada("fuenlabrada1", null, 10);
+        long result = parcelaReservadaRepository.delete(parcelaReservada);
+
+        if (result > 0) {
+            Log.e(TAG, "Test fallido: Se permitió eliminar una parcela reservada con ID de reserva null");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió eliminar una parcela reservada con ID de reserva null");
+        return true;
+    }
+
+    public static boolean testEliminarParcelaReservada4(Application context) {
+        ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
+
+        // Test - parcela reservada inexistente
+        ParcelaReservada parcelaReservada = new ParcelaReservada("moncayo", 120L, 10);
+        long result = parcelaReservadaRepository.delete(parcelaReservada);
+
+        if (result > 0) {
+            Log.e(TAG, "Test fallido: Se permitió eliminar una parcela reservada inexistente");
+            return false;
+        }
+        Log.d(TAG, "Test exitoso: Se impidió eliminar una parcela reservada inexistente");
         return true;
     }
 }

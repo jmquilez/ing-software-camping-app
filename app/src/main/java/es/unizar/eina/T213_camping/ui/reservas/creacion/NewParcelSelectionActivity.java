@@ -142,6 +142,11 @@ public class NewParcelSelectionActivity extends BaseActivity {
      * Muestra un diálogo de confirmación y procesa la creación de la reserva.
      */
     private void confirmReservation() {
+        if (addedParcels == null || addedParcels.isEmpty()) {
+            DialogUtils.showErrorDialog(this, "Error: Debe seleccionar al menos una parcela");
+            return;
+        }
+
         String clientName = getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
         String clientPhone = getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
         

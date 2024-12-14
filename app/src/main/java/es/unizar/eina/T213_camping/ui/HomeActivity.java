@@ -181,7 +181,7 @@ public class HomeActivity extends BaseActivity {
             "Test Insertar Parcela 1 (Caso válido)",
             "Test Insertar Parcela 2 (Nombre null)",
             "Test Insertar Parcela 3 (Nombre muy largo)",
-            "Test Insertar Parcela 4 (Nombre duplicado)",
+            "Test Insertar Parcela 4 (Nombre vacío)",
             "Test Insertar Parcela 5 (Descripción null)",
             "Test Insertar Parcela 6 (Descripción muy larga)",
             "Test Insertar Parcela 7 (Ocupantes null)",
@@ -228,7 +228,31 @@ public class HomeActivity extends BaseActivity {
             // Tests de eliminación de reservas
             "Test Eliminar Reserva 1 (Caso válido - Clases 1,2)",
             "Test Eliminar Reserva 2 (ID null - Clase 3)",
-            "Test Eliminar Reserva 3 (Reserva inexistente - Clase 4)"
+            "Test Eliminar Reserva 3 (Reserva inexistente - Clase 4)",
+
+            // Tests de inserción de parcelas reservadas
+            "Test Insertar Parcela Reservada 1 (Caso válido - Clases 1-5)",
+            "Test Insertar Parcela Reservada 2 (Parcela inexistente - Clase 6)",
+            "Test Insertar Parcela Reservada 3 (Reserva inexistente - Clase 7)",
+            "Test Insertar Parcela Reservada 4 (Duplicada - Clase 8)",
+            "Test Insertar Parcela Reservada 5 (Ocupantes null - Clase 9)",
+            "Test Insertar Parcela Reservada 6 (Ocupantes cero - Clase 10)",
+            "Test Insertar Parcela Reservada 7 (Ocupantes muy grandes - Clase 11)",
+
+            // Tests de modificación de parcelas reservadas
+            "Test Modificar Parcela Reservada 1 (Caso válido - Clases 1-5)",
+            "Test Modificar Parcela Reservada 2 (Parcela inexistente - Clase 6)",
+            "Test Modificar Parcela Reservada 3 (Reserva inexistente - Clase 7)",
+            "Test Modificar Parcela Reservada 4 (Inexistente - Clase 8)",
+            "Test Modificar Parcela Reservada 5 (Ocupantes null - Clase 9)",
+            "Test Modificar Parcela Reservada 6 (Ocupantes cero - Clase 10)",
+            "Test Modificar Parcela Reservada 7 (Ocupantes muy grandes - Clase 11)",
+
+            // Tests de eliminación de parcelas reservadas
+            "Test Eliminar Parcela Reservada 1 (Caso válido - Clases 1-3)",
+            "Test Eliminar Parcela Reservada 2 (Nombre null - Clase 4)",
+            "Test Eliminar Parcela Reservada 3 (ID Reserva null - Clase 5)",
+            "Test Eliminar Parcela Reservada 4 (Inexistente - Clase 6)"
         };
 
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
@@ -236,82 +260,151 @@ public class HomeActivity extends BaseActivity {
                .setItems(options, (dialog, which) -> {
                    try {
                        Application app = getApplication();
+                       boolean result = false;
+
                        // Tests de inserción de parcelas (0-11)
                        if (which <= 11) {
                            switch (which) {
-                               case 0: TestUtils.testInsertarParcela1(app); break;
-                               case 1: TestUtils.testInsertarParcela2(app); break;
-                               case 2: TestUtils.testInsertarParcela3(app); break;
-                               case 3: TestUtils.testInsertarParcela4(app); break;
-                               case 4: TestUtils.testInsertarParcela5(app); break;
-                               case 5: TestUtils.testInsertarParcela6(app); break;
-                               case 6: TestUtils.testInsertarParcela7(app); break;
-                               case 7: TestUtils.testInsertarParcela8(app); break;
-                               case 8: TestUtils.testInsertarParcela9(app); break;
-                               case 9: TestUtils.testInsertarParcela10(app); break;
-                               case 10: TestUtils.testInsertarParcela11(app); break;
-                               case 11: TestUtils.testInsertarParcela12(app); break;
+                               case 0: result = TestUtils.testInsertarParcela1(app); break;
+                               case 1: result = TestUtils.testInsertarParcela2(app); break;
+                               case 2: result = TestUtils.testInsertarParcela3(app); break;
+                               case 3: result = TestUtils.testInsertarParcela4(app); break;
+                               case 4: result = TestUtils.testInsertarParcela5(app); break;
+                               case 5: result = TestUtils.testInsertarParcela6(app); break;
+                               case 6: result = TestUtils.testInsertarParcela7(app); break;
+                               case 7: result = TestUtils.testInsertarParcela8(app); break;
+                               case 8: result = TestUtils.testInsertarParcela9(app); break;
+                               case 9: result = TestUtils.testInsertarParcela10(app); break;
+                               case 10: result = TestUtils.testInsertarParcela11(app); break;
+                               case 11: result = TestUtils.testInsertarParcela12(app); break;
                            }
                        }
                        // Tests de modificación de parcelas (12-23)
                        else if (which <= 23) {
                            switch (which - 12) {
-                               case 0: TestUtils.testModificarParcela1(app); break;
-                               case 1: TestUtils.testModificarParcela2(app); break;
-                               case 2: TestUtils.testModificarParcela3(app); break;
-                               case 3: TestUtils.testModificarParcela4(app); break;
-                               case 4: TestUtils.testModificarParcela5(app); break;
-                               case 5: TestUtils.testModificarParcela6(app); break;
-                               case 6: TestUtils.testModificarParcela7(app); break;
-                               case 7: TestUtils.testModificarParcela8(app); break;
-                               case 8: TestUtils.testModificarParcela9(app); break;
-                               case 9: TestUtils.testModificarParcela10(app); break;
-                               case 10: TestUtils.testModificarParcela11(app); break;
-                               case 11: TestUtils.testModificarParcela12(app); break;
+                               case 0: result = TestUtils.testModificarParcela1(app); break;
+                               case 1: result = TestUtils.testModificarParcela2(app); break;
+                               case 2: result = TestUtils.testModificarParcela3(app); break;
+                               case 3: result = TestUtils.testModificarParcela4(app); break;
+                               case 4: result = TestUtils.testModificarParcela5(app); break;
+                               case 5: result = TestUtils.testModificarParcela6(app); break;
+                               case 6: result = TestUtils.testModificarParcela7(app); break;
+                               case 7: result = TestUtils.testModificarParcela8(app); break;
+                               case 8: result = TestUtils.testModificarParcela9(app); break;
+                               case 9: result = TestUtils.testModificarParcela10(app); break;
+                               case 10: result = TestUtils.testModificarParcela11(app); break;
+                               case 11: result = TestUtils.testModificarParcela12(app); break;
                            }
                        }
                        // Tests de eliminación de parcelas (24-26)
                        else if (which <= 26) {
                            switch (which - 24) {
-                               case 0: TestUtils.testEliminarParcela1(app); break;
-                               case 1: TestUtils.testEliminarParcela2(app); break;
-                               case 2: TestUtils.testEliminarParcela3(app); break;
+                               case 0: result = TestUtils.testEliminarParcela1(app); break;
+                               case 1: result = TestUtils.testEliminarParcela2(app); break;
+                               case 2: result = TestUtils.testEliminarParcela3(app); break;
                            }
                        }
                        // Tests de inserción de reservas (27-41)
                        else if (which <= 41) {
                            switch (which - 27) {
-                               case 0: TestUtils.testInsertarReserva1(app); break;
-                               case 1: TestUtils.testInsertarReserva2(app); break;
-                               case 2: TestUtils.testInsertarReserva3(app); break;
-                               case 3: TestUtils.testInsertarReserva4(app); break;
-                               case 4: TestUtils.testInsertarReserva5(app); break;
-                               case 5: TestUtils.testInsertarReserva6(app); break;
-                               case 6: TestUtils.testInsertarReserva7(app); break;
-                               case 7: TestUtils.testInsertarReserva8(app); break;
-                               case 8: TestUtils.testInsertarReserva9(app); break;
-                               case 9: TestUtils.testInsertarReserva10(app); break;
-                               case 10: TestUtils.testInsertarReserva11(app); break;
-                               case 11: TestUtils.testInsertarReserva12(app); break;
-                               case 12: TestUtils.testInsertarReserva13(app); break;
-                               case 13: TestUtils.testInsertarReserva14(app); break;
-                               case 14: TestUtils.testInsertarReserva15(app); break;
+                               case 0: result = TestUtils.testInsertarReserva1(app); break;
+                               case 1: result = TestUtils.testInsertarReserva2(app); break;
+                               case 2: result = TestUtils.testInsertarReserva3(app); break;
+                               case 3: result = TestUtils.testInsertarReserva4(app); break;
+                               case 4: result = TestUtils.testInsertarReserva5(app); break;
+                               case 5: result = TestUtils.testInsertarReserva6(app); break;
+                               case 6: result = TestUtils.testInsertarReserva7(app); break;
+                               case 7: result = TestUtils.testInsertarReserva8(app); break;
+                               case 8: result = TestUtils.testInsertarReserva9(app); break;
+                               case 9: result = TestUtils.testInsertarReserva10(app); break;
+                               case 10: result = TestUtils.testInsertarReserva11(app); break;
+                               case 11: result = TestUtils.testInsertarReserva12(app); break;
+                               case 12: result = TestUtils.testInsertarReserva13(app); break;
+                               case 13: result = TestUtils.testInsertarReserva14(app); break;
+                               case 14: result = TestUtils.testInsertarReserva15(app); break;
                            }
                        }
                        // Tests de eliminación de reservas (42-44)
-                       else {
+                       else if (which <= 44) {
                            switch (which - 42) {
-                               case 0: TestUtils.testEliminarReserva1(app); break;
-                               case 1: TestUtils.testEliminarReserva2(app); break;
-                               case 2: TestUtils.testEliminarReserva3(app); break;
+                               case 0: result = TestUtils.testEliminarReserva1(app); break;
+                               case 1: result = TestUtils.testEliminarReserva2(app); break;
+                               case 2: result = TestUtils.testEliminarReserva3(app); break;
                            }
                        }
-                       DialogUtils.showSuccessDialog(this, "Test ejecutado correctamente", R.drawable.ic_create_success);
+                       // Tests de inserción de parcelas reservadas (45-51)
+                       else if (which <= 51) {
+                           switch (which - 45) {
+                               case 0: result = TestUtils.testInsertarParcelaReservada1(app); break;
+                               case 1: result = TestUtils.testInsertarParcelaReservada2(app); break;
+                               case 2: result = TestUtils.testInsertarParcelaReservada3(app); break;
+                               case 3: result = TestUtils.testInsertarParcelaReservada4(app); break;
+                               case 4: result = TestUtils.testInsertarParcelaReservada5(app); break;
+                               case 5: result = TestUtils.testInsertarParcelaReservada6(app); break;
+                               case 6: result = TestUtils.testInsertarParcelaReservada7(app); break;
+                           }
+                       }
+                       // Tests de modificación de parcelas reservadas (52-58)
+                       else if (which <= 58) {
+                           switch (which - 52) {
+                               case 0: result = TestUtils.testModificarParcelaReservada1(app); break;
+                               case 1: result = TestUtils.testModificarParcelaReservada2(app); break;
+                               case 2: result = TestUtils.testModificarParcelaReservada3(app); break;
+                               case 3: result = TestUtils.testModificarParcelaReservada4(app); break;
+                               case 4: result = TestUtils.testModificarParcelaReservada5(app); break;
+                               case 5: result = TestUtils.testModificarParcelaReservada6(app); break;
+                               case 6: result = TestUtils.testModificarParcelaReservada7(app); break;
+                           }
+                       }
+                       // Tests de eliminación de parcelas reservadas (59-62)
+                       else {
+                           switch (which - 59) {
+                               case 0: result = TestUtils.testEliminarParcelaReservada1(app); break;
+                               case 1: result = TestUtils.testEliminarParcelaReservada2(app); break;
+                               case 2: result = TestUtils.testEliminarParcelaReservada3(app); break;
+                               case 3: result = TestUtils.testEliminarParcelaReservada4(app); break;
+                           }
+                       }
+
+                       if (result) {
+                           DialogUtils.showSuccessDialog(this, "Test ejecutado correctamente", R.drawable.ic_create_success);
+                       } else {
+                           DialogUtils.showErrorDialog(this, "El test ha fallado");
+                       }
                    } catch (Exception e) {
                        DialogUtils.showErrorDialog(this, "Error al ejecutar el test: " + e.getMessage());
                    }
                });
         builder.create().show();
+    }
+
+    private void executeAllParcelaReservadaTests(Application app) {
+        try {
+            boolean success = true;
+            // Tests de inserción
+            for (int i = 1; i <= 7 && success; i++) {
+                success = (boolean) TestUtils.class.getMethod("testInsertarParcelaReservada" + i, Application.class)
+                    .invoke(null, app);
+            }
+            // Tests de modificación
+            for (int i = 1; i <= 7 && success; i++) {
+                success = (boolean) TestUtils.class.getMethod("testModificarParcelaReservada" + i, Application.class)
+                    .invoke(null, app);
+            }
+            // Tests de eliminación
+            for (int i = 1; i <= 4 && success; i++) {
+                success = (boolean) TestUtils.class.getMethod("testEliminarParcelaReservada" + i, Application.class)
+                    .invoke(null, app);
+            }
+            
+            if (success) {
+                DialogUtils.showSuccessDialog(this, "Tests de parcelas reservadas completados", R.drawable.ic_create_success);
+            } else {
+                DialogUtils.showErrorDialog(this, "Uno o más tests de parcelas reservadas han fallado");
+            }
+        } catch (Exception e) {
+            DialogUtils.showErrorDialog(this, "Error en tests de parcelas reservadas: " + e.getMessage());
+        }
     }
 
     @Override

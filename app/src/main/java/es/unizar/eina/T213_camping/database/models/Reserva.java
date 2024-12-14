@@ -5,10 +5,10 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import java.util.Date;
+import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.Size;
 import androidx.room.Index;
-import androidx.room.Check;
 
 // TODO: longitud de `precio`?
 /**
@@ -17,11 +17,7 @@ import androidx.room.Check;
  */
 @Entity(
     tableName = "reserva",
-    indices = {@Index("id")},
-    // Ensure fechaEntrada is before fechaSalida
-    checks = {
-        @Check(constraint = "CAST(fechaEntrada AS INTEGER) < CAST(fechaSalida AS INTEGER)")
-    }
+    indices = {@Index("id")}
 )
 public class Reserva {
 
@@ -31,7 +27,7 @@ public class Reserva {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     @NonNull
-    @IntRange(from = 1, to = 9999)
+    @IntRange(from = 1, to = 10000)
     private long id;
 
     /**
@@ -69,6 +65,7 @@ public class Reserva {
      */
     @NonNull
     @ColumnInfo(name = "precio")
+    @FloatRange(from = 0.0, to = 99999.0)
     private Double precio;
 
     // Constructor
@@ -86,8 +83,7 @@ public class Reserva {
      * Obtiene el ID único de la reserva.
      * @return ID de la reserva
      */
-    @NonNull
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

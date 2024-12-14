@@ -6,9 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.IntRange;
-import androidx.room.FloatRange;
-import androidx.room.Size;
+import androidx.annotation.IntRange;
+import androidx.annotation.FloatRange;
+import androidx.annotation.Size;
 
 /**
  * Representa una parcela en el camping.

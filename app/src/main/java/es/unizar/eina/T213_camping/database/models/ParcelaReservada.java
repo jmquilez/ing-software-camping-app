@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.ColumnInfo;
 import androidx.room.Index;
-import androidx.room.IntRange;
+import androidx.annotation.IntRange;
 
 /**
  * Representa la relación entre una parcela y una reserva.

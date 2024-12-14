@@ -72,4 +72,13 @@ public class ReservaViewModel extends AndroidViewModel {
     public void deleteById(long reservationId) {
         mRepository.deleteById(reservationId);
     }
+
+    /**
+     * Verifica si existe una reserva con el ID especificado.
+     * @param reservaId ID de la reserva a verificar
+     * @return true si existe la reserva, false en caso contrario
+     */
+    public boolean exists(long reservaId) {
+        return mRepository.exists(reservaId);
+    }
 }

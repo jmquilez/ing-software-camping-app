@@ -91,11 +91,10 @@ public interface ParcelaReservadaDao {
 
     /** 
      * Obtiene las parcelas disponibles en un intervalo de fechas excluyendo una reserva específica.
-     * @param startDate Fecha de inicio del intervalo
-     * @param endDate Fecha de fin del intervalo
+     * @param startDate Fecha de inicio del intervalo (inclusive)
+     * @param endDate Fecha de fin del intervalo (exclusive)
      * @param excludeReservationId ID de la reserva a excluir
      * @return LiveData con la lista de parcelas disponibles
-     * @todo Check margen de solapamiento (1 día o 0 días?)
      */
     @Query("SELECT p.* FROM parcela p " +
            "WHERE p.nombre NOT IN " +
@@ -113,4 +112,13 @@ public interface ParcelaReservadaDao {
      */
     @Query("UPDATE parcela_reservada SET parcelaNombre = :newName WHERE parcelaNombre = :oldName")
     int updateParcelaNombre(String oldName, String newName);
+
+    /**
+     * Verifica si existe una relación entre una parcela y una reserva.
+     * @param parcelaNombre Nombre de la parcela a verificar
+     * @param reservaId ID de la reserva a verificar
+     * @return true si existe la relación, false en caso contrario
+     */
+    @Query("SELECT EXISTS(SELECT 1 FROM parcela_reservada WHERE parcelaNombre = :parcelaNombre AND reservaId = :reservaId)")
+    boolean exists(String parcelaNombre, long reservaId);
 }

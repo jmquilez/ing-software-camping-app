@@ -102,4 +102,14 @@ public class ParcelaReservadaViewModel extends AndroidViewModel {
     public LiveData<List<Parcela>> getParcelasDisponiblesEnIntervaloExcludingReservation(Date startDate, Date endDate, long excludeReservationId) {
         return mRepository.getParcelasDisponiblesEnIntervaloExcludingReservation(startDate, endDate, excludeReservationId);
     }
+
+    /**
+     * Verifica si existe una relación parcela-reserva con los identificadores especificados.
+     * @param idReserva ID de la reserva a verificar
+     * @param nombreParcela Nombre de la parcela a verificar
+     * @return true si existe la relación parcela-reserva, false en caso contrario
+     */
+    public boolean exists(String nombreParcela, long idReserva) {
+        return mRepository.exists(nombreParcela, idReserva);
+    }
 }

@@ -7,11 +7,8 @@ import androidx.lifecycle.LiveData;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import es.unizar.eina.T213_camping.database.AppDatabase;
 import es.unizar.eina.T213_camping.database.daos.ReservaDao;
@@ -24,6 +21,7 @@ import es.unizar.eina.T213_camping.database.models.Reserva;
 public class ReservaRepository {
 
     private static final long TIMEOUT = 3000;
+    private static final String TAG = "ReservaRepository";
 
     /**
      * DAO para acceder a las operaciones de reservas en la base de datos.
@@ -57,20 +55,11 @@ public class ReservaRepository {
      * @return ID generado para la nueva reserva, o -1 si ocurre un error
      */
     public long insert(Reserva reserva) {
-        Future<Long> future = executorService.submit(() -> mReservaDao.insert(reserva));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            Log.e("ReservaRepository", "Insert interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt(); // Restore interrupted status
+        if (!isValidReserva(reserva, "Insert")) {
             return -1L;
-        } catch (TimeoutException e) {
-            Log.e("ReservaRepository", "Insert timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Log.e("ReservaRepository", "Error inserting: " + e.getMessage());
-            return -3L;
         }
+        Future<Long> future = executorService.submit(() -> mReservaDao.insert(reserva));
+        return handleFutureResult(future, "Insert");
     }
 
     /**
@@ -87,20 +76,11 @@ public class ReservaRepository {
      * @param reserva Reserva con los datos actualizados
      */
     public Long update(Reserva reserva) {
-        Future<Integer> future = executorService.submit(() -> mReservaDao.update(reserva));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Log.e("ReservaRepository", "Update interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
+        if (!isValidReserva(reserva, "Update")) {
             return -1L;
-        } catch (TimeoutException e) {
-            Log.e("ReservaRepository", "Update timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Log.e("ReservaRepository", "Error updating: " + e.getMessage());
-            return -3L;
         }
+        Future<Integer> future = executorService.submit(() -> mReservaDao.update(reserva));
+        return handleFutureResult(future, "Update");
     }
 
     /**
@@ -110,19 +90,7 @@ public class ReservaRepository {
      */
     public Long delete(Reserva reserva) {
         Future<Integer> future = executorService.submit(() -> mReservaDao.delete(reserva));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Log.e("ReservaRepository", "Delete interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Log.e("ReservaRepository", "Delete timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Log.e("ReservaRepository", "Error deleting: " + e.getMessage());
-            return -3L;
-        }
+        return handleFutureResult(future, "Delete");
     }
 
     /**
@@ -132,19 +100,7 @@ public class ReservaRepository {
      */
     public Long deleteById(long reservationId) {
         Future<Integer> future = executorService.submit(() -> mReservaDao.deleteById(reservationId));
-        try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Log.e("ReservaRepository", "DeleteById interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Log.e("ReservaRepository", "DeleteById timed out: " + e.getMessage());
-            return -2L;
-        } catch (Exception e) {
-            Log.e("ReservaRepository", "Error deleting by id: " + e.getMessage());
-            return -3L;
-        }
+        return handleFutureResult(future, "DeleteById");
     }
 
     /**
@@ -154,18 +110,78 @@ public class ReservaRepository {
      */
     public Long deleteAll() {
         Future<Integer> future = executorService.submit(() -> mReservaDao.deleteAll());
+        return handleFutureResult(future, "DeleteAll");
+    }
+
+    /**
+     * Verifica si existe una reserva con el ID especificado.
+     * @param reservaId ID de la reserva a verificar
+     * @return true si existe la reserva, false en caso contrario
+     */
+    public boolean exists(long reservaId) {
+        Future<Boolean> future = executorService.submit(() -> mReservaDao.exists(reservaId));
         try {
-            return future.get(TIMEOUT, TimeUnit.MILLISECONDS).longValue();
-        } catch (InterruptedException e) {
-            Log.e("ReservaRepository", "DeleteAll interrupted: " + e.getMessage());
-            Thread.currentThread().interrupt();
-            return -1L;
-        } catch (TimeoutException e) {
-            Log.e("ReservaRepository", "DeleteAll timed out: " + e.getMessage());
-            return -2L;
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (Exception e) {
-            Log.e("ReservaRepository", "Error deleting all: " + e.getMessage());
-            return -3L;
+            Log.e(TAG, "Error in exists: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return false;
         }
+    }
+
+    private <T> Long handleFutureResult(Future<T> future, String operation) {
+        try {
+            return ((Number) future.get(TIMEOUT, TimeUnit.MILLISECONDS)).longValue();
+        } catch (Exception e) {
+            Log.e("ReservaRepository", operation + " error: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return -1L;
+        }
+    }
+
+    /**
+     * Valida los datos de una reserva.
+     * @param reserva Reserva a validar
+     * @param operation Nombre de la operación para el log
+     * @return true si la reserva es válida, false en caso contrario
+     */
+    private boolean isValidReserva(Reserva reserva, String operation) {
+        if (reserva == null) {
+            Log.e(TAG, operation + " error: Reserva cannot be a null object reference");
+            return false;
+        }
+        
+        if (isNotValidDateRange(reserva)) {
+            Log.e(TAG, operation + " error: Entry date must be before departure date");
+            return false;
+        }
+        
+        if (reserva.getNombreCliente() != null && reserva.getNombreCliente().isEmpty()) {
+            Log.e(TAG, operation + " error: Client name cannot be empty");
+            return false;
+        }
+        
+        if (reserva.getTelefonoCliente() != null && 
+            !reserva.getTelefonoCliente().matches("\\d{9}")) {
+            Log.e(TAG, operation + " error: Phone number must be exactly 9 digits");
+            return false;
+        }
+        
+        if (reserva.getPrecio() != null && reserva.getPrecio() <= 0) {
+            Log.e(TAG, operation + " error: Price must be greater than zero");
+            return false;
+        }
+        
+        return true;
+    }
+
+    private boolean isNotValidDateRange(Reserva reserva) {
+        return reserva.getFechaEntrada() == null ||
+                reserva.getFechaSalida() == null ||
+                !reserva.getFechaEntrada().before(reserva.getFechaSalida());
     }
 }

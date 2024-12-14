@@ -55,4 +55,12 @@ public interface ReservaDao {
      */
     @Query("DELETE FROM reserva WHERE id = :reservationId")
     int deleteById(long reservationId);
+
+    /** 
+     * Verifica si existe una reserva con el ID especificado.
+     * @param reservaId ID de la reserva a verificar
+     * @return true si existe la reserva, false en caso contrario
+     */
+    @Query("SELECT EXISTS(SELECT 1 FROM reserva WHERE id = :reservaId)")
+    boolean exists(long reservaId);
 }
