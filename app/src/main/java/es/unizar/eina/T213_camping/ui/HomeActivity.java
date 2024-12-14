@@ -3,6 +3,7 @@ package es.unizar.eina.T213_camping.ui;
 import static androidx.core.content.ContextCompat.startActivity;
 
 import android.app.Application;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -25,7 +26,9 @@ import es.unizar.eina.T213_camping.ui.reservas.listado.ReservationFeedActivity;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.utils.DialogUtils;
-import es.unizar.eina.T213_camping.utils.TestUtils;
+import es.unizar.eina.T213_camping.utils.TestUtils.StressTests;
+import es.unizar.eina.T213_camping.utils.TestUtils.UnitTests;
+import es.unizar.eina.T213_camping.utils.TestUtils.VolumeTests;
 
 /**
  * Actividad principal que sirve como punto de entrada a las principales
@@ -162,15 +165,19 @@ public class HomeActivity extends BaseActivity {
                                 "¿Desea ejecutar la prueba de volumen? Esta operación puede tardar varios minutos.",
                                 R.drawable.ic_warning,
                                 () -> {
-                                    boolean result = TestUtils.volumeTest(this, parcelaViewModel, reservaViewModel);
-                                    if (result) {
-                                        DialogUtils.showSuccessDialog(this, 
-                                            "Prueba de volumen completada exitosamente", 
-                                            R.drawable.ic_create_success);
-                                    } else {
-                                        DialogUtils.showErrorDialog(this, 
-                                            "La prueba de volumen ha fallado");
-                                    }
+                                    final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, "Ejecutando prueba de volumen...");
+                                    new android.os.Handler().postDelayed(() -> {
+                                        boolean result = VolumeTests.volumeTest(this, parcelaViewModel, reservaViewModel);
+                                        loadingDialog.dismiss();
+                                        if (result) {
+                                            DialogUtils.showSuccessDialog(this, 
+                                                "Prueba de volumen completada exitosamente", 
+                                                R.drawable.ic_create_success);
+                                        } else {
+                                            DialogUtils.showErrorDialog(this, 
+                                                "La prueba de volumen ha fallado");
+                                        }
+                                    }, 500);
                                 });
                         break;
                     case 10: // Prueba de Sobrecarga
@@ -179,15 +186,19 @@ public class HomeActivity extends BaseActivity {
                                 "¿Desea ejecutar la prueba de sobrecarga? Esta operación puede causar inestabilidad en la aplicación.",
                                 R.drawable.ic_warning,
                                 () -> {
-                                    boolean result = TestUtils.stressTest(getApplication(), parcelaViewModel);
-                                    if (result) {
-                                        DialogUtils.showSuccessDialog(this, 
-                                            "Prueba de sobrecarga completada exitosamente", 
-                                            R.drawable.ic_create_success);
-                                    } else {
-                                        DialogUtils.showErrorDialog(this, 
-                                            "La prueba de sobrecarga ha fallado");
-                                    }
+                                    final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, "Ejecutando prueba de sobrecarga...");
+                                    new android.os.Handler().postDelayed(() -> {
+                                        boolean result = StressTests.stressTest(getApplication(), parcelaViewModel);
+                                        loadingDialog.dismiss();
+                                        if (result) {
+                                            DialogUtils.showSuccessDialog(this, 
+                                                "Prueba de sobrecarga completada exitosamente", 
+                                                R.drawable.ic_create_success);
+                                        } else {
+                                            DialogUtils.showErrorDialog(this, 
+                                                "La prueba de sobrecarga ha fallado");
+                                        }
+                                    }, 500);
                                 });
                         break;
                 }
@@ -204,27 +215,27 @@ public class HomeActivity extends BaseActivity {
             
             // Tests de inserción
             for (int i = 1; i <= 13 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testInsertarParcela" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testInsertarParcela" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i;
             }
             
             // Tests de modificación
             for (int i = 1; i <= 13 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testModificarParcela" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testModificarParcela" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i + 13; // Offset for modification tests
             }
             
             // Tests de eliminación
             for (int i = 1; i <= 3 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testEliminarParcela" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testEliminarParcela" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i + 26; // Offset for deletion tests
             }
 
             if (success) {
-                DialogUtils.showSuccessDialog(this, "Tests de parcelas completados", R.drawable.ic_create_success);
+                DialogUtils.showSuccessDialog(this, "Tests de parcelas completados con éxito", R.drawable.ic_create_success);
             } else {
                 String testType = failedTest <= 13 ? "Inserción" : 
                                 failedTest <= 26 ? "Modificación" : 
@@ -248,27 +259,27 @@ public class HomeActivity extends BaseActivity {
             
             // Tests de inserción
             for (int i = 1; i <= 16 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testInsertarReserva" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testInsertarReserva" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i;
             }
             
             // Tests de modificación
             for (int i = 1; i <= 16 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testModificarReserva" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testModificarReserva" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i + 16; // Offset for modification tests
             }
             
             // Tests de eliminación
             for (int i = 1; i <= 3 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testEliminarReserva" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testEliminarReserva" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i + 32; // Offset for deletion tests
             }
 
             if (success) {
-                DialogUtils.showSuccessDialog(this, "Tests de reservas completados", R.drawable.ic_create_success);
+                DialogUtils.showSuccessDialog(this, "Tests de reservas completados con éxito", R.drawable.ic_create_success);
             } else {
                 String testType = failedTest <= 16 ? "Inserción" : 
                                 failedTest <= 32 ? "Modificación" : 
@@ -423,43 +434,43 @@ public class HomeActivity extends BaseActivity {
                 if (which <= 12) {
                     switch (which) {
                         case 0:
-                            result = TestUtils.testInsertarParcela1(app);
+                            result = UnitTests.testInsertarParcela1(app);
                             break;
                         case 1:
-                            result = TestUtils.testInsertarParcela2(app);
+                            result = UnitTests.testInsertarParcela2(app);
                             break;
                         case 2:
-                            result = TestUtils.testInsertarParcela3(app);
+                            result = UnitTests.testInsertarParcela3(app);
                             break;
                         case 3:
-                            result = TestUtils.testInsertarParcela4(app);
+                            result = UnitTests.testInsertarParcela4(app);
                             break;
                         case 4:
-                            result = TestUtils.testInsertarParcela5(app);
+                            result = UnitTests.testInsertarParcela5(app);
                             break;
                         case 5:
-                            result = TestUtils.testInsertarParcela6(app);
+                            result = UnitTests.testInsertarParcela6(app);
                             break;
                         case 6:
-                            result = TestUtils.testInsertarParcela7(app);
+                            result = UnitTests.testInsertarParcela7(app);
                             break;
                         case 7:
-                            result = TestUtils.testInsertarParcela8(app);
+                            result = UnitTests.testInsertarParcela8(app);
                             break;
                         case 8:
-                            result = TestUtils.testInsertarParcela9(app);
+                            result = UnitTests.testInsertarParcela9(app);
                             break;
                         case 9:
-                            result = TestUtils.testInsertarParcela10(app);
+                            result = UnitTests.testInsertarParcela10(app);
                             break;
                         case 10:
-                            result = TestUtils.testInsertarParcela11(app);
+                            result = UnitTests.testInsertarParcela11(app);
                             break;
                         case 11:
-                            result = TestUtils.testInsertarParcela12(app);
+                            result = UnitTests.testInsertarParcela12(app);
                             break;
                         case 12:
-                            result = TestUtils.testInsertarParcela13(app);
+                            result = UnitTests.testInsertarParcela13(app);
                             break;
                     }
                 }
@@ -467,43 +478,43 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 25) {
                     switch (which - 13) {
                         case 0:
-                            result = TestUtils.testModificarParcela1(app);
+                            result = UnitTests.testModificarParcela1(app);
                             break;
                         case 1:
-                            result = TestUtils.testModificarParcela2(app);
+                            result = UnitTests.testModificarParcela2(app);
                             break;
                         case 2:
-                            result = TestUtils.testModificarParcela3(app);
+                            result = UnitTests.testModificarParcela3(app);
                             break;
                         case 3:
-                            result = TestUtils.testModificarParcela4(app);
+                            result = UnitTests.testModificarParcela4(app);
                             break;
                         case 4:
-                            result = TestUtils.testModificarParcela5(app);
+                            result = UnitTests.testModificarParcela5(app);
                             break;
                         case 5:
-                            result = TestUtils.testModificarParcela6(app);
+                            result = UnitTests.testModificarParcela6(app);
                             break;
                         case 6:
-                            result = TestUtils.testModificarParcela7(app);
+                            result = UnitTests.testModificarParcela7(app);
                             break;
                         case 7:
-                            result = TestUtils.testModificarParcela8(app);
+                            result = UnitTests.testModificarParcela8(app);
                             break;
                         case 8:
-                            result = TestUtils.testModificarParcela9(app);
+                            result = UnitTests.testModificarParcela9(app);
                             break;
                         case 9:
-                            result = TestUtils.testModificarParcela10(app);
+                            result = UnitTests.testModificarParcela10(app);
                             break;
                         case 10:
-                            result = TestUtils.testModificarParcela11(app);
+                            result = UnitTests.testModificarParcela11(app);
                             break;
                         case 11:
-                            result = TestUtils.testModificarParcela12(app);
+                            result = UnitTests.testModificarParcela12(app);
                             break;
                         case 12:
-                            result = TestUtils.testModificarParcela13(app);
+                            result = UnitTests.testModificarParcela13(app);
                             break;
                     }
                 }
@@ -511,13 +522,13 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 28) {
                     switch (which - 26) {
                         case 0:
-                            result = TestUtils.testEliminarParcela1(app);
+                            result = UnitTests.testEliminarParcela1(app);
                             break;
                         case 1:
-                            result = TestUtils.testEliminarParcela2(app);
+                            result = UnitTests.testEliminarParcela2(app);
                             break;
                         case 2:
-                            result = TestUtils.testEliminarParcela3(app);
+                            result = UnitTests.testEliminarParcela3(app);
                             break;
                     }
                 }
@@ -525,52 +536,52 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 44) {
                     switch (which - 29) {
                         case 0:
-                            result = TestUtils.testInsertarReserva1(app);
+                            result = UnitTests.testInsertarReserva1(app);
                             break;
                         case 1:
-                            result = TestUtils.testInsertarReserva2(app);
+                            result = UnitTests.testInsertarReserva2(app);
                             break;
                         case 2:
-                            result = TestUtils.testInsertarReserva3(app);
+                            result = UnitTests.testInsertarReserva3(app);
                             break;
                         case 3:
-                            result = TestUtils.testInsertarReserva4(app);
+                            result = UnitTests.testInsertarReserva4(app);
                             break;
                         case 4:
-                            result = TestUtils.testInsertarReserva5(app);
+                            result = UnitTests.testInsertarReserva5(app);
                             break;
                         case 5:
-                            result = TestUtils.testInsertarReserva6(app);
+                            result = UnitTests.testInsertarReserva6(app);
                             break;
                         case 6:
-                            result = TestUtils.testInsertarReserva7(app);
+                            result = UnitTests.testInsertarReserva7(app);
                             break;
                         case 7:
-                            result = TestUtils.testInsertarReserva8(app);
+                            result = UnitTests.testInsertarReserva8(app);
                             break;
                         case 8:
-                            result = TestUtils.testInsertarReserva9(app);
+                            result = UnitTests.testInsertarReserva9(app);
                             break;
                         case 9:
-                            result = TestUtils.testInsertarReserva10(app);
+                            result = UnitTests.testInsertarReserva10(app);
                             break;
                         case 10:
-                            result = TestUtils.testInsertarReserva11(app);
+                            result = UnitTests.testInsertarReserva11(app);
                             break;
                         case 11:
-                            result = TestUtils.testInsertarReserva12(app);
+                            result = UnitTests.testInsertarReserva12(app);
                             break;
                         case 12:
-                            result = TestUtils.testInsertarReserva13(app);
+                            result = UnitTests.testInsertarReserva13(app);
                             break;
                         case 13:
-                            result = TestUtils.testInsertarReserva14(app);
+                            result = UnitTests.testInsertarReserva14(app);
                             break;
                         case 14:
-                            result = TestUtils.testInsertarReserva15(app);
+                            result = UnitTests.testInsertarReserva15(app);
                             break;
                         case 15:
-                            result = TestUtils.testInsertarReserva16(app);
+                            result = UnitTests.testInsertarReserva16(app);
                             break;
                     }
                 }
@@ -578,52 +589,52 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 60) {
                     switch (which - 45) {
                         case 0:
-                            result = TestUtils.testInsertarReserva1(app);
+                            result = UnitTests.testModificarReserva1(app);
                             break;
                         case 1:
-                            result = TestUtils.testInsertarReserva2(app);
+                            result = UnitTests.testModificarReserva2(app);
                             break;
                         case 2:
-                            result = TestUtils.testInsertarReserva3(app);
+                            result = UnitTests.testModificarReserva3(app);
                             break;
                         case 3:
-                            result = TestUtils.testInsertarReserva4(app);
+                            result = UnitTests.testModificarReserva4(app);
                             break;
                         case 4:
-                            result = TestUtils.testInsertarReserva5(app);
+                            result = UnitTests.testModificarReserva5(app);
                             break;
                         case 5:
-                            result = TestUtils.testInsertarReserva6(app);
+                            result = UnitTests.testModificarReserva6(app);
                             break;
                         case 6:
-                            result = TestUtils.testInsertarReserva7(app);
+                            result = UnitTests.testModificarReserva7(app);
                             break;
                         case 7:
-                            result = TestUtils.testInsertarReserva8(app);
+                            result = UnitTests.testModificarReserva8(app);
                             break;
                         case 8:
-                            result = TestUtils.testInsertarReserva9(app);
+                            result = UnitTests.testModificarReserva9(app);
                             break;
                         case 9:
-                            result = TestUtils.testInsertarReserva10(app);
+                            result = UnitTests.testModificarReserva10(app);
                             break;
                         case 10:
-                            result = TestUtils.testInsertarReserva11(app);
+                            result = UnitTests.testModificarReserva11(app);
                             break;
                         case 11:
-                            result = TestUtils.testInsertarReserva12(app);
+                            result = UnitTests.testModificarReserva12(app);
                             break;
                         case 12:
-                            result = TestUtils.testInsertarReserva13(app);
+                            result = UnitTests.testModificarReserva13(app);
                             break;
                         case 13:
-                            result = TestUtils.testInsertarReserva14(app);
+                            result = UnitTests.testModificarReserva14(app);
                             break;
                         case 14:
-                            result = TestUtils.testInsertarReserva15(app);
+                            result = UnitTests.testModificarReserva15(app);
                             break;
                         case 15:
-                            result = TestUtils.testInsertarReserva16(app);
+                            result = UnitTests.testModificarReserva16(app);
                             break;
                     }
                 }
@@ -631,13 +642,13 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 63) {
                     switch (which - 61) {
                         case 0:
-                            result = TestUtils.testEliminarReserva1(app);
+                            result = UnitTests.testEliminarReserva1(app);
                             break;
                         case 1:
-                            result = TestUtils.testEliminarReserva2(app);
+                            result = UnitTests.testEliminarReserva2(app);
                             break;
                         case 2:
-                            result = TestUtils.testEliminarReserva3(app);
+                            result = UnitTests.testEliminarReserva3(app);
                             break;
                     }
                 }
@@ -645,25 +656,25 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 70) {
                     switch (which - 64) {
                         case 0:
-                            result = TestUtils.testInsertarParcelaReservada1(app);
+                            result = UnitTests.testInsertarParcelaReservada1(app);
                             break;
                         case 1:
-                            result = TestUtils.testInsertarParcelaReservada2(app);
+                            result = UnitTests.testInsertarParcelaReservada2(app);
                             break;
                         case 2:
-                            result = TestUtils.testInsertarParcelaReservada3(app);
+                            result = UnitTests.testInsertarParcelaReservada3(app);
                             break;
                         case 3:
-                            result = TestUtils.testInsertarParcelaReservada4(app);
+                            result = UnitTests.testInsertarParcelaReservada4(app);
                             break;
                         case 4:
-                            result = TestUtils.testInsertarParcelaReservada5(app);
+                            result = UnitTests.testInsertarParcelaReservada5(app);
                             break;
                         case 5:
-                            result = TestUtils.testInsertarParcelaReservada6(app);
+                            result = UnitTests.testInsertarParcelaReservada6(app);
                             break;
                         case 6:
-                            result = TestUtils.testInsertarParcelaReservada7(app);
+                            result = UnitTests.testInsertarParcelaReservada7(app);
                             break;
                     }
                 }
@@ -671,25 +682,25 @@ public class HomeActivity extends BaseActivity {
                 else if (which <= 77) {
                     switch (which - 71) {
                         case 0:
-                            result = TestUtils.testModificarParcelaReservada1(app);
+                            result = UnitTests.testModificarParcelaReservada1(app);
                             break;
                         case 1:
-                            result = TestUtils.testModificarParcelaReservada2(app);
+                            result = UnitTests.testModificarParcelaReservada2(app);
                             break;
                         case 2:
-                            result = TestUtils.testModificarParcelaReservada3(app);
+                            result = UnitTests.testModificarParcelaReservada3(app);
                             break;
                         case 3:
-                            result = TestUtils.testModificarParcelaReservada4(app);
+                            result = UnitTests.testModificarParcelaReservada4(app);
                             break;
                         case 4:
-                            result = TestUtils.testModificarParcelaReservada5(app);
+                            result = UnitTests.testModificarParcelaReservada5(app);
                             break;
                         case 5:
-                            result = TestUtils.testModificarParcelaReservada6(app);
+                            result = UnitTests.testModificarParcelaReservada6(app);
                             break;
                         case 6:
-                            result = TestUtils.testModificarParcelaReservada7(app);
+                            result = UnitTests.testModificarParcelaReservada7(app);
                             break;
                     }
                 }
@@ -697,16 +708,16 @@ public class HomeActivity extends BaseActivity {
                 else {
                     switch (which - 78) {
                         case 0:
-                            result = TestUtils.testEliminarParcelaReservada1(app);
+                            result = UnitTests.testEliminarParcelaReservada1(app);
                             break;
                         case 1:
-                            result = TestUtils.testEliminarParcelaReservada2(app);
+                            result = UnitTests.testEliminarParcelaReservada2(app);
                             break;
                         case 2:
-                            result = TestUtils.testEliminarParcelaReservada3(app);
+                            result = UnitTests.testEliminarParcelaReservada3(app);
                             break;
                         case 3:
-                            result = TestUtils.testEliminarParcelaReservada4(app);
+                            result = UnitTests.testEliminarParcelaReservada4(app);
                             break;
                     }
                 }
@@ -732,27 +743,27 @@ public class HomeActivity extends BaseActivity {
             
             // Tests de inserción
             for (int i = 1; i <= 7 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testInsertarParcelaReservada" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testInsertarParcelaReservada" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i;
             }
             
             // Tests de modificación
             for (int i = 1; i <= 7 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testModificarParcelaReservada" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testModificarParcelaReservada" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i + 7; // Offset for modification tests
             }
             
             // Tests de eliminación
             for (int i = 1; i <= 4 && success; i++) {
-                success = (boolean) TestUtils.class.getMethod("testEliminarParcelaReservada" + i, Application.class)
+                success = (boolean) UnitTests.class.getMethod("testEliminarParcelaReservada" + i, Application.class)
                         .invoke(null, app);
                 if (!success) failedTest = i + 14; // Offset for deletion tests
             }
 
             if (success) {
-                DialogUtils.showSuccessDialog(this, "Tests de parcelas reservadas completados", 
+                DialogUtils.showSuccessDialog(this, "Tests de parcelas reservadas completados con éxito", 
                         R.drawable.ic_create_success);
             } else {
                 String testType = failedTest <= 7 ? "Inserción" : 

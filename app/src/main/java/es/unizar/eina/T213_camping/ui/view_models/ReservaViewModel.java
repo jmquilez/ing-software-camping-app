@@ -80,4 +80,12 @@ public class ReservaViewModel extends AndroidViewModel {
     public boolean exists(long reservaId) {
         return mRepository.exists(reservaId);
     }
+
+    /**
+     * Obtiene el número total de reservas.
+     * @return número de reservas en la base de datos
+     */
+    public int getReservasCount() {
+        return mRepository.getReservasCount();
+    }
 }

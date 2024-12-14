@@ -114,4 +114,8 @@ public class ParcelaViewModel extends AndroidViewModel {
     public void updateWithNameChange(String oldName, Parcela updatedParcela) {
         mRepository.updateWithNameChange(oldName, updatedParcela);
     }
+
+    public int getParcelasCount() {
+        return mRepository.getParcelasCount();
+    }
 }

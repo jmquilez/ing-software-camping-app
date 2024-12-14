@@ -137,6 +137,23 @@ public class ReservaRepository {
         }
     }
 
+    /**
+     * Obtiene el número total de reservas.
+     * @return número de reservas en la base de datos
+     */
+    public int getReservasCount() {
+        Future<Integer> future = executorService.submit(() -> mReservaDao.countReservas());
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting reservas count: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return -1;
+        }
+    }
+
     private <T> Long handleFutureResult(Future<T> future, String operation) {
         try {
             return ((Number) future.get(TIMEOUT, TimeUnit.MILLISECONDS)).longValue();
@@ -160,11 +177,7 @@ public class ReservaRepository {
             Log.e(TAG, operation + " error: Reserva cannot be a null object reference");
             return false;
         }
-        else if (reserva.getId() == null) {
-            Log.e(TAG, operation + " error: Reservation ID cannot be null");
-            return false;
-        }
-        else if (reserva.getId() < MIN_ID || reserva.getId() > MAX_ID) {
+        else if (reserva.getId() != null && (reserva.getId() < MIN_ID || reserva.getId() > MAX_ID)) {
             Log.e(TAG, operation + " error: Reservation ID must be between " + MIN_ID + " and " + MAX_ID);
             return false;
         }

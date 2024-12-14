@@ -63,4 +63,11 @@ public interface ReservaDao {
      */
     @Query("SELECT EXISTS(SELECT 1 FROM reserva WHERE id = :reservaId)")
     boolean exists(long reservaId);
+
+    /** 
+     * Cuenta el número total de reservas en la base de datos.
+     * @return número total de reservas
+     */
+    @Query("SELECT COUNT(*) FROM reserva")
+    int countReservas();
 }

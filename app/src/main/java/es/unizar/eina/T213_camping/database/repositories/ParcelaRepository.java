@@ -79,7 +79,7 @@ public class ParcelaRepository {
         try {
             int currentCount = countFuture.get(TIMEOUT, TimeUnit.MILLISECONDS);
             if (currentCount >= MAX_PARCELAS) {
-                Log.e(TAG, "Insert error: Maximum number of parcelas (1000) reached");
+                Log.e(TAG, "Insert error: Maximum number of parcelas (" + MAX_PARCELAS + ") reached");
                 return -1L;
             }
         } catch (Exception e) {
@@ -249,6 +249,23 @@ public class ParcelaRepository {
                 Thread.currentThread().interrupt();
             }
             return -1L;
+        }
+    }
+
+    /**
+     * Obtiene el número total de parcelas.
+     * @return número de parcelas en la base de datos
+     */
+    public int getParcelasCount() {
+        Future<Integer> future = executorService.submit(() -> parcelaDao.countParcelas());
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            Log.e(TAG, "Error getting parcelas count: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+            return -1;
         }
     }
 }
