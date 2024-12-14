@@ -43,19 +43,25 @@ public class ParcelaViewModel extends AndroidViewModel {
      * Inserta una nueva parcela en el sistema.
      * @param parcela Parcela a insertar
      */
-    public void insert(Parcela parcela) { mRepository.insert(parcela); }
+    public long insert(Parcela parcela) {
+        return mRepository.insert(parcela);
+    }
 
     /**
      * Actualiza una parcela existente.
      * @param parcela Parcela con los datos actualizados
      */
-    public void update(Parcela parcela) { mRepository.update(parcela); }
+    public long update(Parcela parcela) {
+        return mRepository.update(parcela);
+    }
 
     /**
      * Elimina una parcela del sistema.
      * @param parcela Parcela a eliminar
      */
-    public void delete(Parcela parcela) { mRepository.delete(parcela); }
+    public long delete(Parcela parcela) {
+        return mRepository.delete(parcela);
+    }
 
     /**
      * Obtiene las parcelas que no están reservadas.
@@ -87,8 +93,8 @@ public class ParcelaViewModel extends AndroidViewModel {
      * Elimina una parcela por su nombre.
      * @param nombre Nombre de la parcela a eliminar
      */
-    public void deleteByNombre(String nombre) {
-        mRepository.deleteByNombre(nombre);
+    public long deleteByNombre(String nombre) {
+        return mRepository.deleteByNombre(nombre);
     }
 
     /**

@@ -1,6 +1,8 @@
 package es.unizar.eina.T213_camping.database.repositories;
 
 import android.app.Application;
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +24,10 @@ import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 public class ParcelaReservadaRepository {
 
     private static final long TIMEOUT = 3000; // 3 seconds in milliseconds
+    private static final String TAG = "ParcelaReservadaRepository";
+    private static final int MIN_OCUPANTES = 1;
+    private static final int MAX_OCUPANTES = 999;
+
     private final ParcelaReservadaDao parcelaReservadaDao;
     private final ExecutorService executorService;
 
@@ -41,6 +47,9 @@ public class ParcelaReservadaRepository {
      * @param parcelaReservada ParcelaReservada a insertar
      */
     public long insert(ParcelaReservada parcelaReservada) {
+        if (!isValidParcelaReservada(parcelaReservada, "Insert")) {
+            return -1L;
+        }
         Future<Long> future = executorService.submit(() -> parcelaReservadaDao.insert(parcelaReservada));
         return handleFutureResult(future, "Insert");
     }
@@ -68,6 +77,9 @@ public class ParcelaReservadaRepository {
      * @param parcelaReservada ParcelaReservada con los datos actualizados
      */
     public Long update(ParcelaReservada parcelaReservada) {
+        if (!isValidParcelaReservada(parcelaReservada, "Update")) {
+            return -1L;
+        }
         Future<Integer> future = executorService.submit(() -> parcelaReservadaDao.update(parcelaReservada));
         return handleFutureResult(future, "Update");
     }
@@ -174,5 +186,15 @@ public class ParcelaReservadaRepository {
             }
             return -1L;
         }
+    }
+
+    private boolean isValidParcelaReservada(ParcelaReservada parcelaReservada, String operation) {
+        if (parcelaReservada.getNumOcupantes() != null && (parcelaReservada.getNumOcupantes() < MIN_OCUPANTES || 
+            parcelaReservada.getNumOcupantes() > MAX_OCUPANTES)) {
+            Log.e(TAG, operation + " error: Number of occupants must be between " +
+                MIN_OCUPANTES + " and " + MAX_OCUPANTES);
+            return false;
+        }
+        return true;
     }
 }

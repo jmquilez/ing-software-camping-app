@@ -27,18 +27,23 @@ public class TestUtils {
      * Prueba de volumen: Verifica el funcionamiento con 100 parcelas y 10000
      * reservas
      */
-    public static void volumeTest(Context context, ParcelaViewModel parcelaViewModel,
+    public static boolean volumeTest(Context context, ParcelaViewModel parcelaViewModel,
             ReservaViewModel reservaViewModel) {
-        // Test con límites válidos: 100 parcelas y 10000 reservas
         try {
-            // Crear 100 parcelas
-            for (int i = 1; i <= 100; i++) {
+            cleanTestData(parcelaViewModel, reservaViewModel);
+            // Test con límites válidos: 1000 parcelas y 10000 reservas
+            // Crear 1000 parcelas
+            for (int i = 1; i <= 1000; i++) {
                 Parcela parcela = new Parcela(
                         "TEST_PARCELA_" + i,
                         "Parcela de prueba " + i,
                         4,
                         20.0);
-                parcelaViewModel.insert(parcela);
+                long result = parcelaViewModel.insert(parcela);
+                if (result == -1) {
+                    Log.e(TAG, "Error al insertar parcela " + i);
+                    return false;
+                }
                 Log.d(TAG, "Creada parcela " + i);
             }
 
@@ -46,21 +51,63 @@ public class TestUtils {
             Calendar cal = Calendar.getInstance();
             for (int i = 1; i <= 10000; i++) {
                 cal.add(Calendar.DAY_OF_YEAR, 1);
-                Date entryDate = cal.getTime();
-                cal.add(Calendar.DAY_OF_YEAR, 7);
-                Date departureDate = cal.getTime();
+                Date startDate = cal.getTime();
+                cal.add(Calendar.DAY_OF_YEAR, 3);
+                Date endDate = cal.getTime();
 
                 Reserva reserva = new Reserva(
                         "TEST_CLIENTE_" + i,
-                        entryDate,
-                        departureDate,
-                        "600" + String.format("%07d", i),
-                        140.0);
-                reservaViewModel.insert(reserva);
+                        startDate,
+                        endDate,
+                        "123456789",
+                        50.0);
+                reserva.setId((long) i);
+                long result = reservaViewModel.insert(reserva);
+                if (result == -1) {
+                    Log.e(TAG, "Error al insertar reserva " + i);
+                    return false;
+                }
                 Log.d(TAG, "Creada reserva " + i);
             }
+
+            // Limpiar datos
+            cleanTestData(parcelaViewModel, reservaViewModel);
+
+            // Intentar insertar parcela 1001 (debería fallar)
+            Parcela parcelaExtra = new Parcela(
+                    "TEST_PARCELA_1001",
+                    "Parcela de prueba 1001",
+                    4,
+                    20.0);
+            if (parcelaViewModel.insert(parcelaExtra) != -1) {
+                Log.e(TAG, "Error: Se permitió insertar más de 1000 parcelas");
+                return false;
+            }
+
+            // Intentar insertar reserva 10001 (debería fallar)
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+            Date startDate = cal.getTime();
+            cal.add(Calendar.DAY_OF_YEAR, 3);
+            Date endDate = cal.getTime();
+
+            Reserva reservaExtra = new Reserva(
+                    "TEST_CLIENTE_10001",
+                    startDate,
+                    endDate,
+                    "123456789",
+                    50.0);
+            reservaExtra.setId(10001L);
+            if (reservaViewModel.insert(reservaExtra) != -1) {
+                Log.e(TAG, "Error: Se permitió insertar más de 10000 reservas");
+                return false;
+            }
+
+            Log.d(TAG, "Test de volumen completado exitosamente");
+            return true;
+
         } catch (Exception e) {
             Log.e(TAG, "Error en prueba de volumen: " + e.getMessage());
+            return false;
         }
     }
 
@@ -68,43 +115,56 @@ public class TestUtils {
      * Prueba de sobrecarga: Verifica el límite de caracteres en la descripción de
      * parcelas
      */
-    public static void stressTest(Application context, ParcelaViewModel parcelaViewModel) {
-        final int STEP_SIZE = 10000; // Incremento de caracteres en cada iteración
-        final StringBuilder description = new StringBuilder();
-        final AtomicInteger currentSize = new AtomicInteger(0);
-
+    public static boolean stressTest(Application context, ParcelaViewModel parcelaViewModel) {
         try {
-            while (true) {
-                // Añadir STEP_SIZE caracteres de manera eficiente
-                char[] chars = new char[STEP_SIZE];
-                Arrays.fill(chars, 'a');
-                description.append(chars);
-                currentSize.addAndGet(STEP_SIZE);
+            cleanTestData(parcelaViewModel, null);
+            final int MAX_DESCRIPCION_LENGTH = 300;
+            String nombreParcela = "STRESS_TEST_PARCELA";
 
-                Parcela parcela = new Parcela(
-                        "STRESS_TEST_" + currentSize.get(),
-                        description.toString(),
-                        4,
-                        20.0);
+            // Clean up first
+            parcelaViewModel.deleteByNombre(nombreParcela);
 
-                try {
-                    // Insertar la parcela
-                    parcelaViewModel.insert(parcela);
-                    Log.d(TAG, "Insertada parcela con descripción de " + currentSize.get() + " caracteres");
+            // Test with valid description (exactly MAX_DESCRIPCION_LENGTH)
+            StringBuilder validDescription = new StringBuilder();
+            validDescription.append("a".repeat(MAX_DESCRIPCION_LENGTH));
 
-                    // Borrar la parcela después de la inserción exitosa
-                    parcelaViewModel.delete(parcela);
-                    Log.d(TAG, "Borrada parcela de prueba con descripción de " + currentSize.get() + " caracteres");
+            Parcela validParcela = new Parcela(
+                    nombreParcela,
+                    validDescription.toString(),
+                    4,
+                    20.0);
 
-                } catch (Exception e) {
-                    Log.e(TAG, "Fallo al insertar parcela con " + currentSize.get() + " caracteres");
-                    Log.e(TAG, "Mensaje de error: " + e.getMessage());
-                    Log.e(TAG, "Longitud máxima soportada: " + (currentSize.get() - STEP_SIZE) + " caracteres");
-                    break;
-                }
+            long validResult = parcelaViewModel.insert(validParcela);
+            if (validResult == -1) {
+                Log.e(TAG, "Test fallido: No se pudo insertar parcela con descripción de longitud máxima válida");
+                return false;
             }
+
+            // Clean up the valid test
+            parcelaViewModel.deleteByNombre(nombreParcela);
+
+            // Test with invalid description (MAX_DESCRIPCION_LENGTH + 1)
+            StringBuilder invalidDescription = new StringBuilder();
+            invalidDescription.append("a".repeat(MAX_DESCRIPCION_LENGTH + 1));
+
+            Parcela invalidParcela = new Parcela(
+                    nombreParcela,
+                    invalidDescription.toString(),
+                    4,
+                    20.0);
+
+            long invalidResult = parcelaViewModel.insert(invalidParcela);
+            if (invalidResult != -1) {
+                Log.e(TAG, "Test fallido: Se permitió insertar parcela con descripción demasiado larga");
+                return false;
+            }
+
+            Log.d(TAG, "Test de sobrecarga completado exitosamente");
+            return true;
+
         } catch (Exception e) {
             Log.e(TAG, "Error en prueba de sobrecarga: " + e.getMessage());
+            return false;
         }
     }
 
@@ -114,23 +174,27 @@ public class TestUtils {
     public static void cleanTestData(ParcelaViewModel parcelaViewModel, ReservaViewModel reservaViewModel) {
         try {
             // Borrar parcelas de prueba
-            parcelaViewModel.getAllParcelas().observeForever(parcelas -> {
-                for (Parcela parcela : parcelas) {
-                    if (parcela.getNombre().startsWith("TEST_") ||
-                            parcela.getNombre().startsWith("STRESS_")) {
-                        parcelaViewModel.delete(parcela);
+            if (parcelaViewModel != null) {
+                parcelaViewModel.getAllParcelas().observeForever(parcelas -> {
+                    for (Parcela parcela : parcelas) {
+                        if (parcela.getNombre().startsWith("TEST_") ||
+                                parcela.getNombre().startsWith("STRESS_")) {
+                            parcelaViewModel.delete(parcela);
+                        }
                     }
-                }
-            });
+                });
+            }
 
             // Borrar reservas de prueba
-            reservaViewModel.getAllReservas().observeForever(reservas -> {
-                for (Reserva reserva : reservas) {
-                    if (reserva.getNombreCliente().startsWith("TEST_")) {
-                        reservaViewModel.delete(reserva);
+            if (reservaViewModel != null) {
+                reservaViewModel.getAllReservas().observeForever(reservas -> {
+                    for (Reserva reserva : reservas) {
+                        if (reserva.getNombreCliente().startsWith("TEST_")) {
+                            reservaViewModel.delete(reserva);
+                        }
                     }
-                }
-            });
+                });
+            }
 
             Log.d(TAG, "Datos de prueba eliminados");
         } catch (Exception e) {
@@ -478,7 +542,7 @@ public class TestUtils {
                 60.0);
         long result = parcelaRepository.update(parcela);
 
-        if (result != -1) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió modificar parcela con nombre null");
             return false;
         }
@@ -560,7 +624,7 @@ public class TestUtils {
                 60.0);
         long result = parcelaRepository.update(parcela);
 
-        if (result != -1) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió modificar una parcela inexistente");
             return false;
         }
@@ -845,7 +909,7 @@ public class TestUtils {
                 60.0);
         long result = parcelaRepository.delete(parcela);
 
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar parcela con nombre null");
             return false;
         }
@@ -867,7 +931,7 @@ public class TestUtils {
                 60.0);
         long result = parcelaRepository.delete(parcela);
 
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una parcela inexistente");
             return false;
         }
@@ -1296,7 +1360,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result <= 0) {
             Log.e(TAG, "Test fallido: No se pudo modificar una reserva válida");
@@ -1328,7 +1392,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(null);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con ID null");
@@ -1360,7 +1424,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(10001L);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con ID muy grande");
@@ -1392,7 +1456,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(0L);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con ID cero");
@@ -1416,9 +1480,9 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
-        if (result != -1) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva inexistente");
             return false;
         }
@@ -1448,7 +1512,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con nombre cliente null");
@@ -1480,7 +1544,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con cadena vacía como nombre de cliente");
@@ -1512,7 +1576,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con nombre cliente muy largo");
@@ -1544,7 +1608,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con fecha entrada null");
@@ -1576,7 +1640,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con fecha salida anterior a entrada");
@@ -1608,7 +1672,7 @@ public class TestUtils {
                 "123456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con fecha salida null");
@@ -1640,7 +1704,7 @@ public class TestUtils {
                 null,
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con teléfono null");
@@ -1672,7 +1736,7 @@ public class TestUtils {
                 "a23456789",
                 50.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con teléfono inválido");
@@ -1704,7 +1768,7 @@ public class TestUtils {
                 "123456789",
                 null);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con precio null");
@@ -1736,7 +1800,7 @@ public class TestUtils {
                 "123456789",
                 0.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con precio cero");
@@ -1768,7 +1832,7 @@ public class TestUtils {
                 "123456789",
                 200000.0);
         reserva.setId(reservaId);
-        long result = reservaRepository.insert(reserva);
+        long result = reservaRepository.update(reserva);
 
         if (result != -1) {
             Log.e(TAG, "Test fallido: Se permitió modificar reserva con precio muy grande");
@@ -1816,7 +1880,7 @@ public class TestUtils {
         reserva.setId(null);
 
         long result = reservaRepository.delete(reserva);
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar reserva con ID null");
             return false;
         }
@@ -1838,7 +1902,7 @@ public class TestUtils {
         reserva.setId(reservaId);
         long result = reservaRepository.delete(reserva);
 
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una reserva inexistente");
             return false;
         }
@@ -1847,14 +1911,16 @@ public class TestUtils {
     }
 
     /**************************************************************************
-     *                                                                         *
-     *                   PRUEBAS UNITARIAS DE PARCELAS RESERVADAS             *
-     *                                                                         *
+     * *
+     * PRUEBAS UNITARIAS DE PARCELAS RESERVADAS *
+     * *
      **************************************************************************/
 
-    /*========================================================================
+    /*
+     * ========================================================================
      * Tests de Inserción - Casos Válidos
-     *========================================================================*/
+     * ========================================================================
+     */
     public static boolean testInsertarParcelaReservada1(Application context) {
         ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
@@ -1873,7 +1939,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -1889,16 +1957,25 @@ public class TestUtils {
         return true;
     }
 
-    /*========================================================================
+    /*
+     * ========================================================================
      * Tests de Inserción - Casos Inválidos
-     *========================================================================*/
+     * ========================================================================
+     */
     public static boolean testInsertarParcelaReservada2(Application context) {
         ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
         ReservaRepository reservaRepository = new ReservaRepository(context);
         String nombreParcela = "moncayo";
         long reservaId = 1L;
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        reservaRepository.deleteById(reservaId);
+
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -1920,6 +1997,11 @@ public class TestUtils {
 
         String nombreParcela = "fuenlabrada1";
         long reservaId = 120L;
+
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        parcelaRepository.deleteByNombre(nombreParcela);
 
         // Preparar parcela válida
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
@@ -1945,11 +2027,19 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1";
         long reservaId = 1L;
 
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        parcelaRepository.deleteByNombre(nombreParcela);
+        reservaRepository.deleteById(reservaId);
+
         // Preparar datos de prueba
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -1976,11 +2066,19 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1";
         long reservaId = 1L;
 
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        parcelaRepository.deleteByNombre(nombreParcela);
+        reservaRepository.deleteById(reservaId);
+
         // Preparar datos de prueba
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2004,11 +2102,19 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1";
         long reservaId = 1L;
 
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        parcelaRepository.deleteByNombre(nombreParcela);
+        reservaRepository.deleteById(reservaId);
+
         // Preparar datos de prueba
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2032,11 +2138,19 @@ public class TestUtils {
         String nombreParcela = "fuenlabrada1";
         long reservaId = 1L;
 
+        // Clean up first
+        ParcelaReservada cleanupParcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
+        parcelaReservadaRepository.delete(cleanupParcelaReservada);
+        parcelaRepository.deleteByNombre(nombreParcela);
+        reservaRepository.deleteById(reservaId);
+
         // Preparar datos de prueba
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2052,9 +2166,11 @@ public class TestUtils {
         return true;
     }
 
-    /*========================================================================
+    /*
+     * ========================================================================
      * Tests de Modificación - Casos Válidos
-     *========================================================================*/
+     * ========================================================================
+     */
     public static boolean testModificarParcelaReservada1(Application context) {
         ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
@@ -2067,7 +2183,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2086,9 +2204,11 @@ public class TestUtils {
         return true;
     }
 
-    /*========================================================================
+    /*
+     * ========================================================================
      * Tests de Modificación - Casos Inválidos
-     *========================================================================*/
+     * ========================================================================
+     */
     public static boolean testModificarParcelaReservada2(Application context) {
         ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
         ReservaRepository reservaRepository = new ReservaRepository(context);
@@ -2097,7 +2217,9 @@ public class TestUtils {
         long reservaId = 1L;
 
         // Preparar reserva válida
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2105,7 +2227,7 @@ public class TestUtils {
         ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
         long result = parcelaReservadaRepository.update(parcelaReservada);
 
-        if (result != -1) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con parcela inexistente");
             return false;
         }
@@ -2128,7 +2250,7 @@ public class TestUtils {
         ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
         long result = parcelaReservadaRepository.update(parcelaReservada);
 
-        if (result != -1) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada con reserva inexistente");
             return false;
         }
@@ -2148,7 +2270,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2156,7 +2280,7 @@ public class TestUtils {
         ParcelaReservada parcelaReservada = new ParcelaReservada(nombreParcela, reservaId, 10);
         long result = parcelaReservadaRepository.update(parcelaReservada);
 
-        if (result != -1) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió modificar una parcela reservada inexistente");
             return false;
         }
@@ -2176,7 +2300,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2207,7 +2333,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2238,7 +2366,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2257,9 +2387,11 @@ public class TestUtils {
         return true;
     }
 
-    /*========================================================================
+    /*
+     * ========================================================================
      * Tests de Eliminación - Casos Válidos
-     *========================================================================*/
+     * ========================================================================
+     */
     public static boolean testEliminarParcelaReservada1(Application context) {
         ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
@@ -2272,7 +2404,9 @@ public class TestUtils {
         Parcela parcela = new Parcela(nombreParcela, "descripcion", 15, 60.0);
         parcelaRepository.insert(parcela);
 
-        Reserva reserva = new Reserva("Cliente", new Date(), new Date(), "123456789", 50.0);
+        Date fechaEntrada = new Date();
+        Date fechaSalida = new Date(fechaEntrada.getTime() + 86400000); // Un día después
+        Reserva reserva = new Reserva("Cliente", fechaEntrada, fechaSalida, "123456789", 50.0);
         reserva.setId(reservaId);
         reservaRepository.insert(reserva);
 
@@ -2290,9 +2424,11 @@ public class TestUtils {
         return true;
     }
 
-    /*========================================================================
+    /*
+     * ========================================================================
      * Tests de Eliminación - Casos Inválidos
-     *========================================================================*/
+     * ========================================================================
+     */
     public static boolean testEliminarParcelaReservada2(Application context) {
         ParcelaReservadaRepository parcelaReservadaRepository = new ParcelaReservadaRepository(context);
 
@@ -2300,7 +2436,7 @@ public class TestUtils {
         ParcelaReservada parcelaReservada = new ParcelaReservada(null, 1L, 10);
         long result = parcelaReservadaRepository.delete(parcelaReservada);
 
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una parcela reservada con nombre null");
             return false;
         }
@@ -2315,7 +2451,7 @@ public class TestUtils {
         ParcelaReservada parcelaReservada = new ParcelaReservada("fuenlabrada1", null, 10);
         long result = parcelaReservadaRepository.delete(parcelaReservada);
 
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una parcela reservada con ID de reserva null");
             return false;
         }
@@ -2330,7 +2466,7 @@ public class TestUtils {
         ParcelaReservada parcelaReservada = new ParcelaReservada("moncayo", 120L, 10);
         long result = parcelaReservadaRepository.delete(parcelaReservada);
 
-        if (result > 0) {
+        if (result != 0) {
             Log.e(TAG, "Test fallido: Se permitió eliminar una parcela reservada inexistente");
             return false;
         }

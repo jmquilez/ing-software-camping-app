@@ -96,6 +96,13 @@ public interface ParcelaDao {
     @Query("SELECT * FROM parcela WHERE nombre = :nombre LIMIT 1")
     Parcela getByNombre(String nombre);
 
+    /** 
+     * Cuenta el número total de parcelas en la base de datos.
+     * @return número total de parcelas
+     */
+    @Query("SELECT COUNT(*) FROM parcela")
+    int countParcelas();
+
     @Transaction
     default void runInTransaction(Runnable action) {
         action.run();

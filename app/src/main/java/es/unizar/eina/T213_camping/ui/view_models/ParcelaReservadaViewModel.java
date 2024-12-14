@@ -59,19 +59,25 @@ public class ParcelaReservadaViewModel extends AndroidViewModel {
      * Inserta una nueva relación parcela-reserva.
      * @param parcelaReservada ParcelaReservada a insertar
      */
-    public void insert(ParcelaReservada parcelaReservada) { mRepository.insert(parcelaReservada); }
+    public long insert(ParcelaReservada parcelaReservada) { 
+        return mRepository.insert(parcelaReservada); 
+    }
 
     /**
      * Actualiza una relación parcela-reserva existente.
      * @param parcelaReservada ParcelaReservada con los datos actualizados
      */
-    public void update(ParcelaReservada parcelaReservada) { mRepository.update(parcelaReservada); }
+    public long update(ParcelaReservada parcelaReservada) { 
+        return mRepository.update(parcelaReservada); 
+    }
 
     /**
      * Elimina una relación parcela-reserva.
      * @param parcelaReservada ParcelaReservada a eliminar
      */
-    public void delete(ParcelaReservada parcelaReservada) { mRepository.delete(parcelaReservada); }
+    public long delete(ParcelaReservada parcelaReservada) { 
+        return mRepository.delete(parcelaReservada); 
+    }
 
     /**
      * Actualiza las parcelas asociadas a una reserva.

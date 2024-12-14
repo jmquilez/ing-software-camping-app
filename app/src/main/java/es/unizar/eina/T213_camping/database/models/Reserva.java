@@ -28,7 +28,7 @@ public class Reserva {
     @ColumnInfo(name = "id")
     @NonNull
     @IntRange(from = 1, to = 10000)
-    private long id;
+    private Long id;
 
     /**
      * Nombre del cliente que realiza la reserva.
@@ -57,7 +57,7 @@ public class Reserva {
      */
     @NonNull
     @ColumnInfo(name = "telefonoCliente")
-    @Size(max = 15)
+    @Size(max = 9)
     private String telefonoCliente;
 
     /**
@@ -83,7 +83,7 @@ public class Reserva {
      * Obtiene el ID único de la reserva.
      * @return ID de la reserva
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

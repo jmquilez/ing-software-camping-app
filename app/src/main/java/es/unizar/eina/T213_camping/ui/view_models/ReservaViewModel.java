@@ -54,24 +54,23 @@ public class ReservaViewModel extends AndroidViewModel {
     /**
      * Actualiza una reserva existente.
      * @param reserva Reserva con los datos actualizados
+     * @return ID de la reserva actualizada
      */
-    public void update(Reserva reserva) { mRepository.update(reserva); }
+    public long update(Reserva reserva) { return mRepository.update(reserva); }
 
     /**
      * Elimina una reserva del sistema.
      * @param reserva Reserva a eliminar
+     * @return ID de la reserva eliminada
      */
-    public void delete(Reserva reserva) {
-        mRepository.delete(reserva);
-    }
+    public long delete(Reserva reserva) { return mRepository.delete(reserva); }
 
     /**
      * Elimina una reserva por su ID.
      * @param reservationId ID de la reserva a eliminar
+     * @return ID de la reserva eliminada
      */
-    public void deleteById(long reservationId) {
-        mRepository.deleteById(reservationId);
-    }
+    public long deleteById(long reservationId) { return mRepository.deleteById(reservationId); }
 
     /**
      * Verifica si existe una reserva con el ID especificado.

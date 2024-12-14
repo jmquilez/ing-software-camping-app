@@ -22,6 +22,12 @@ public class ReservaRepository {
 
     private static final long TIMEOUT = 3000;
     private static final String TAG = "ReservaRepository";
+    private static final int MAX_NOMBRE_CLIENTE_LENGTH = 40;
+    private static final int TELEFONO_LENGTH = 9;
+    private static final double MIN_PRECIO = 0.0;
+    private static final double MAX_PRECIO = 99999.0;
+    private static final int MIN_ID = 1;
+    private static final int MAX_ID = 10000;
 
     /**
      * DAO para acceder a las operaciones de reservas en la base de datos.
@@ -154,28 +160,32 @@ public class ReservaRepository {
             Log.e(TAG, operation + " error: Reserva cannot be a null object reference");
             return false;
         }
-        
-        if (isNotValidDateRange(reserva)) {
+        else if (reserva.getId() == null) {
+            Log.e(TAG, operation + " error: Reservation ID cannot be null");
+            return false;
+        }
+        else if (reserva.getId() < MIN_ID || reserva.getId() > MAX_ID) {
+            Log.e(TAG, operation + " error: Reservation ID must be between " + MIN_ID + " and " + MAX_ID);
+            return false;
+        }
+        else if (isNotValidDateRange(reserva)) {
             Log.e(TAG, operation + " error: Entry date must be before departure date");
             return false;
         }
-        
-        if (reserva.getNombreCliente() != null && reserva.getNombreCliente().isEmpty()) {
-            Log.e(TAG, operation + " error: Client name cannot be empty");
+        else if (reserva.getNombreCliente() != null && 
+                (reserva.getNombreCliente().isEmpty() || reserva.getNombreCliente().length() > MAX_NOMBRE_CLIENTE_LENGTH)) {
+            Log.e(TAG, operation + " error: Client name cannot be empty or longer than " + MAX_NOMBRE_CLIENTE_LENGTH + " characters");
             return false;
         }
-        
-        if (reserva.getTelefonoCliente() != null && 
-            !reserva.getTelefonoCliente().matches("\\d{9}")) {
-            Log.e(TAG, operation + " error: Phone number must be exactly 9 digits");
+        else if (reserva.getTelefonoCliente() != null && !reserva.getTelefonoCliente().matches("\\d{" + TELEFONO_LENGTH + "}")) {
+            Log.e(TAG, operation + " error: Phone number must be exactly " + TELEFONO_LENGTH + " digits");
             return false;
         }
-        
-        if (reserva.getPrecio() != null && reserva.getPrecio() <= 0) {
-            Log.e(TAG, operation + " error: Price must be greater than zero");
+        else if (reserva.getPrecio() != null && 
+                (reserva.getPrecio() <= MIN_PRECIO || reserva.getPrecio() > MAX_PRECIO)) {
+            Log.e(TAG, operation + " error: Price must be between " + MIN_PRECIO + " (excluded) and " + MAX_PRECIO + " (included)");
             return false;
         }
-        
         return true;
     }
 
