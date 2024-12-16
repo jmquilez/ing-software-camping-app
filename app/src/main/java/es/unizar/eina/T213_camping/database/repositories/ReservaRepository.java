@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import es.unizar.eina.T213_camping.database.AppDatabase;
+import es.unizar.eina.T213_camping.database.CampingDatabase;
 import es.unizar.eina.T213_camping.database.daos.ReservaDao;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 
@@ -20,8 +20,19 @@ import es.unizar.eina.T213_camping.database.models.Reserva;
  */
 public class ReservaRepository {
 
-    private static final long TIMEOUT = 3000;
+    /**
+     * Tag para los mensajes de log
+     */
     private static final String TAG = "ReservaRepository";
+
+    /**
+     * Tiempo máximo de espera para operaciones asíncronas (en milisegundos)
+     */
+    private static final long TIMEOUT = 3000;
+
+    /**
+     * Límites y constantes de validación
+     */
     private static final int MAX_NOMBRE_CLIENTE_LENGTH = 40;
     private static final int TELEFONO_LENGTH = 9;
     private static final double MIN_PRECIO = 0.0;
@@ -29,36 +40,26 @@ public class ReservaRepository {
     private static final int MIN_ID = 1;
     private static final int MAX_ID = 10000;
 
-    /**
-     * DAO para acceder a las operaciones de reservas en la base de datos.
-     */
     private final ReservaDao mReservaDao;
-
-    /**
-     * LiveData que contiene todas las reservas.
-     */
-    private LiveData<List<Reserva>> mAllReservas;
-
-    /**
-     * Servicio ejecutor para realizar operaciones asíncronas.
-     */
     private final ExecutorService executorService;
 
     /**
      * Constructor del repositorio.
-     * @param application Contexto de la aplicación para acceder a la base de datos
+     *
+     * @param application Contexto de la aplicación necesario para acceder a la base de datos
      */
     public ReservaRepository(Application application) {
-        AppDatabase db = AppDatabase.getDatabase(application);
+        CampingDatabase db = CampingDatabase.getDatabase(application);
         mReservaDao = db.reservaDao();
         executorService = Executors.newSingleThreadExecutor();
     }
 
     /**
      * Inserta una nueva reserva en la base de datos.
-     * La operación se realiza de forma asíncrona pero espera el resultado.
+     *
      * @param reserva Reserva a insertar
-     * @return ID generado para la nueva reserva, o -1 si ocurre un error
+     * @return ID de la reserva insertada, o -1 si hay error
+     * @throws IllegalArgumentException si la reserva no cumple con las validaciones
      */
     public long insert(Reserva reserva) {
         if (!isValidReserva(reserva, "Insert")) {
@@ -69,7 +70,8 @@ public class ReservaRepository {
     }
 
     /**
-     * Obtiene todas las reservas de la base de datos.
+     * Obtiene todas las reservas almacenadas en la base de datos.
+     *
      * @return LiveData con la lista de todas las reservas
      */
     public LiveData<List<Reserva>> getAllReservas() {
@@ -78,8 +80,10 @@ public class ReservaRepository {
 
     /**
      * Actualiza una reserva existente.
-     * La operación se realiza de forma asíncrona.
+     *
      * @param reserva Reserva con los datos actualizados
+     * @return Número de filas actualizadas, o -1 si hay error
+     * @throws IllegalArgumentException si la reserva no cumple con las validaciones
      */
     public Long update(Reserva reserva) {
         if (!isValidReserva(reserva, "Update")) {
@@ -91,8 +95,9 @@ public class ReservaRepository {
 
     /**
      * Elimina una reserva de la base de datos.
-     * La operación se realiza de forma asíncrona.
+     *
      * @param reserva Reserva a eliminar
+     * @return Número de filas eliminadas, o -1 si hay error
      */
     public Long delete(Reserva reserva) {
         Future<Integer> future = executorService.submit(() -> mReservaDao.delete(reserva));
@@ -101,8 +106,9 @@ public class ReservaRepository {
 
     /**
      * Elimina una reserva por su ID.
-     * La operación se realiza de forma asíncrona.
+     *
      * @param reservationId ID de la reserva a eliminar
+     * @return Número de filas eliminadas, o -1 si hay error
      */
     public Long deleteById(long reservationId) {
         Future<Integer> future = executorService.submit(() -> mReservaDao.deleteById(reservationId));
@@ -111,8 +117,8 @@ public class ReservaRepository {
 
     /**
      * Elimina todas las reservas de la base de datos.
-     * La operación se realiza de forma asíncrona.
-     * @return Número de reservas eliminadas
+     *
+     * @return Número de reservas eliminadas, o -1 si hay error
      */
     public Long deleteAll() {
         Future<Integer> future = executorService.submit(() -> mReservaDao.deleteAll());
@@ -121,6 +127,7 @@ public class ReservaRepository {
 
     /**
      * Verifica si existe una reserva con el ID especificado.
+     *
      * @param reservaId ID de la reserva a verificar
      * @return true si existe la reserva, false en caso contrario
      */
@@ -138,8 +145,9 @@ public class ReservaRepository {
     }
 
     /**
-     * Obtiene el número total de reservas.
-     * @return número de reservas en la base de datos
+     * Obtiene el número total de reservas en la base de datos.
+     *
+     * @return número de reservas, o -1 si hay error
      */
     public int getReservasCount() {
         Future<Integer> future = executorService.submit(() -> mReservaDao.countReservas());
@@ -154,11 +162,18 @@ public class ReservaRepository {
         }
     }
 
+    /**
+     * Maneja el resultado de una operación asíncrona.
+     *
+     * @param future Future que contiene el resultado de la operación
+     * @param operation Nombre de la operación para el log
+     * @return Resultado de la operación convertido a Long, o -1 si hay error
+     */
     private <T> Long handleFutureResult(Future<T> future, String operation) {
         try {
             return ((Number) future.get(TIMEOUT, TimeUnit.MILLISECONDS)).longValue();
         } catch (Exception e) {
-            Log.e("ReservaRepository", operation + " error: " + e.getMessage());
+            Log.e(TAG, operation + " error: " + e.getMessage());
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
@@ -168,6 +183,7 @@ public class ReservaRepository {
 
     /**
      * Valida los datos de una reserva.
+     *
      * @param reserva Reserva a validar
      * @param operation Nombre de la operación para el log
      * @return true si la reserva es válida, false en caso contrario
@@ -177,45 +193,56 @@ public class ReservaRepository {
             Log.e(TAG, operation + " error: Reserva cannot be a null object reference");
             return false;
         }
-        else if (reserva.getId() != null && (reserva.getId() < MIN_ID || reserva.getId() > MAX_ID)) {
+        if (reserva.getId() != null && (reserva.getId() < MIN_ID || reserva.getId() > MAX_ID)) {
             Log.e(TAG, operation + " error: Reservation ID must be between " + MIN_ID + " and " + MAX_ID);
             return false;
         }
-        else if (isNotValidDateRange(reserva)) {
+        if (isNotValidDateRange(reserva)) {
             Log.e(TAG, operation + " error: Entry date must be before departure date");
             return false;
         }
-        else if (reserva.getNombreCliente() != null && 
-                (reserva.getNombreCliente().isEmpty() || reserva.getNombreCliente().length() > MAX_NOMBRE_CLIENTE_LENGTH)) {
-            Log.e(TAG, operation + " error: Client name cannot be empty or longer than " + MAX_NOMBRE_CLIENTE_LENGTH + " characters");
+        if (reserva.getNombreCliente() != null && 
+            (reserva.getNombreCliente().isEmpty() || 
+             reserva.getNombreCliente().length() > MAX_NOMBRE_CLIENTE_LENGTH)) {
+            Log.e(TAG, operation + " error: Client name cannot be empty or longer than " + 
+                  MAX_NOMBRE_CLIENTE_LENGTH + " characters");
             return false;
         }
-        else if (reserva.getTelefonoCliente() != null && !reserva.getTelefonoCliente().matches("\\d{" + TELEFONO_LENGTH + "}")) {
+        if (reserva.getTelefonoCliente() != null && 
+            !reserva.getTelefonoCliente().matches("\\d{" + TELEFONO_LENGTH + "}")) {
             Log.e(TAG, operation + " error: Phone number must be exactly " + TELEFONO_LENGTH + " digits");
             return false;
         }
-        else if (reserva.getPrecio() != null && 
-                (reserva.getPrecio() <= MIN_PRECIO || reserva.getPrecio() > MAX_PRECIO)) {
-            Log.e(TAG, operation + " error: Price must be between " + MIN_PRECIO + " (excluded) and " + MAX_PRECIO + " (included)");
+        if (reserva.getPrecio() != null && 
+            (reserva.getPrecio() <= MIN_PRECIO || reserva.getPrecio() > MAX_PRECIO)) {
+            Log.e(TAG, operation + " error: Price must be between " + MIN_PRECIO + 
+                  " (excluded) and " + MAX_PRECIO + " (included)");
             return false;
         }
         return true;
     }
 
+    /**
+     * Verifica si el rango de fechas de una reserva es válido.
+     *
+     * @param reserva Reserva a validar
+     * @return true si el rango de fechas no es válido, false si es válido
+     */
     private boolean isNotValidDateRange(Reserva reserva) {
         return reserva.getFechaEntrada() == null ||
-                reserva.getFechaSalida() == null ||
-                !reserva.getFechaEntrada().before(reserva.getFechaSalida());
+               reserva.getFechaSalida() == null ||
+               !reserva.getFechaEntrada().before(reserva.getFechaSalida());
     }
 
     /**
-     * Elimina todas las reservas de la base de datos cuyos IDs (convertidos a texto) comiencen con el prefijo especificado.
-     * La operación se realiza de forma asíncrona.
-     * @param prefix Prefijo de los IDs de las reservas a eliminar
-     * @return Número de reservas eliminadas
+     * Elimina todas las reservas cuyos nombres de cliente empiezan con el prefijo dado.
+     *
+     * @param prefix Prefijo de los nombres de cliente a eliminar
+     * @return Número de reservas eliminadas, o -1 si hay error
      */
     public Long deleteReservasWithClientNamePrefix(String prefix) {
-        Future<Integer> future = executorService.submit(() -> mReservaDao.deleteReservasWithClientNamePrefix(prefix));
+        Future<Integer> future = executorService.submit(() -> 
+            mReservaDao.deleteReservasWithClientNamePrefix(prefix));
         return handleFutureResult(future, "DeleteReservasWithNombreClientePrefix");
     }
 }

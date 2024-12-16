@@ -37,7 +37,6 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
      * Interfaz para notificar cambios en la selección de parcelas.
      */
     public interface OnParcelSelectionChangedListener {
-        // TODO: move to common class
         /**
          * Se llama cuando cambia la selección de parcelas.
          * @param updatedAddedList Lista actualizada de parcelas añadidas
@@ -89,7 +88,6 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
         holder.editButton.setOnClickListener(v -> showParcelDetailsDialog(addedParcel));
     }
 
-    // TODO: merge with the other adapter
     /**
      * Muestra un diálogo para editar los detalles de una parcela añadida.
      * @param addedParcel Parcela añadida a editar
@@ -103,14 +101,13 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
         MaterialButton removeButton = dialog.findViewById(R.id.dialog_remove_parcel_button);
         MaterialButton confirmButton = dialog.findViewById(R.id.dialog_confirm_changes_button);
 
-        title.setText("PARCELA \"" + addedParcel.getParcela().getNombre() + "\"");
+        title.setText(context.getString(R.string.dialog_parcel_title, addedParcel.getParcela().getNombre()));
         occupantsPicker.setValue(addedParcel.getOccupancy());
         occupantsPicker.setMaxValue(addedParcel.getParcela().getMaxOcupantes());
         occupantsPicker.setMinValue(1);
 
         List<ParcelaOccupancy> currentList = new ArrayList<>(getCurrentList());
 
-        // TODO: fix DesligarParcela
         removeButton.setOnClickListener(v -> {
             // Available parcels array IS modified
             availableParcels.add(0, addedParcel.getParcela()); // NOTE: add first so the user can see the changes directly
@@ -124,7 +121,7 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
             addedParcel.setOccupancy(occupantsPicker.getValue());
             onParcelUpdatedListener.onParcelSelectionChanged(currentList, availableParcels, ReservationConstants.ADDED_PARCELS_ADAPTER_CALLED);
             dialog.dismiss();
-            submitList(currentList); // TODO, CHECK: required?
+            submitList(currentList);
         });
 
         dialog.show();

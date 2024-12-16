@@ -27,9 +27,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutResourceId());
-
-        // System.out.println("CREATING BASE ACTIVITY");
-
         initializeToolbar();
     }
 
@@ -48,10 +45,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         backButton = findViewById(R.id.backButton);
         homeButton = findViewById(R.id.homeButton);
 
-        // TODO: deprecated
         backButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        // TODO: revise home button
         homeButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

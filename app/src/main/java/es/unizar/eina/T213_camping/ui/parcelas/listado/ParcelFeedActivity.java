@@ -48,7 +48,7 @@ public class ParcelFeedActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Parcels";
+        return getString(R.string.parcels_title);
     }
 
     @Override
@@ -165,15 +165,15 @@ public class ParcelFeedActivity extends BaseActivity {
         String operationType = extras.getString(ParcelConstants.OPERATION_TYPE);
         String parcelName = extras.getString(ParcelConstants.PARCEL_NAME);
 
-        String loadingMessage = "UNKNOWN OPERATION...";
+        String loadingMessage = getString(R.string.error_unknown_operation);
 
         if (Objects.requireNonNull(operationType).equals(ParcelConstants.OPERATION_INSERT)) {
-            loadingMessage = "CREANDO PARCELA...";
+            loadingMessage = getString(R.string.loading_create_parcel);
         } else if (operationType.equals(ParcelConstants.OPERATION_UPDATE) || 
                    operationType.equals(ParcelConstants.OPERATION_UPDATE_WITH_NAME)) {
-            loadingMessage = "ACTUALIZANDO PARCELA...";
+            loadingMessage = getString(R.string.loading_update_parcel);
         } else if (operationType.equals(ParcelConstants.OPERATION_DELETE)) {
-            loadingMessage = "ELIMINANDO PARCELA...";
+            loadingMessage = getString(R.string.loading_delete_parcel);
         }
 
         final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, loadingMessage);
@@ -191,11 +191,11 @@ public class ParcelFeedActivity extends BaseActivity {
                     break;
                 case ParcelConstants.OPERATION_DELETE:
                     parcelaViewModel.deleteByNombre(parcelName);
-                    DialogUtils.showSuccessDialog(this, "Parcela eliminada con éxito.", 
+                    DialogUtils.showSuccessDialog(this, getString(R.string.success_delete_parcel), 
                         R.drawable.ic_delete_success);
                     break;
                 default:
-                    Toast.makeText(this, "Operación desconocida", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.error_unknown_operation), Toast.LENGTH_SHORT).show();
                     break;
             }
             loadingDialog.dismiss();
@@ -216,13 +216,14 @@ public class ParcelFeedActivity extends BaseActivity {
                 Double.parseDouble(Objects.requireNonNull(extras.getString(ParcelConstants.PRICE_PER_PERSON)))
             );
             parcelaViewModel.insert(parcela);
-            DialogUtils.showSuccessDialog(this, "Parcela creada con éxito.", R.drawable.ic_create_success);
+            DialogUtils.showSuccessDialog(this, getString(R.string.success_create_parcel), 
+                R.drawable.ic_create_success);
         } catch (NumberFormatException e) {
             Log.e("ParcelFeedActivity", "Error parsing parcel data: " + e.getMessage());
-            DialogUtils.showErrorDialog(this, "Error al procesar los datos de la parcela");
+            DialogUtils.showErrorDialog(this, getString(R.string.error_process_parcel_data));
         } catch (Exception e) {
             Log.e("ParcelFeedActivity", "Error creating parcel: " + e.getMessage());
-            DialogUtils.showErrorDialog(this, "Error al crear la parcela");
+            DialogUtils.showErrorDialog(this, getString(R.string.error_create_parcel));
         }
     }
 
@@ -248,7 +249,7 @@ public class ParcelFeedActivity extends BaseActivity {
             parcelaViewModel.update(parcela);
         }
 
-        DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", 
+        DialogUtils.showSuccessDialog(this, getString(R.string.success_update_parcel), 
             R.drawable.ic_update_success);
     }
 
@@ -266,7 +267,7 @@ public class ParcelFeedActivity extends BaseActivity {
             extras.getDouble(ParcelConstants.PRICE_PER_PERSON)
         );
         parcelaViewModel.updateWithNameChange(oldName, parcela);
-        DialogUtils.showSuccessDialog(this, "Parcela actualizada con éxito.", 
+        DialogUtils.showSuccessDialog(this, getString(R.string.success_update_parcel), 
             R.drawable.ic_update_success);
     }
 

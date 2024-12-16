@@ -19,7 +19,6 @@ public class SendAbstractionImpl implements SendAbstraction {
 		else{
 			implementor = new WhatsAppImplementor(sourceActivity);
 		}
-		// TODO: else if?
 	}
 
 	/** Envia la correo con el asunto (subject) y cuerpo (body) que se reciben como parametros a traves de un objeto delegado

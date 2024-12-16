@@ -13,6 +13,7 @@ import es.unizar.eina.T213_camping.database.repositories.ParcelaReservadaReposit
 import es.unizar.eina.T213_camping.database.repositories.ReservaRepository;
 
 public class UnitTests {
+    
     private static final String TAG = "UnitTests";
 
     /********************************
@@ -126,8 +127,6 @@ public class UnitTests {
         return true;
     }
 
-    // TODO: move to valid class tests, modify valid classes and corresponding test
-    // in doc tables
     public static boolean testInsertarParcela6(Application context) {
         ParcelaRepository parcelaRepository = new ParcelaRepository(context);
         String nombreParcela = "fuenlabrada6";

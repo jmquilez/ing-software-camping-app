@@ -10,7 +10,6 @@ import androidx.annotation.IntRange;
 import androidx.annotation.Size;
 import androidx.room.Index;
 
-// TODO: longitud de `precio`?
 /**
  * Representa una reserva en el camping.
  * Almacena la información relacionada con una reserva específica, incluyendo datos del cliente y fechas.

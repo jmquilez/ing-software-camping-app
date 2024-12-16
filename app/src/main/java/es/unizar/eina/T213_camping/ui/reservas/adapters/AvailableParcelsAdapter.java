@@ -140,7 +140,7 @@ public class AvailableParcelsAdapter extends ListAdapter<Parcela, AvailableParce
         MaterialButton removeButton = dialog.findViewById(R.id.dialog_remove_parcel_button);
         MaterialButton confirmButton = dialog.findViewById(R.id.dialog_confirm_changes_button);
 
-        title.setText("PARCELA \"" + parcel.getNombre() + "\"");
+        title.setText(context.getString(R.string.dialog_parcel_title, parcel.getNombre()));
         occupantsPicker.setMinValue(1);
         occupantsPicker.setMaxValue(parcel.getMaxOcupantes());
         occupantsPicker.setValue(1); // Default value for the number picker

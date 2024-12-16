@@ -60,7 +60,7 @@ public class ParcelSelectionActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Select Parcels";
+        return getString(R.string.parcel_selection_title);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ParcelSelectionActivity extends BaseActivity {
         reservationId = getIntent().getLongExtra(ReservationConstants.RESERVATION_ID, 0L);
         addedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
 
-        // TODO: shouldn't happen, there must be at least one added Parcela in a Reserva
+        // NOTE: shouldn't happen, there must be at least one added Parcela in a Reserva
         Log.i("ADDED_PARCELS", addedParcels != null ? addedParcels.toString() : "null");
         if (addedParcels == null) {
             addedParcels = new ArrayList<>();
@@ -220,18 +220,34 @@ public class ParcelSelectionActivity extends BaseActivity {
         PriceUtils.updatePriceDisplay(priceDisplay, getCheckInDate(), getCheckOutDate(), addedParcels);
     }
 
+    /**
+     * Obtiene el teléfono del cliente almacenado en el intent.
+     * @return String con el número de teléfono del cliente
+     */
     public String getClientPhone() {
         return getIntent().getStringExtra(ReservationConstants.CLIENT_PHONE);
     }
 
+    /**
+     * Obtiene la lista de parcelas añadidas a la reserva.
+     * @return List<ParcelaOccupancy> con las parcelas añadidas y sus ocupaciones
+     */
     public List<ParcelaOccupancy> getAddedParcels() {
         return addedParcels;
     }
 
+    /**
+     * Obtiene el nombre del cliente almacenado en el intent.
+     * @return String con el nombre del cliente
+     */
     public String getClientName() {
         return getIntent().getStringExtra(ReservationConstants.CLIENT_NAME);
     }
 
+    /**
+     * Obtiene la fecha de entrada almacenada en el intent.
+     * @return Date con la fecha de entrada, o null si hay error al procesar la fecha
+     */
     public Date getCheckInDate() {
         try {
             String dateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
@@ -242,6 +258,10 @@ public class ParcelSelectionActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Obtiene la fecha de salida almacenada en el intent.
+     * @return Date con la fecha de salida, o null si hay error al procesar la fecha
+     */
     public Date getCheckOutDate() {
         try{
             String dateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);

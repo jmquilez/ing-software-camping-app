@@ -74,7 +74,7 @@ public class ModifyReservationActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Modify Reservation";
+        return getString(R.string.modify_reservation_title);
     }
 
     @Override
@@ -144,7 +144,8 @@ public class ModifyReservationActivity extends BaseActivity {
             }
         } catch (ParseException e) {
             Log.e("ModifyReservationActivity", "Error parsing dates: " + e.getMessage(), e);
-            DialogUtils.showErrorDialog(this, "Error al cargar las fechas de la reserva: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, 
+                getString(R.string.error_loading_dates, e.getMessage()));
             checkInDate = new Date();
             checkOutDate = new Date(checkInDate.getTime() + 86400000);
         }
@@ -161,7 +162,8 @@ public class ModifyReservationActivity extends BaseActivity {
         double initialPrice = getIntent().getDoubleExtra(ReservationConstants.RESERVATION_PRICE, 0.0);
         
         if (initialPrice >= 0) {
-            priceDisplay.setText(String.format(Locale.getDefault(), "Precio total: %.2f€", initialPrice));
+            priceDisplay.setText(String.format(Locale.getDefault(), 
+                getString(R.string.price_total), initialPrice));
         } else {
             // Update initial price display
             PriceUtils.updatePriceDisplay(priceDisplay, checkInDate, checkOutDate, selectedParcels);
@@ -228,7 +230,6 @@ public class ModifyReservationActivity extends BaseActivity {
         );
     }
 
-    // TODO: merge with navbar
     /**
      * Navega a la pantalla anterior.
      */
@@ -237,7 +238,6 @@ public class ModifyReservationActivity extends BaseActivity {
         finish(); // Go back to the previous screen
     }
 
-    // TODO: handle error states and navigation
     /**
      * Valida que las fechas de entrada y salida sean correctas.
      * @return true si las fechas son válidas, false en caso contrario
@@ -338,26 +338,47 @@ public class ModifyReservationActivity extends BaseActivity {
                 selectedParcels, true);
         } catch (Exception e) {
             Log.e("ModifyReservationActivity", "Error al confirmar la reserva: " + e.getMessage(), e);
-            DialogUtils.showErrorDialog(this, "Error al procesar la reserva");
+            DialogUtils.showErrorDialog(this, 
+                getString(R.string.error_update_reservation, e.getMessage()));
         }
     }
 
+    /**
+     * Obtiene el teléfono del cliente introducido en el formulario.
+     * @return String con el número de teléfono del cliente
+     */
     public String getClientPhone() {
         return clientPhoneInput.getText().toString();
     }
 
+    /**
+     * Obtiene el nombre del cliente introducido en el formulario.
+     * @return String con el nombre del cliente
+     */
     public String getClientName() {
         return clientNameInput.getText().toString();
     }
 
+    /**
+     * Obtiene la fecha de entrada de la reserva.
+     * @return Date con la fecha de entrada
+     */
     public Date getCheckInDate() {
         return checkInDate;
     }
 
+    /**
+     * Obtiene la fecha de salida de la reserva.
+     * @return Date con la fecha de salida
+     */
     public Date getCheckOutDate() {
         return checkOutDate;
     }
 
+    /**
+     * Obtiene la lista de parcelas seleccionadas con sus ocupaciones.
+     * @return List<ParcelaOccupancy> con las parcelas seleccionadas
+     */
     public List<ParcelaOccupancy> getSelectedParcels() {
         return selectedParcels;
     }

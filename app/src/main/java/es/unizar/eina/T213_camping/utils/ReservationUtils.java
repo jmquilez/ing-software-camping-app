@@ -53,7 +53,7 @@ public class ReservationUtils {
             
             // Validate dates before proceeding
             if (entryDate == null || departureDate == null) {
-                DialogUtils.showErrorDialog(context, "Las fechas no son válidas");
+                DialogUtils.showErrorDialog(context, context.getString(R.string.error_invalid_dates));
                 return;
             }
             
@@ -61,19 +61,19 @@ public class ReservationUtils {
             String error = DateUtils.validateDates(entryDate, departureDate);
             Log.d("NOTIFYCLIENT", "Error: " + error);
             if (error != null) {
-                DialogUtils.showErrorDialog(context, "La fecha de salida debe ser posterior a la de entrada");
+                DialogUtils.showErrorDialog(context, context.getString(R.string.error_departure_after_entry));
                 return;
             }
         }
         
         DialogUtils.showChoiceDialog(
             context,
-            "Método de envío",
-            "Seleccione el método para notificar al cliente",
-            "WhatsApp",
-            "SMS",
-            () -> sendMessage(context, activity, "WHATSAPP"),  // opción WhatsApp
-            () -> sendMessage(context, activity, "SMS")        // opción SMS
+            context.getString(R.string.notify_method_title),
+            context.getString(R.string.notify_method_message),
+            context.getString(R.string.notify_method_whatsapp),
+            context.getString(R.string.notify_method_sms),
+            () -> sendMessage(context, activity, "WHATSAPP"),
+            () -> sendMessage(context, activity, "SMS")
         );
     }
 
@@ -108,11 +108,17 @@ public class ReservationUtils {
         
         // Construir el mensaje
         StringBuilder messageBuilder = new StringBuilder();
-        messageBuilder.append("¡Hola ").append(clientName).append("!\n\n");
-        messageBuilder.append("Detalles de su reserva:\n");
-        messageBuilder.append("Fecha de entrada: ").append(DateUtils.formatDate(entryDate)).append("\n");
-        messageBuilder.append("Fecha de salida: ").append(DateUtils.formatDate(departureDate)).append("\n");
-        messageBuilder.append("Parcelas reservadas: ");
+        messageBuilder.append(String.format(context.getString(R.string.reservation_greeting), clientName))
+                     .append("\n\n")
+                     .append(context.getString(R.string.reservation_details))
+                     .append("\n")
+                     .append(String.format(context.getString(R.string.reservation_entry_date), 
+                         DateUtils.formatDate(entryDate)))
+                     .append("\n")
+                     .append(String.format(context.getString(R.string.reservation_departure_date), 
+                         DateUtils.formatDate(departureDate)))
+                     .append("\n")
+                     .append(context.getString(R.string.reservation_parcels));
         
         // Añadir información de las parcelas
         if (parcelas != null && !parcelas.isEmpty()) {
@@ -128,9 +134,9 @@ public class ReservationUtils {
         
         try {
             sender.send(phoneNumber, message);
-            Toast.makeText(context, "Enviando mensaje...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.notify_sending, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Toast.makeText(context, "Error al enviar el mensaje", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.notify_error, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -140,12 +146,18 @@ public class ReservationUtils {
      * @param currentActivity Actividad actual
      */
     public static void deleteReservation(Context context, AppCompatActivity currentActivity) {
-        DialogUtils.showConfirmationDialog(context, "Eliminar reserva", "¿Está seguro de que desea eliminar esta reserva?", R.drawable.ic_delete_confirm, () -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_DELETE);
-            currentActivity.setResult(RESULT_OK, resultIntent);
-            currentActivity.finish();
-        });
+        DialogUtils.showConfirmationDialog(
+            context, 
+            context.getString(R.string.delete_reservation_title),
+            context.getString(R.string.delete_reservation_message),
+            R.drawable.ic_delete_confirm,
+            () -> {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_DELETE);
+                currentActivity.setResult(RESULT_OK, resultIntent);
+                currentActivity.finish();
+            }
+        );
     }
 
     /**
@@ -167,10 +179,11 @@ public class ReservationUtils {
         
         DialogUtils.showConfirmationDialog(
             activity,
-            "Confirmar cambios",
+            activity.getString(R.string.confirm_changes_title),
             String.format(Locale.getDefault(), 
-                "¿Está seguro de que desea %s esta reserva?\n\nPrecio total: %.2f€", 
-                isUpdate ? "guardar los cambios en" : "crear",
+                activity.getString(R.string.confirm_reservation_message),
+                activity.getString(isUpdate ? R.string.confirm_reservation_update 
+                                     : R.string.confirm_reservation_create),
                 price),
             R.drawable.ic_confirm_reservation,
             () -> {

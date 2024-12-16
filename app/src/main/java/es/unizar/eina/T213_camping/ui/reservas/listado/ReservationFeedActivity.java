@@ -61,7 +61,7 @@ public class ReservationFeedActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Reservations";
+        return getString(R.string.reservations_title);
     }
 
     @Override
@@ -83,10 +83,10 @@ public class ReservationFeedActivity extends BaseActivity {
      */
     private void setupViewModels() {
         /*
-            * TODO: in case a Reserva only gets its associated ParcelaReservada's updated,
-            * will this observer callback be triggered? Shouldn't be a problem, since we re-fetch
-            * the corresponding rows from "ParcelaReservada" every time we launch a "Reserva"
-            * modification Intent
+         * NOTE: in case a Reserva only gets its associated ParcelaReservada's updated,
+         * will this observer callback be triggered? Not a problem, since we re-fetch
+         * the corresponding rows from "ParcelaReservada" every time we launch a "Reserva"
+         * modification Intent
          */
         reservaViewModel = new ViewModelProvider(this).get(ReservaViewModel.class);
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
@@ -111,7 +111,6 @@ public class ReservationFeedActivity extends BaseActivity {
      * Configura los botones de ordenación.
      */
     private void setupSortingButtons() {
-        // TODO: sorting buttons array?
         findViewById(R.id.sort_reservations_by_client_name_button).setOnClickListener(v -> sortReservations(ReservationConstants.SORT_CLIENT_NAME));
         findViewById(R.id.sort_reservations_by_client_phone_button).setOnClickListener(v -> sortReservations(ReservationConstants.SORT_CLIENT_PHONE));
         findViewById(R.id.sort_reservations_by_entry_date_button).setOnClickListener(v -> sortReservations(ReservationConstants.SORT_ENTRY_DATE));
@@ -188,11 +187,11 @@ public class ReservationFeedActivity extends BaseActivity {
         String loadingMessage = "UNKNOWN OPERATION...";
 
         if (Objects.requireNonNull(operationType).equals(ParcelConstants.OPERATION_INSERT)) {
-            loadingMessage = "CREANDO RESERVA...";
+            loadingMessage = getString(R.string.loading_create_reservation);
         } else if (operationType.equals(ParcelConstants.OPERATION_UPDATE)) {
-            loadingMessage = "ACTUALIZANDO RESERVA...";
+            loadingMessage = getString(R.string.loading_update_reservation);
         } else if (operationType.equals(ParcelConstants.OPERATION_DELETE)) {
-            loadingMessage = "ELIMINANDO RESERVA...";
+            loadingMessage = getString(R.string.loading_delete_reservation);
         }
 
         final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, loadingMessage);
@@ -208,13 +207,16 @@ public class ReservationFeedActivity extends BaseActivity {
                         break;
                     case ReservationConstants.OPERATION_DELETE:
                         reservaViewModel.deleteById(reservationId);
-                        DialogUtils.showSuccessDialog(this, "Reserva eliminada con éxito.", R.drawable.ic_delete_success);
+                        DialogUtils.showSuccessDialog(this, 
+                            getString(R.string.success_delete_reservation), 
+                            R.drawable.ic_delete_success);
                         break;
                     case ReservationConstants.OPERATION_NOTIFY_CLIENT:
                         notifyClient(reservationId);
                         break;
                     default:
-                        Toast.makeText(this, "Operación desconocida", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.error_unknown_operation), 
+                            Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -230,7 +232,9 @@ public class ReservationFeedActivity extends BaseActivity {
      * @param reservationId ID de la reserva
      */
     private void notifyClient(long reservationId) {
-        DialogUtils.showSuccessDialog(this, "Cliente notificado con éxito.", R.drawable.ic_notify_success);
+        DialogUtils.showSuccessDialog(this, 
+            getString(R.string.success_notify_client), 
+            R.drawable.ic_notify_success);
     }
 
     /**
@@ -274,7 +278,7 @@ public class ReservationFeedActivity extends BaseActivity {
                 parcelaReservadaViewModel.insert(parcelaReservada);
             }
 
-            DialogUtils.showSuccessDialog(this, "Reserva creada con éxito.", R.drawable.ic_create_success);
+            DialogUtils.showSuccessDialog(this, getString(R.string.success_create_reservation), R.drawable.ic_create_success);
 
         } catch (Exception e) {
             Log.e("ReservationFeedActivity", "Error creating reservation: " + e.getMessage());
@@ -288,8 +292,9 @@ public class ReservationFeedActivity extends BaseActivity {
      */
     private void updateReservation(Bundle extras) {
         if (extras == null) {
-            Log.e("RESERVATION_UPDATE", "Error: extras es null");
-            Toast.makeText(this, "Error: datos de reserva no disponibles", Toast.LENGTH_SHORT).show();
+            Log.e("RESERVATION_UPDATE", getString(R.string.error_reservation_data));
+            Toast.makeText(this, getString(R.string.error_reservation_data), 
+                Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -327,10 +332,13 @@ public class ReservationFeedActivity extends BaseActivity {
                 parcelaReservadaViewModel.updateParcelasForReservation(reservationId, parcelasReservadas);
             }
 
-            DialogUtils.showSuccessDialog(this, "Reserva actualizada con éxito.", R.drawable.ic_update_success);
+            DialogUtils.showSuccessDialog(this, 
+                getString(R.string.success_update_reservation), 
+                R.drawable.ic_update_success);
         } catch (Exception e) {
             Log.e("ReservationFeedActivity", "Error updating reservation: " + e.getMessage(), e);
-            DialogUtils.showErrorDialog(this, "Error al actualizar la reserva: " + e.getMessage());
+            DialogUtils.showErrorDialog(this, 
+                getString(R.string.error_update_reservation, e.getMessage()));
         }
     }
 
@@ -342,21 +350,9 @@ public class ReservationFeedActivity extends BaseActivity {
     private void onReservationClick(Reserva reserva) {
         Intent intent = new Intent(this, ModifyReservationActivity.class);
         
-        // Añadir logs antes de poner los extras
-        Log.d("ReservationFeed", "Datos de la reserva a modificar:");
-        Log.d("ReservationFeed", "ID: " + reserva.getId());
-        Log.d("ReservationFeed", "Nombre: " + reserva.getNombreCliente());
-        Log.d("ReservationFeed", "Teléfono: " + reserva.getTelefonoCliente());
-        Log.d("ReservationFeed", "Fecha Entrada (Date): " + reserva.getFechaEntrada());
-        Log.d("ReservationFeed", "Fecha Salida (Date): " + reserva.getFechaSalida());
-        Log.d("ReservationFeed", "Precio: " + reserva.getPrecio());
-        
         // Formatear y verificar las fechas antes de añadirlas al intent
         String entryDateStr = DateUtils.DATE_FORMAT.format(reserva.getFechaEntrada());
         String departureDateStr = DateUtils.DATE_FORMAT.format(reserva.getFechaSalida());
-        
-        Log.d("ReservationFeed", "Fecha Entrada (formateada): " + entryDateStr);
-        Log.d("ReservationFeed", "Fecha Salida (formateada): " + departureDateStr);
         
         intent.putExtra(ReservationConstants.RESERVATION_ID, reserva.getId());
         intent.putExtra(ReservationConstants.CLIENT_NAME, reserva.getNombreCliente());
@@ -365,21 +361,11 @@ public class ReservationFeedActivity extends BaseActivity {
         intent.putExtra(ReservationConstants.DEPARTURE_DATE, departureDateStr);
         intent.putExtra(ReservationConstants.RESERVATION_PRICE, reserva.getPrecio());
 
-        // Verificar que los extras se añadieron correctamente
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            Log.d("ReservationFeed", "Extras añadidos al intent:");
-            for (String key : extras.keySet()) {
-                Log.d("ReservationFeed", key + ": " + extras.get(key));
-            }
-        }
-
         LiveData<List<ParcelaOccupancy>> parcelasReservadasLiveData = parcelaViewModel.getParcelasByReservationId(reserva.getId());
         parcelasReservadasLiveData.observe(this, parcelasReservadas -> {
             if (parcelasReservadas == null) {
                 parcelasReservadas = new ArrayList<>();
             }
-            Log.i("PUT_PARCELABLE_ARRAY_EXTRA", "parcelasReservadas: " + parcelasReservadas);
             intent.putParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, new ArrayList<>(parcelasReservadas));
             reservationLauncher.launch(intent);
             // KEY: remove all observers handled by the current lifecycle owner (this activity)

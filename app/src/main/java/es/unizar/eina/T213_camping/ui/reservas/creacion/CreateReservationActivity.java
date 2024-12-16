@@ -63,7 +63,7 @@ public class CreateReservationActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Create Reservation";
+        return getString(R.string.create_reservation_title);
     }
 
     /**
@@ -83,7 +83,7 @@ public class CreateReservationActivity extends BaseActivity {
 
         nextButton.setOnClickListener(v -> {
             if (checkInDate == null || checkOutDate == null) {
-                DialogUtils.showErrorDialog(this, "Por favor, seleccione ambas fechas");
+                DialogUtils.showErrorDialog(this, getString(R.string.error_select_dates));
                 return;
             }
             
@@ -138,12 +138,12 @@ public class CreateReservationActivity extends BaseActivity {
      */
     private void validateAndProceed() {
         if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
-            DialogUtils.showErrorDialog(this, "Por favor, complete todos los campos.");
+            DialogUtils.showErrorDialog(this, getString(R.string.error_complete_fields));
             return;
         }
 
         if (checkInDate == null || checkOutDate == null) {
-            DialogUtils.showErrorDialog(this, "Por favor, seleccione ambas fechas.");
+            DialogUtils.showErrorDialog(this, getString(R.string.error_select_dates));
             return;
         }
 
@@ -171,7 +171,7 @@ public class CreateReservationActivity extends BaseActivity {
             return DateUtils.DATE_FORMAT.parse(dateString);
         } catch (ParseException e) {
             Log.e("CreateReservationActivity", "Error parsing date: " + e.getMessage());
-            errorMessage.setText("Formato de fecha inválido");
+            errorMessage.setText(getString(R.string.error_invalid_date_format));
             errorMessage.setVisibility(View.VISIBLE);
             return null;
         }

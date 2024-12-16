@@ -21,9 +21,14 @@ public class VolumeTests {
     /**
      * Prueba de volumen: Verifica el funcionamiento con 100 parcelas y 10000
      * reservas
+     * 
+     * @param context          Contexto de la aplicación
+     * @param parcelaViewModel ViewModel para gestionar las parcelas
+     * @param reservaViewModel ViewModel para gestionar las reservas
+     * @return boolean indicando si la prueba fue exitosa
      */
     public static boolean volumeTest(Context context, ParcelaViewModel parcelaViewModel,
-                                     ReservaViewModel reservaViewModel) {
+            ReservaViewModel reservaViewModel) {
         try {
             cleanTestData(parcelaViewModel, reservaViewModel);
             final int MAX_PARCELAS = 100;

@@ -6,6 +6,8 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 
 /**
@@ -14,7 +16,14 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
  */
 public class ParcelUtils {
 
+    /**
+     * Interfaz para recibir el resultado de la validación de campos de una parcela.
+     */
     public interface ValidationCallback {
+        /**
+         * Método llamado cuando se completa la validación.
+         * @param isValid true si todos los campos son válidos, false en caso contrario
+         */
         void onValidationResult(boolean isValid);
     }
 
@@ -39,7 +48,7 @@ public class ParcelUtils {
         String name = nameInput.getText().toString().trim();
         
         if (name.isEmpty()) {
-            showError(context, errorMessage, "El nombre no puede estar vacío");
+            showError(context, errorMessage, context.getString(R.string.error_name_empty));
             callback.onValidationResult(false);
             return;
         }
@@ -51,7 +60,7 @@ public class ParcelUtils {
             // Run UI updates on main thread
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (nameExists) {
-                    showError(context, errorMessage, "Ya existe una parcela con ese nombre");
+                    showError(context, errorMessage, context.getString(R.string.error_name_exists));
                     nameInput.requestFocus();  // Focus on the name input
                     // Scroll to top if in a ScrollView
                     View rootView = nameInput.getRootView();
@@ -66,12 +75,12 @@ public class ParcelUtils {
                 try {
                     int occupants = Integer.parseInt(maxOccupantsInput.getText().toString().trim());
                     if (occupants <= 0) {
-                        showError(context, errorMessage, "El número máximo de ocupantes debe ser mayor que cero.");
+                        showError(context, errorMessage, context.getString(R.string.error_occupants_positive));
                         callback.onValidationResult(false);
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    showError(context, errorMessage, "Por favor, ingrese un número válido para el máximo de ocupantes.");
+                    showError(context, errorMessage, context.getString(R.string.error_occupants_invalid));
                     callback.onValidationResult(false);
                     return;
                 }
@@ -79,12 +88,12 @@ public class ParcelUtils {
                 try {
                     double price = Double.parseDouble(priceInput.getText().toString().trim());
                     if (price <= 0) {
-                        showError(context, errorMessage, "El precio por persona debe ser mayor que cero.");
+                        showError(context, errorMessage, context.getString(R.string.error_price_positive));
                         callback.onValidationResult(false);
                         return;
                     }
                 } catch (NumberFormatException e) {
-                    showError(context, errorMessage, "Por favor, ingrese un número válido para el precio por persona.");
+                    showError(context, errorMessage, context.getString(R.string.error_price_invalid));
                     callback.onValidationResult(false);
                     return;
                 }

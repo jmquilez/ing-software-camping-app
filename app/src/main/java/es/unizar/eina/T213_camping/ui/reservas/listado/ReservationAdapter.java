@@ -80,7 +80,8 @@ public class ReservationAdapter extends ListAdapter<Reserva, ReservationAdapter.
                 holder.itemReservationInfo.setText(reservation.getTelefonoCliente());
                 break;
             case ReservationConstants.SORT_ENTRY_DATE:
-                holder.itemReservationInfo.setText("Entry: " + reservation.getFechaEntrada());
+                holder.itemReservationInfo.setText(
+                    context.getString(R.string.reservation_entry_date, reservation.getFechaEntrada()));
                 break;
             default:
                 holder.itemReservationInfo.setText(reservation.getNombreCliente());

@@ -79,10 +79,7 @@ public class HomeActivity extends BaseActivity {
     private void setupTestButton() {
         MaterialButton testButton = findViewById(R.id.test_button);
 
-        testButton.setOnLongClickListener(v -> {
-            showTestOptions();
-            return true;
-        });
+        testButton.setOnClickListener(v -> showTestOptions());
     }
 
     private void showTestOptions() {

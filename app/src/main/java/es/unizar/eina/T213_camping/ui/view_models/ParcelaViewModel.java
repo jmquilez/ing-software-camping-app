@@ -18,8 +18,10 @@ import es.unizar.eina.T213_camping.database.repositories.ParcelaRepository;
  */
 public class ParcelaViewModel extends AndroidViewModel {
 
+    /** Repositorio que maneja las operaciones de base de datos para las parcelas */
     private ParcelaRepository mRepository;
 
+    /** Lista observable de todas las parcelas en el sistema */
     private final LiveData<List<Parcela>> mAllParcelas;
 
     /**
@@ -115,10 +117,19 @@ public class ParcelaViewModel extends AndroidViewModel {
         mRepository.updateWithNameChange(oldName, updatedParcela);
     }
 
+    /**
+     * Obtiene el número total de parcelas en el sistema.
+     * @return int con el número de parcelas
+     */
     public int getParcelasCount() {
         return mRepository.getParcelasCount();
     }
 
+    /**
+     * Elimina todas las parcelas cuyo nombre comienza con el prefijo especificado.
+     * Útil para limpiar parcelas de prueba.
+     * @param prefix Prefijo que identifica las parcelas a eliminar
+     */
     public void deleteParcelasWithPrefix(String prefix) {
         mRepository.deleteParcelasWithPrefix(prefix);
     }

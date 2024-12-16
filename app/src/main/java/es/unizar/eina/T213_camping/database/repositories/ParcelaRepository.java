@@ -11,7 +11,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import es.unizar.eina.T213_camping.database.AppDatabase;
+import es.unizar.eina.T213_camping.database.CampingDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
 import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
 import es.unizar.eina.T213_camping.database.models.Parcela;
@@ -24,8 +24,19 @@ import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
  */
 public class ParcelaRepository {
 
+    /**
+     * Tag para los mensajes de log
+     */
     private static final String TAG = "ParcelaRepository";
+
+    /**
+     * Tiempo máximo de espera para operaciones asíncronas (en milisegundos)
+     */
     private static final long TIMEOUT = 3000; // 3 seconds in milliseconds
+
+    /**
+     * Límites y constantes de validación
+     */
     private static final int MAX_PARCELAS = 100;
     private static final int MAX_NOMBRE_LENGTH = 60;
     private static final int MAX_DESCRIPCION_LENGTH = 300;
@@ -56,7 +67,7 @@ public class ParcelaRepository {
      * @param application Contexto de la aplicación para acceder a la base de datos
      */
     public ParcelaRepository(Application application) {
-        AppDatabase db = AppDatabase.getDatabase(application);
+        CampingDatabase db = CampingDatabase.getDatabase(application);
         parcelaDao = db.parcelaDao();
         parcelaReservadaDao = db.parcelaReservadaDao();
         executorService = Executors.newSingleThreadExecutor();
@@ -240,6 +251,13 @@ public class ParcelaRepository {
         return true;
     }
 
+    /**
+     * Gestiona el resultado de una operación asíncrona.
+     *
+     * @param future Future que contiene el resultado de la operación
+     * @param operation Nombre de la operación para el log
+     * @return Resultado de la operación convertido a Long, o -1 si hay error
+     */
     private <T> Long handleFutureResult(Future<T> future, String operation) {
         try {
             return ((Number) future.get(TIMEOUT, TimeUnit.MILLISECONDS)).longValue();

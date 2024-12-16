@@ -65,7 +65,7 @@ public class CreateParcelActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Create Parcel";
+        return getString(R.string.create_parcel_title);
     }
 
     /**

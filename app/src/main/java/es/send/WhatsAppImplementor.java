@@ -3,9 +3,9 @@ package es.send;
 import android.app.Activity;
 import android.net.Uri;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.widget.Toast;
+import es.unizar.eina.T213_camping.R;
 
 /**
  * Concrete implementor utilizando la aplicación de WhatsApp. No funciona en el
@@ -64,7 +64,7 @@ public class WhatsAppImplementor implements SendImplementor {
          
          getSourceActivity().startActivity(intent);
       } catch (PackageManager.NameNotFoundException e) {
-         Toast.makeText(getSourceActivity(), "WhatsApp not Installed",
+         Toast.makeText(getSourceActivity(), R.string.error_no_whatsapp,
                Toast.LENGTH_SHORT).show();
       }
    }

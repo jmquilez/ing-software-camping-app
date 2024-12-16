@@ -43,7 +43,6 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
      * @param listener Listener para eventos de clic
      */
     public ParcelAdapter(Context context, String sortingCriteria, OnParcelClickListener listener) {
-        // TODO: pass parcelDiff as parameter
         super(new ParcelDiff());
         this.context = context;
         this.sortingCriteria = sortingCriteria;
@@ -67,13 +66,16 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
 
         switch (sortingCriteria) {
             case ParcelConstants.SORT_ID:
-                holder.itemParcelAdditionalInfo.setText("ID: " + parcela.getNombre());
+                holder.itemParcelAdditionalInfo.setText(
+                    context.getString(R.string.parcel_list_id, parcela.getNombre()));
                 break;
             case ParcelConstants.SORT_MAX_OCCUPANTS:
-                holder.itemParcelAdditionalInfo.setText("Max Occupants: " + parcela.getMaxOcupantes());
+                holder.itemParcelAdditionalInfo.setText(
+                    context.getString(R.string.parcel_list_max_occupants, parcela.getMaxOcupantes()));
                 break;
             case ParcelConstants.SORT_EUR_PERSONA:
-                holder.itemParcelAdditionalInfo.setText("Price per Person: €" + String.format("%.2f", parcela.getEurPorPersona()));
+                holder.itemParcelAdditionalInfo.setText(
+                    context.getString(R.string.parcel_list_price_per_person, parcela.getEurPorPersona()));
                 break;
             default:
                 holder.itemParcelAdditionalInfo.setText(parcela.getNombre());
@@ -102,7 +104,6 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
      * Ayuda a optimizar las actualizaciones del RecyclerView.
      */
     public static class ParcelDiff extends DiffUtil.ItemCallback<Parcela> {
-        // TODO: compare by reference? => NO
         // KEY: See https://jermainedilao.medium.com/demystifying-diffutil-itemcallback-class-8c0201cc69b1
         @Override
         public boolean areItemsTheSame(@NonNull Parcela oldItem, @NonNull Parcela newItem) {
@@ -110,7 +111,7 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
             return oldItem.getNombre().equals(newItem.getNombre());
         }
 
-        /* TODO, CHECK: with a wrong implementation of "areContentsTheSame", the ViewHolder is not properly
+        /* NOTE: with a wrong implementation of "areContentsTheSame", the ViewHolder is not properly
          *   updated but in the next iteration (next time an update is made by the user) it seems like the
          *   system has indeed recorded the changes, why? Looks like it caches the "newItem" as the "oldItem"
          *   for the next time that "areContentsTheSame" is called, no matter whether the last call to
@@ -128,7 +129,6 @@ public class ParcelAdapter extends ListAdapter<Parcela, ParcelAdapter.ViewHolder
      * @param newSortingCriteria Nuevo criterio de ordenación
      */
     public void updateSortingCriteria(String newSortingCriteria) {
-        // TODO: when modifying a single Parcela, just call "notifyItemChanged(i)"
         this.sortingCriteria = newSortingCriteria;
         notifyItemRangeChanged(0, getItemCount());
     }

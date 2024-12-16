@@ -23,6 +23,12 @@ public class DateUtils {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
     /**
+     * Mensajes de error para validación de fechas
+     */
+    private static final String ERROR_SELECT_BOTH_DATES = "Por favor, seleccione ambas fechas";
+    private static final String ERROR_CHECKOUT_AFTER_CHECKIN = "La fecha de salida debe ser al menos un día posterior al de la fecha de entrada";
+
+    /**
      * Muestra un diálogo para seleccionar una fecha.
      * @param context Contexto de la aplicación
      * @param isCheckIn true si es fecha de entrada, false si es fecha de salida
@@ -92,7 +98,7 @@ public class DateUtils {
      */
     public static String validateDates(Date checkInDate, Date checkOutDate) {
         if (checkInDate == null || checkOutDate == null) {
-            return "Por favor, seleccione ambas fechas";
+            return ERROR_SELECT_BOTH_DATES;
         }
 
         // Set check-in date to start of day for comparison
@@ -117,7 +123,7 @@ public class DateUtils {
         long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
         if (diffInDays < 1) {
-            return "La fecha de salida debe ser al menos un día posterior al de la fecha de entrada";
+            return ERROR_CHECKOUT_AFTER_CHECKIN;
         }
 
         return null;

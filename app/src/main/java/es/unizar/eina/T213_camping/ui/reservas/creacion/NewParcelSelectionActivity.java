@@ -64,7 +64,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Select Parcels";
+        return getString(R.string.select_parcels_title);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
         departureDate = getCheckOutDate();
 
         if (entryDate == null || departureDate == null) {
-            DialogUtils.showErrorDialog(this, "Error: fechas no válidas");
+            DialogUtils.showErrorDialog(this, getString(R.string.error_invalid_dates));
             return;
         }
 
@@ -143,7 +143,7 @@ public class NewParcelSelectionActivity extends BaseActivity {
      */
     private void confirmReservation() {
         if (addedParcels == null || addedParcels.isEmpty()) {
-            DialogUtils.showErrorDialog(this, "Error: Debe seleccionar al menos una parcela");
+            DialogUtils.showErrorDialog(this, getString(R.string.error_select_parcel));
             return;
         }
 

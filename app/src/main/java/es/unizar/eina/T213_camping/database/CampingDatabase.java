@@ -37,12 +37,12 @@ import es.unizar.eina.T213_camping.utils.PriceUtils;
  */
 @Database(entities = {Parcela.class, Reserva.class, ParcelaReservada.class}, version = 2, exportSchema = false)
 @TypeConverters({DateConverter.class})
-public abstract class AppDatabase extends RoomDatabase {
+public abstract class CampingDatabase extends RoomDatabase {
 
     /**
      * Instancia única de la base de datos.
      */
-    private static volatile AppDatabase INSTANCE;
+    private static volatile CampingDatabase INSTANCE;
 
     /**
      * Obtiene el DAO para las operaciones con parcelas.
@@ -172,7 +172,7 @@ public abstract class AppDatabase extends RoomDatabase {
                     parcelaReservadaDao.insert(new ParcelaReservada("Parcela D", res3Id, 4));
 
                 } catch (ParseException e) {
-                    Log.e("AppDatabase", "Error parsing dates for initial data", e);
+                    Log.e("CampingDatabase", "Error parsing dates for initial data", e);
                 }
             });
         }
@@ -182,14 +182,14 @@ public abstract class AppDatabase extends RoomDatabase {
      * Obtiene la instancia única de la base de datos.
      * Si no existe, la crea utilizando el patrón Singleton.
      * @param context Contexto de la aplicación
-     * @return Instancia única de AppDatabase
+     * @return Instancia única de CampingDatabase
      */
-    public static AppDatabase getDatabase(final Context context) {
+    public static CampingDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
-            synchronized (AppDatabase.class) {
+            synchronized (CampingDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "camping_database")
+                            CampingDatabase.class, "camping_database")
                             .addCallback(sRoomDatabaseCallback)
                             .fallbackToDestructiveMigration()
                             .build();

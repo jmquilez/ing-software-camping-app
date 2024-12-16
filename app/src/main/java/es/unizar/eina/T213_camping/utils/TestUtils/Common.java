@@ -8,10 +8,13 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 
 public class Common {
+    
     private static final String TAG = "TestUtils.Common";
 
     /**
      * Limpieza de datos de prueba del sistema
+     * @param parcelaViewModel ViewModel para gestionar las parcelas
+     * @param reservaViewModel ViewModel para gestionar las reservas
      */
     public static void cleanTestData(ParcelaViewModel parcelaViewModel, ReservaViewModel reservaViewModel) {
         try {

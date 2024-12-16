@@ -43,7 +43,7 @@ public class ModifyParcelActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Modify Parcel";
+        return getString(R.string.modify_parcel_title);
     }
 
     @Override
@@ -83,7 +83,6 @@ public class ModifyParcelActivity extends BaseActivity {
         description = getIntent().getStringExtra(ParcelConstants.DESCRIPTION);
 
         parcelNameInput.setText(parcelName);
-        // TODO: make a NumberPicker
         maxOccupantsInput.setText(String.valueOf(maxOccupants));
         pricePerPersonInput.setText(String.valueOf(pricePerPerson));
         descriptionInput.setText(description);
@@ -132,8 +131,8 @@ public class ModifyParcelActivity extends BaseActivity {
     private void showDeleteConfirmationDialog() {
         DialogUtils.showConfirmationDialog(
             this,
-            "Eliminar parcela",
-            "¿Está seguro de que desea eliminar esta parcela?",
+            getString(R.string.delete_parcel_dialog_title),
+            getString(R.string.delete_parcel_dialog_message),
             R.drawable.ic_delete_confirm,
             this::deleteParcel
         );

@@ -56,6 +56,6 @@ public class InitialActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Welcome";
+        return getString(R.string.welcome_title);
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
+import es.unizar.eina.T213_camping.R;
 
 /**
  * Concrete implementor utilizando la actividad de envío de SMS. No funciona en
@@ -51,7 +52,7 @@ public class SMSImplementor implements SendImplementor {
         if (sendIntent.resolveActivity(getSourceActivity().getPackageManager()) != null) {
             getSourceActivity().startActivity(sendIntent);
         } else {
-            Toast.makeText(getSourceActivity(), "No SMS app found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getSourceActivity(), R.string.error_no_sms_app, Toast.LENGTH_SHORT).show();
         }
     }
 }

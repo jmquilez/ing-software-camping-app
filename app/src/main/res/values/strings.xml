@@ -154,4 +154,102 @@
     <string name="test_delete_parcela_reservada_2">Test Eliminar Parcela Reservada 2 (Nombre null - Clase 4)</string>
     <string name="test_delete_parcela_reservada_3">Test Eliminar Parcela Reservada 3 (ID Reserva null - Clase 5)</string>
     <string name="test_delete_parcela_reservada_4">Test Eliminar Parcela Reservada 4 (Inexistente - Clase 6)</string>
+
+    <string name="error_no_sms_app">No SMS app found</string>
+    <string name="error_no_whatsapp">WhatsApp not Installed</string>
+    <string name="create_parcel_title">Create Parcel</string>
+    <string name="modify_parcel_title">Modify Parcel</string>
+    <string name="delete_parcel_dialog_title">Eliminar parcela</string>
+    <string name="delete_parcel_dialog_message">¿Está seguro de que desea eliminar esta parcela?</string>
+
+    <!-- Parcel List Item Labels -->
+    <string name="parcel_list_id">ID: %1$s</string>
+    <string name="parcel_list_max_occupants">Max ocupantes: %1$d</string>
+    <string name="parcel_list_price_per_person">Precio por persona: €%.2f</string>
+
+    <!-- ParcelFeedActivity -->
+    <string name="parcels_title">Parcels</string>
+    <string name="loading_create_parcel">CREANDO PARCELA...</string>
+    <string name="loading_update_parcel">ACTUALIZANDO PARCELA...</string>
+    <string name="loading_delete_parcel">ELIMINANDO PARCELA...</string>
+    <string name="success_create_parcel">Parcela creada con éxito</string>
+    <string name="success_update_parcel">Parcela actualizada con éxito</string>
+    <string name="success_delete_parcel">Parcela eliminada con éxito</string>
+    <string name="error_process_parcel_data">Error al procesar los datos de la parcela</string>
+    <string name="error_create_parcel">Error al crear la parcela</string>
+
+    <!-- Added Parcels Dialog -->
+    <string name="dialog_parcel_title">PARCELA \"%1$s\"</string>
+
+    <!-- CreateReservationActivity -->
+    <string name="create_reservation_title">Create Reservation</string>
+    <string name="error_complete_fields">Por favor, complete todos los campos.</string>
+    <string name="error_select_dates">Por favor, seleccione ambas fechas.</string>
+    <string name="error_invalid_date_format">Formato de fecha inválido</string>
+
+    <!-- NewParcelSelectionActivity -->
+    <string name="select_parcels_title">Select Parcels</string>
+    <string name="error_select_parcel">Error: Debe seleccionar al menos una parcela</string>
+
+    <!-- ModifyReservationActivity -->
+    <string name="modify_reservation_title">Modify Reservation</string>
+    <string name="error_loading_dates">Error al cargar las fechas de la reserva: %1$s</string>
+    <string name="error_parsing_dates">Error al procesar las fechas: %1$s</string>
+    <string name="dialog_delete_reservation_title">Eliminar Reserva</string>
+    <string name="dialog_delete_reservation_message">¿Está seguro de que desea eliminar esta reserva?</string>
+    <string name="error_delete_reservation">Error al eliminar la reserva: %1$s</string>
+
+    <!-- ParcelSelectionActivity -->
+    <string name="parcel_selection_title">Select Parcels</string>
+
+    <!-- ReservationFeedActivity -->
+    <string name="reservations_title">Reservations</string>
+    <string name="loading_create_reservation">CREANDO RESERVA...</string>
+    <string name="loading_update_reservation">ACTUALIZANDO RESERVA...</string>
+    <string name="loading_delete_reservation">ELIMINANDO RESERVA...</string>
+    <string name="error_unknown_operation">Operación desconocida</string>
+    <string name="error_reservation_data">Error: datos de reserva no disponibles</string>
+    <string name="success_notify_client">Cliente notificado con éxito.</string>
+    <string name="success_create_reservation">Reserva creada con éxito.</string>
+    <string name="success_update_reservation">Reserva actualizada con éxito.</string>
+    <string name="success_delete_reservation">Reserva eliminada con éxito.</string>
+    <string name="error_create_reservation">Error al crear la reserva: %1$s</string>
+    <string name="error_update_reservation">Error al actualizar la reserva: %1$s</string>
+
+    <!-- ReservationAdapter -->
+    <string name="reservation_entry_date">Fecha de entrada: %1$s</string>
+
+    <!-- InitialActivity -->
+    <string name="welcome_title">Welcome</string>
+
+    <!-- ParcelUtils -->
+    <string name="error_name_empty">El nombre no puede estar vacío</string>
+    <string name="error_name_exists">Ya existe una parcela con ese nombre</string>
+    <string name="error_occupants_positive">El número máximo de ocupantes debe ser mayor que cero.</string>
+    <string name="error_occupants_invalid">Por favor, ingrese un número válido para el máximo de ocupantes.</string>
+    <string name="error_price_positive">El precio por persona debe ser mayor que cero.</string>
+    <string name="error_price_invalid">Por favor, ingrese un número válido para el precio por persona.</string>
+
+    <!-- PriceUtils -->
+    <string name="price_total">Precio total: %.2f€</string>
+
+    <!-- ReservationUtils -->
+    <string name="error_invalid_dates">Las fechas no son válidas</string>
+    <string name="error_departure_after_entry">La fecha de salida debe ser posterior a la de entrada</string>
+    <string name="notify_method_title">Método de envío</string>
+    <string name="notify_method_message">Seleccione el método para notificar al cliente</string>
+    <string name="notify_method_whatsapp">WhatsApp</string>
+    <string name="notify_method_sms">SMS</string>
+    <string name="notify_sending">Enviando mensaje...</string>
+    <string name="notify_error">Error al enviar el mensaje</string>
+    <string name="delete_reservation_title">Eliminar reserva</string>
+    <string name="delete_reservation_message">¿Está seguro de que desea eliminar esta reserva?</string>
+    <string name="confirm_changes_title">Confirmar cambios</string>
+    <string name="confirm_reservation_message">¿Está seguro de que desea %1$s esta reserva?\n\nPrecio total: %.2f€</string>
+    <string name="confirm_reservation_update">guardar los cambios en</string>
+    <string name="confirm_reservation_create">crear</string>
+    <string name="reservation_greeting">¡Hola, %1$s!</string>
+    <string name="reservation_details">Detalles de su reserva:</string>
+    <string name="reservation_departure_date">Fecha de salida: %1$s</string>
+    <string name="reservation_parcels">Parcelas reservadas: </string>
 </resources>
