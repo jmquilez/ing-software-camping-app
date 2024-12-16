@@ -46,7 +46,9 @@ public class ParcelaOccupancy implements Parcelable {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             parcela = in.readParcelable(Parcela.class.getClassLoader(), Parcela.class);
         } else {
-            parcela = in.readParcelable(Parcela.class.getClassLoader());
+            @SuppressWarnings("deprecation")
+            Parcela parcela = in.readParcelable(Parcela.class.getClassLoader());
+            this.parcela = parcela;
         }
         numOcupantes = in.readInt();
     }
