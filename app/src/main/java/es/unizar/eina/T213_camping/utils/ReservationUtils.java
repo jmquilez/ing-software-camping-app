@@ -15,7 +15,7 @@ import es.send.SendAbstraction;
 import es.send.SendAbstractionImpl;
 import es.send.SendImplementor;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.ModelUtils.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
@@ -57,9 +57,7 @@ public class ReservationUtils {
                 return;
             }
             
-            Log.d("NOTIFYCLIENT", "EntryDate: " + entryDate.toString() + ", departureDate: " + departureDate.toString());
             String error = DateUtils.validateDates(entryDate, departureDate);
-            Log.d("NOTIFYCLIENT", "Error: " + error);
             if (error != null) {
                 DialogUtils.showErrorDialog(context, context.getString(R.string.error_departure_after_entry));
                 return;
@@ -77,6 +75,14 @@ public class ReservationUtils {
         );
     }
 
+    /**
+     * Envía un mensaje al cliente utilizando el método especificado (SMS o WhatsApp).
+     * Construye el mensaje con los detalles de la reserva y lo envía usando el implementador correspondiente.
+     * 
+     * @param context Contexto de la aplicación
+     * @param activity Actividad desde la que se envía el mensaje
+     * @param method Método de envío ("SMS" o "WHATSAPP")
+     */
     private static void sendMessage(Context context, Activity activity, String method) {
         SendAbstraction sender = new SendAbstractionImpl(activity, method);
         
@@ -103,8 +109,6 @@ public class ReservationUtils {
             entryDate = act.getCheckInDate();
             departureDate = act.getCheckOutDate();
         }
-
-        Log.d("RESERVATIONUTILS > sendMessage", "entryDate: " + entryDate + ", departureDate: " + departureDate);
         
         // Construir el mensaje
         StringBuilder messageBuilder = new StringBuilder();
@@ -118,7 +122,8 @@ public class ReservationUtils {
                      .append(String.format(context.getString(R.string.reservation_departure_date), 
                          DateUtils.formatDate(departureDate)))
                      .append("\n")
-                     .append(context.getString(R.string.reservation_parcels));
+                     .append(context.getString(R.string.reservation_parcels))
+                     .append(" ");
         
         // Añadir información de las parcelas
         if (parcelas != null && !parcelas.isEmpty()) {

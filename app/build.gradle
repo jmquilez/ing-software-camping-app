@@ -35,6 +35,13 @@ android {
     tasks.withType(Javadoc).configureEach {
         options.addStringOption('sourcepath', 'src/main/java') // Focus only on Java source files
         exclude '**/*.kt' // Exclude Kotlin files if they exist
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        exclude '**/kotlin/**'
+        exclude '**/org.jetbrains.kotlin/**'
+        exclude '**/R.java'
+        exclude '**/BuildConfig.java'
+        failOnError false
     }
 }
 

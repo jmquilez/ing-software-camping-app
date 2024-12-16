@@ -152,6 +152,12 @@ public class ModifyParcelActivity extends BaseActivity {
         finish();
     }
 
+    /**
+     * Configura la validación de entrada para los campos del formulario.
+     * Incluye validaciones para:
+     * - Nombre del cliente (longitud máxima)
+     * - Teléfono del cliente (formato, longitud y dígitos)
+     */
     private void setupInputValidation() {
         // Name length validation
         parcelNameInput.addTextChangedListener(new TextWatcher() {

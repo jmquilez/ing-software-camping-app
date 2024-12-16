@@ -6,10 +6,6 @@ import java.util.Date;
 /**
  * Clase que proporciona métodos de conversión para almacenar y recuperar fechas en la base de datos Room.
  * Convierte entre objetos Date y Long para permitir el almacenamiento de fechas en SQLite.
- *
- * @author Grupo T213
- * @version 1.0
- * @see Date
  */
 public class DateConverter {
     /**

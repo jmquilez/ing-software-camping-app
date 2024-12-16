@@ -8,6 +8,17 @@ import android.util.Log;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 
+/**
+ * Clase que implementa pruebas de sobrecarga del sistema.
+ * Realiza pruebas para verificar:
+ * - Límites de caracteres en campos de texto
+ * - Comportamiento del sistema bajo condiciones de carga
+ * - Manejo de casos límite en validaciones
+ * 
+ * Las pruebas se centran especialmente en la validación
+ * de longitudes máximas en campos de texto y el manejo
+ * de datos cerca de los límites establecidos.
+ */
 public class StressTests {
     
     private static final String TAG = "StressTests";

@@ -251,7 +251,7 @@
     <string name="reservation_greeting">¡Hola, %1$s!</string>
     <string name="reservation_details">Detalles de su reserva:</string>
     <string name="reservation_departure_date">Fecha de salida: %1$s</string>
-    <string name="reservation_parcels">Parcelas reservadas: </string>
+    <string name="reservation_parcels">Parcelas reservadas:</string>
 
     <string name="home_title">Menú principal</string>
 

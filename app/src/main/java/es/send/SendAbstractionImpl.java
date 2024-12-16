@@ -2,10 +2,12 @@ package es.send;
 
 import android.app.Activity;
 
-/** Implementa la interfaz de la abstraccion utilizando (delegando a) una referencia a un objeto de tipo implementor  */
+/**
+ * Implementa la interfaz de la abstraccion utilizando (delegando a) una referencia a un objeto de tipo implementor.
+ */
 public class SendAbstractionImpl implements SendAbstraction {
 	
-	/** objeto delegado que facilita la implementacion del metodo send */
+	/** Objeto delegado que facilita la implementacion del metodo send */
 	private SendImplementor implementor;
 	
 	/** Constructor de la clase. Inicializa el objeto delegado

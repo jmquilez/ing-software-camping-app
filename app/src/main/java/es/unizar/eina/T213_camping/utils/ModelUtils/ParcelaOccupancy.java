@@ -1,4 +1,4 @@
-package es.unizar.eina.T213_camping.utils.models;
+package es.unizar.eina.T213_camping.utils.ModelUtils;
 
 import android.os.Build;
 import android.os.Parcel;

@@ -5,7 +5,6 @@ import android.app.Activity;
 /** 
  * Define la interfaz para las clases de la implementacion.
  * La interfaz no se tiene que corresponder directamente con la interfaz de la abstraccion.
- *  
  */
 public interface SendImplementor {
 	   

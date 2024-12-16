@@ -202,6 +202,12 @@ public class CreateReservationActivity extends BaseActivity {
         }
     }
 
+    /**
+     * Configura la validación de entrada para los campos del formulario.
+     * Incluye validaciones para:
+     * - Nombre del cliente (longitud máxima)
+     * - Teléfono del cliente (formato, longitud y dígitos)
+     */
     private void setupInputValidation() {
         // Client name validation
         clientNameInput.addTextChangedListener(new TextWatcher() {

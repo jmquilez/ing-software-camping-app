@@ -28,7 +28,7 @@ import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
-import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.ModelUtils.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 import es.unizar.eina.T213_camping.ui.reservas.listado.ReservationAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.creacion.CreateReservationActivity;

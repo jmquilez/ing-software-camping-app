@@ -17,7 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.ModelUtils.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.utils.DateUtils;
 import es.unizar.eina.T213_camping.utils.PriceUtils;
@@ -96,7 +96,11 @@ public class ModifyReservationActivity extends BaseActivity {
     }
 
     /**
-     * Inicializa las referencias a las vistas de la actividad.
+     * Configura las referencias a las vistas utilizadas en la actividad.
+     * Inicializa todos los elementos de la interfaz:
+     * - Campos de entrada de texto
+     * - Botones
+     * - Elementos de visualización
      */
     private void setupViews() {
         clientNameInput = findViewById(R.id.modify_reservation_client_name_input);
@@ -177,7 +181,10 @@ public class ModifyReservationActivity extends BaseActivity {
     }
 
     /**
-     * Configura el ViewModel para la gestión de datos.
+     * Configura los ViewModels necesarios para la gestión de datos.
+     * Inicializa:
+     * - ReservaViewModel para gestionar datos de reservas
+     * - ParcelaReservadaViewModel para gestionar datos de parcelas reservadas
      */
     private void setupViewModels() {
         reservaViewModel = new ViewModelProvider(this).get(ReservaViewModel.class);
@@ -185,8 +192,12 @@ public class ModifyReservationActivity extends BaseActivity {
     }
 
     /**
-     * Configura los listeners para todos los botones y elementos interactivos.
-     * Incluye botones de fecha, navegación y acciones principales.
+     * Configura los listeners para los elementos interactivos de la actividad.
+     * Incluye:
+     * - Selectores de fecha
+     * - Botones de acción (guardar, notificar, eliminar)
+     * - Botones de navegación
+     * - Validación de entrada
      */
     private void setupListeners() {
         checkInDatePicker.setOnClickListener(v -> DateUtils.showDatePickerDialog(this, true, checkInDatePicker, () -> {
@@ -225,6 +236,8 @@ public class ModifyReservationActivity extends BaseActivity {
 
     /**
      * Configura el launcher para la actividad de selección de parcelas.
+     * Gestiona el resultado de la selección de parcelas y actualiza
+     * la actividad actual según corresponda.
      */
     private void setupParcelSelectionLauncher() {
         parcelSelectionLauncher = registerForActivityResult(
@@ -239,7 +252,8 @@ public class ModifyReservationActivity extends BaseActivity {
     }
 
     /**
-     * Navega a la pantalla anterior.
+     * Navega a la pantalla anterior, cancelando la operación actual.
+     * Establece el resultado como RESULT_CANCELED y finaliza la actividad.
      */
     private void navigateToPrevious() {
         setResult(RESULT_CANCELED);
@@ -301,11 +315,6 @@ public class ModifyReservationActivity extends BaseActivity {
         // Collect all validation errors
         List<String> errors = new ArrayList<>();
         
-        // Validate client name
-        if (clientNameInput.getText().toString().isEmpty()) {
-//            errors.add(getString(R.string.error_empty_client_name));
-        }
-        
         // Validate phone number
         String phone = clientPhoneInput.getText().toString();
         if (phone.isEmpty()) {
@@ -346,7 +355,14 @@ public class ModifyReservationActivity extends BaseActivity {
     }
 
     /**
-     * Confirma los cambios en la reserva utilizando ReservationUtils.
+     * Confirma los cambios realizados en la reserva.
+     * Valida todos los campos antes de proceder:
+     * - Nombre del cliente
+     * - Teléfono
+     * - Fechas de entrada/salida
+     * - Disponibilidad de parcelas
+     * Si la validación es exitosa, actualiza la reserva.
+     * Si hay errores, muestra un diálogo con todos los errores encontrados.
      */
     private void confirmReservation() {
         try {
@@ -448,6 +464,12 @@ public class ModifyReservationActivity extends BaseActivity {
         return selectedParcels;
     }
 
+    /**
+     * Configura la validación de entrada para los campos del formulario.
+     * Incluye validaciones para:
+     * - Nombre del cliente (longitud máxima)
+     * - Teléfono del cliente (formato, longitud y dígitos)
+     */
     private void setupInputValidation() {
         // Client name validation
         clientNameInput.addTextChangedListener(new TextWatcher() {

@@ -7,6 +7,11 @@ import es.unizar.eina.T213_camping.database.models.Reserva;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 
+/**
+ * Clase de utilidades para la limpieza de datos de prueba.
+ * Proporciona métodos para eliminar datos de prueba del sistema,
+ * incluyendo parcelas y reservas con prefijos específicos.
+ */
 public class Common {
     
     private static final String TAG = "TestUtils.Common";

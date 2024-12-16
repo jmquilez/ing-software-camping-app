@@ -22,7 +22,7 @@ import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
 import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
 import es.unizar.eina.T213_camping.database.daos.ReservaDao;
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.ModelUtils.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import androidx.room.TypeConverters;

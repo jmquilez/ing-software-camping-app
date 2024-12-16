@@ -4,7 +4,8 @@ package es.send;
 public interface SendAbstraction {
 
 	/** Definición del metodo que permite realizar el envío del mensaje con texto 'message'
-     * @param message cuerpo del mensaje
-     */
+	 * @param phone número de teléfono del destinatario
+	 * @param message cuerpo del mensaje a enviar
+	 */
 	public void send(String phone, String message);
 }

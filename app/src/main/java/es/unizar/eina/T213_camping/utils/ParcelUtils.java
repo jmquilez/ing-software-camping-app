@@ -104,6 +104,12 @@ public class ParcelUtils {
         }).start();
     }
 
+    /**
+     * Muestra un mensaje de error en el TextView especificado y en un diálogo.
+     * @param context Contexto de la aplicación
+     * @param errorMessage TextView donde mostrar el error
+     * @param message Mensaje de error a mostrar
+     */
     private static void showError(Context context, TextView errorMessage, String message) {
         errorMessage.setText(message);
         errorMessage.setVisibility(View.VISIBLE);

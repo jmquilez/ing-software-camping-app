@@ -14,6 +14,17 @@ import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.view_models.ReservaViewModel;
 import es.unizar.eina.T213_camping.utils.DialogUtils;
 
+/**
+ * Clase que implementa pruebas de volumen del sistema.
+ * Verifica el comportamiento del sistema con grandes cantidades de datos:
+ * - Inserción masiva de parcelas (hasta 100)
+ * - Inserción masiva de reservas (hasta 10000)
+ * - Validación de límites máximos
+ * - Comportamiento del sistema cerca de su capacidad máxima
+ * 
+ * Incluye limpieza automática de datos de prueba y
+ * verificación de límites superiores de almacenamiento.
+ */
 public class VolumeTests {
 
     private static final String TAG = "VolumeTests";

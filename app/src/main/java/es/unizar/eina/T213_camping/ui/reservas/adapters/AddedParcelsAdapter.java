@@ -20,7 +20,7 @@ import java.util.List;
 
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.ModelUtils.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
 /**

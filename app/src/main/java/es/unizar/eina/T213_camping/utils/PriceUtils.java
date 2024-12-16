@@ -6,10 +6,17 @@ import java.util.concurrent.TimeUnit;
 
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.ModelUtils.ParcelaOccupancy;
 import android.widget.TextView;
 import java.util.Locale;
 
+/**
+ * Utilidades para el cálculo y gestión de precios de reservas.
+ * Proporciona métodos para:
+ * - Calcular precios totales de reservas
+ * - Actualizar displays de precios
+ * - Gestionar formato de precios
+ */
 public class PriceUtils {
     
     /**

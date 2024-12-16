@@ -12,6 +12,15 @@ import es.unizar.eina.T213_camping.database.repositories.ParcelaRepository;
 import es.unizar.eina.T213_camping.database.repositories.ParcelaReservadaRepository;
 import es.unizar.eina.T213_camping.database.repositories.ReservaRepository;
 
+/**
+ * Clase que implementa pruebas unitarias para el sistema.
+ * Contiene tests para validar:
+ * - Operaciones CRUD de parcelas
+ * - Operaciones CRUD de reservas
+ * - Operaciones CRUD de parcelas reservadas
+ * - Validación de datos de entrada
+ * - Casos límite y valores inválidos
+ */
 public class UnitTests {
     
     private static final String TAG = "UnitTests";
