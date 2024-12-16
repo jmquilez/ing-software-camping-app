@@ -157,8 +157,8 @@
 
     <string name="error_no_sms_app">No SMS app found</string>
     <string name="error_no_whatsapp">WhatsApp not Installed</string>
-    <string name="create_parcel_title">Create Parcel</string>
-    <string name="modify_parcel_title">Modify Parcel</string>
+    <string name="create_parcel_title">Crear Parcela</string>
+    <string name="modify_parcel_title">Modificar parcela</string>
     <string name="delete_parcel_dialog_title">Eliminar parcela</string>
     <string name="delete_parcel_dialog_message">¿Está seguro de que desea eliminar esta parcela?</string>
 
@@ -168,7 +168,7 @@
     <string name="parcel_list_price_per_person">Precio por persona: €%.2f</string>
 
     <!-- ParcelFeedActivity -->
-    <string name="parcels_title">Parcels</string>
+    <string name="parcels_title">Parcelas</string>
     <string name="loading_create_parcel">CREANDO PARCELA...</string>
     <string name="loading_update_parcel">ACTUALIZANDO PARCELA...</string>
     <string name="loading_delete_parcel">ELIMINANDO PARCELA...</string>
@@ -182,17 +182,17 @@
     <string name="dialog_parcel_title">PARCELA \"%1$s\"</string>
 
     <!-- CreateReservationActivity -->
-    <string name="create_reservation_title">Create Reservation</string>
+    <string name="create_reservation_title">Crear reserva</string>
     <string name="error_complete_fields">Por favor, complete todos los campos.</string>
     <string name="error_select_dates">Por favor, seleccione ambas fechas.</string>
     <string name="error_invalid_date_format">Formato de fecha inválido</string>
 
     <!-- NewParcelSelectionActivity -->
-    <string name="select_parcels_title">Select Parcels</string>
+    <string name="select_parcels_title">Seleccionar parcelas</string>
     <string name="error_select_parcel">Error: Debe seleccionar al menos una parcela</string>
 
     <!-- ModifyReservationActivity -->
-    <string name="modify_reservation_title">Modify Reservation</string>
+    <string name="modify_reservation_title">Modificar reserva</string>
     <string name="error_loading_dates">Error al cargar las fechas de la reserva: %1$s</string>
     <string name="error_parsing_dates">Error al procesar las fechas: %1$s</string>
     <string name="dialog_delete_reservation_title">Eliminar Reserva</string>
@@ -200,10 +200,10 @@
     <string name="error_delete_reservation">Error al eliminar la reserva: %1$s</string>
 
     <!-- ParcelSelectionActivity -->
-    <string name="parcel_selection_title">Select Parcels</string>
+    <string name="parcel_selection_title">Seleccionar parcelas</string>
 
     <!-- ReservationFeedActivity -->
-    <string name="reservations_title">Reservations</string>
+    <string name="reservations_title">Reservas</string>
     <string name="loading_create_reservation">CREANDO RESERVA...</string>
     <string name="loading_update_reservation">ACTUALIZANDO RESERVA...</string>
     <string name="loading_delete_reservation">ELIMINANDO RESERVA...</string>
@@ -220,7 +220,7 @@
     <string name="reservation_entry_date">Fecha de entrada: %1$s</string>
 
     <!-- InitialActivity -->
-    <string name="welcome_title">Welcome</string>
+    <string name="welcome_title">Bienvenido</string>
 
     <!-- ParcelUtils -->
     <string name="error_name_empty">El nombre no puede estar vacío</string>
@@ -245,11 +245,33 @@
     <string name="delete_reservation_title">Eliminar reserva</string>
     <string name="delete_reservation_message">¿Está seguro de que desea eliminar esta reserva?</string>
     <string name="confirm_changes_title">Confirmar cambios</string>
-    <string name="confirm_reservation_message">¿Está seguro de que desea %1$s esta reserva?\n\nPrecio total: %.2f€</string>
-    <string name="confirm_reservation_update">guardar los cambios en</string>
+    <string name="confirm_reservation_message">¿Desea %s esta reserva?\n\nPrecio total: %.2f€</string>
+    <string name="confirm_reservation_update">modificar</string>
     <string name="confirm_reservation_create">crear</string>
     <string name="reservation_greeting">¡Hola, %1$s!</string>
     <string name="reservation_details">Detalles de su reserva:</string>
     <string name="reservation_departure_date">Fecha de salida: %1$s</string>
     <string name="reservation_parcels">Parcelas reservadas: </string>
+
+    <string name="home_title">Menú principal</string>
+
+    <string name="error_name_too_long">El nombre no puede tener más de %d caracteres</string>
+    <string name="error_description_too_long">La descripción no puede tener más de %d caracteres</string>
+    <string name="error_occupants_too_high">El número máximo de ocupantes no puede ser mayor que %d</string>
+    <string name="error_price_too_high">El precio por persona no puede ser mayor que %.2f€</string>
+    <string name="error_delete_parcel">Error al eliminar la parcela</string>
+    <string name="error_update_parcel">Error al actualizar la parcela</string>
+
+    <!-- Input Validation Messages -->
+    <string name="error_phone_too_long">El número de teléfono no puede tener más de %d dígitos</string>
+    <string name="error_phone_too_short">El número de teléfono debe tener %d dígitos</string>
+    <string name="error_phone_digits_only">El número de teléfono solo puede contener dígitos</string>
+
+    <string name="error_operation_failed">Error en la operación: %1$s</string>
+
+    <!-- Input Validation Messages -->
+    <string name="error_empty_client_name">El nombre del cliente no puede estar vacío</string>
+    <string name="error_empty_phone">El número de teléfono no puede estar vacío</string>
+    <string name="error_invalid_phone_length">El número de teléfono debe tener exactamente %d dígitos</string>
+    <string name="error_validation_failed">No se puede continuar por los siguientes errores:</string>
 </resources>

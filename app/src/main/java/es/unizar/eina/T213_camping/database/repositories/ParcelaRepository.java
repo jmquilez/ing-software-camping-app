@@ -15,7 +15,7 @@ import es.unizar.eina.T213_camping.database.CampingDatabase;
 import es.unizar.eina.T213_camping.database.daos.ParcelaDao;
 import es.unizar.eina.T213_camping.database.daos.ParcelaReservadaDao;
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 
 /**
  * Repositorio que gestiona las operaciones de acceso a datos para las parcelas.

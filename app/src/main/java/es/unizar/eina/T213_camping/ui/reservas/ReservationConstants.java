@@ -1,11 +1,8 @@
 package es.unizar.eina.T213_camping.ui.reservas;
 
-
-
 /**
- * Constantes utilizadas en la gestión de reservas.
- * Define las claves para operaciones, criterios de ordenación y detalles de reservas
- * que se utilizan en la comunicación entre actividades y en la interfaz de usuario.
+ * Constantes comunes para la gestión de reservas.
+ * Centraliza los límites y restricciones usados en múltiples clases.
  */
 public class ReservationConstants {
     /**
@@ -94,4 +91,14 @@ public class ReservationConstants {
      * Utilizado para prevenir actualizaciones recursivas.
      */
     public static final String AVAILABLE_PARCELS_ADAPTER_CALLED = "AVAILABLE_PARCELS_ADAPTER_CALLED";
+
+    /**
+     * Validation constraints (matching repository)
+     */
+    public static final int MAX_CLIENT_NAME_LENGTH = 40;
+    public static final int PHONE_LENGTH = 9;
+    public static final double MIN_PRICE = 0.0;
+    public static final double MAX_PRICE = 99999.0;
+    public static final int MIN_ID = 1;
+    public static final int MAX_ID = 10000;
 }

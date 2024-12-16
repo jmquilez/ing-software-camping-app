@@ -3,7 +3,7 @@ package es.unizar.eina.T213_camping.database.daos;
 import androidx.lifecycle.LiveData;
 import androidx.room.*;
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 
 import java.util.List;
 

@@ -83,9 +83,10 @@ public class ParcelaReservadaViewModel extends AndroidViewModel {
      * Actualiza las parcelas asociadas a una reserva.
      * @param reservationId ID de la reserva
      * @param updatedParcels Nueva lista de parcelas reservadas
+     * @return true si la operación fue exitosa, false en caso contrario
      */
-    public void updateParcelasForReservation(long reservationId, List<ParcelaReservada> updatedParcels) {
-        mRepository.updateParcelasForReservation(reservationId, updatedParcels);
+    public boolean updateParcelasForReservation(long reservationId, List<ParcelaReservada> updatedParcels) {
+        return mRepository.updateParcelasForReservation(reservationId, updatedParcels);
     }
 
     /**

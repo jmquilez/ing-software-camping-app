@@ -20,7 +20,7 @@ import es.unizar.eina.T213_camping.utils.DialogUtils;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaReservadaViewModel;
 import es.unizar.eina.T213_camping.utils.DateUtils;
 import java.util.Date;

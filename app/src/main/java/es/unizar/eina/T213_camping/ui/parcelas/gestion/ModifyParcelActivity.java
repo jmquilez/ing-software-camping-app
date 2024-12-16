@@ -2,6 +2,8 @@ package es.unizar.eina.T213_camping.ui.parcelas.gestion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -54,8 +56,7 @@ public class ModifyParcelActivity extends BaseActivity {
         initializeViews();
         loadParcelData();
         setupListeners();
-
-        // Set button visibility
+        setupInputValidation();
         setButtonVisibility("back", true);
         setButtonVisibility("home", true);
     }
@@ -149,5 +150,87 @@ public class ModifyParcelActivity extends BaseActivity {
     
         setResult(RESULT_OK, replyIntent);
         finish();
+    }
+
+    private void setupInputValidation() {
+        // Name length validation
+        parcelNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > ParcelConstants.MAX_NAME_LENGTH) {
+                    s.delete(ParcelConstants.MAX_NAME_LENGTH, s.length());
+                    parcelNameInput.setError(getString(R.string.error_name_too_long, ParcelConstants.MAX_NAME_LENGTH));
+                }
+            }
+        });
+
+        // Description length validation
+        descriptionInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > ParcelConstants.MAX_DESCRIPTION_LENGTH) {
+                    s.delete(ParcelConstants.MAX_DESCRIPTION_LENGTH, s.length());
+                    descriptionInput.setError(getString(R.string.error_description_too_long, ParcelConstants.MAX_DESCRIPTION_LENGTH));
+                }
+            }
+        });
+
+        // Max occupants validation
+        maxOccupantsInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    String input = s.toString();
+                    if (!input.isEmpty()) {
+                        int value = Integer.parseInt(input);
+                        if (value > ParcelConstants.MAX_OCCUPANTS_NUM) {
+                            s.replace(0, s.length(), String.valueOf(ParcelConstants.MAX_OCCUPANTS_NUM));
+                            maxOccupantsInput.setError(getString(R.string.error_occupants_too_high, ParcelConstants.MAX_OCCUPANTS_NUM));
+                        }
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+        });
+
+        // Price validation
+        pricePerPersonInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    String input = s.toString();
+                    if (!input.isEmpty()) {
+                        double value = Double.parseDouble(input);
+                        if (value > ParcelConstants.MAX_PRICE) {
+                            s.replace(0, s.length(), String.valueOf(ParcelConstants.MAX_PRICE));
+                            pricePerPersonInput.setError(getString(R.string.error_price_too_high, ParcelConstants.MAX_PRICE));
+                        }
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+        });
     }
 }

@@ -119,14 +119,22 @@ public class ParcelaReservadaRepository {
      *
      * @param reservationId ID de la reserva
      * @param updatedParcels Nueva lista de parcelas reservadas
+     * @return true si la operación fue exitosa, false en caso contrario
      */
-    public void updateParcelasForReservation(long reservationId, List<ParcelaReservada> updatedParcels) {
-        executorService.execute(() -> {
-            parcelaReservadaDao.deleteParcelasForReservation(reservationId);
-            for (ParcelaReservada parcel : updatedParcels) {
-                parcelaReservadaDao.insert(parcel);
+    public boolean updateParcelasForReservation(long reservationId, List<ParcelaReservada> updatedParcels) {
+        Future<Boolean> future = executorService.submit(() -> 
+            parcelaReservadaDao.updateParcelasForReservation(reservationId, updatedParcels));
+        
+        try {
+            return future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (Exception e) {
+            Logger.getLogger(ParcelaReservadaRepository.class.getName())
+                  .severe("Update parcelas for reservation error: " + e.getMessage());
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
             }
-        });
+            return false;
+        }
     }
 
     /**

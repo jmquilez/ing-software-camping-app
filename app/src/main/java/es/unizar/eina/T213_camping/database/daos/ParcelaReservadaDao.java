@@ -121,4 +121,19 @@ public interface ParcelaReservadaDao {
      */
     @Query("SELECT EXISTS(SELECT 1 FROM parcela_reservada WHERE parcelaNombre = :parcelaNombre AND reservaId = :reservaId)")
     boolean exists(String parcelaNombre, long reservaId);
+
+    @Transaction
+    default boolean updateParcelasForReservation(long reservationId, List<ParcelaReservada> updatedParcels) {
+        try {
+            deleteParcelasForReservation(reservationId);
+            for (ParcelaReservada parcel : updatedParcels) {
+                if (insert(parcel) == -1) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

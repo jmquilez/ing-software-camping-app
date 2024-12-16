@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 import androidx.appcompat.app.AlertDialog;
 import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.reservas.adapters.AvailableParcelsAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.adapters.AddedParcelsAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
@@ -103,7 +103,13 @@ public class ParcelSelectionActivity extends BaseActivity {
         availableParcelsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         reservationId = getIntent().getLongExtra(ReservationConstants.RESERVATION_ID, 0L);
-        addedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            addedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, ParcelaOccupancy.class);
+        } else {
+            @SuppressWarnings("deprecation")
+            ArrayList<ParcelaOccupancy> parcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+            addedParcels = parcels;
+        }
 
         // NOTE: shouldn't happen, there must be at least one added Parcela in a Reserva
         Log.i("ADDED_PARCELS", addedParcels != null ? addedParcels.toString() : "null");

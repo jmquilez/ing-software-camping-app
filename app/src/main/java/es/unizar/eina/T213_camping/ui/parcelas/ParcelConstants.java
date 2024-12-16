@@ -70,4 +70,15 @@ public class ParcelConstants {
      * Clave para la descripción de la parcela en los Intents.
      */
     public static final String DESCRIPTION = "DESCRIPTION";
+
+    /**
+     * Límites de validación para los campos de parcelas
+     */
+    public static final int MAX_NAME_LENGTH = 60;
+    public static final int MAX_DESCRIPTION_LENGTH = 300;
+    public static final int MAX_OCCUPANTS_NUM = 999;
+    public static final double MAX_PRICE = 999.0;
+    public static final int MIN_OCCUPANTS = 1;
+    public static final double MIN_PRICE = 0.0;
+    public static final int MAX_PARCELS = 100;
 }

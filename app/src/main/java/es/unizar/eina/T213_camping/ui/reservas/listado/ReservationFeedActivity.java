@@ -2,8 +2,10 @@ package es.unizar.eina.T213_camping.ui.reservas.listado;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,7 +28,7 @@ import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 import es.unizar.eina.T213_camping.ui.reservas.listado.ReservationAdapter;
 import es.unizar.eina.T213_camping.ui.reservas.creacion.CreateReservationActivity;
@@ -179,13 +181,19 @@ public class ReservationFeedActivity extends BaseActivity {
      */
     private void handleReservationResult(Intent data) {
         Bundle extras = data.getExtras();
-        ArrayList<ParcelaOccupancy> selectedParcels = data.getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+        ArrayList<ParcelaOccupancy> selectedParcels = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            selectedParcels = data.getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, ParcelaOccupancy.class);
+        } else {
+            @SuppressWarnings("deprecation")
+            ArrayList<ParcelaOccupancy> parcels = data.getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+            selectedParcels = parcels;
+        }
         assert extras != null;
         String operationType = extras.getString(ReservationConstants.OPERATION_TYPE);
         long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
 
-        String loadingMessage = "UNKNOWN OPERATION...";
-
+        String loadingMessage = getString(R.string.error_unknown_operation);
         if (Objects.requireNonNull(operationType).equals(ParcelConstants.OPERATION_INSERT)) {
             loadingMessage = getString(R.string.loading_create_reservation);
         } else if (operationType.equals(ParcelConstants.OPERATION_UPDATE)) {
@@ -196,31 +204,56 @@ public class ReservationFeedActivity extends BaseActivity {
 
         final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, loadingMessage);
 
-        new android.os.Handler().postDelayed(() -> {
-            if (!isFinishing() && !isDestroyed()) {  // Check if activity is still alive
-                switch (operationType) {
-                    case ReservationConstants.OPERATION_INSERT:
-                        insertReservation(extras, selectedParcels);
-                        break;
-                    case ReservationConstants.OPERATION_UPDATE:
-                        updateReservation(extras);
-                        break;
-                    case ReservationConstants.OPERATION_DELETE:
-                        reservaViewModel.deleteById(reservationId);
-                        DialogUtils.showSuccessDialog(this, 
-                            getString(R.string.success_delete_reservation), 
-                            R.drawable.ic_delete_success);
-                        break;
-                    case ReservationConstants.OPERATION_NOTIFY_CLIENT:
-                        notifyClient(reservationId);
-                        break;
-                    default:
-                        Toast.makeText(this, getString(R.string.error_unknown_operation), 
-                            Toast.LENGTH_SHORT).show();
-                        break;
+        ArrayList<ParcelaOccupancy> finalSelectedParcels = selectedParcels;
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (!isFinishing() && !isDestroyed()) {
+                try {
+                    long result = -1;
+                    switch (operationType) {
+                        case ReservationConstants.OPERATION_INSERT:
+                            result = insertReservation(extras, finalSelectedParcels);
+                            if (result != -1) {
+                                DialogUtils.showSuccessDialog(this, 
+                                    getString(R.string.success_create_reservation), 
+                                    R.drawable.ic_create_success);
+                            }
+                            break;
+                        case ReservationConstants.OPERATION_UPDATE:
+                            result = updateReservation(extras);
+                            if (result != -1) {
+                                DialogUtils.showSuccessDialog(this, 
+                                    getString(R.string.success_update_reservation), 
+                                    R.drawable.ic_update_success);
+                            }
+                            break;
+                        case ReservationConstants.OPERATION_DELETE:
+                            result = reservaViewModel.deleteById(reservationId);
+                            if (result != -1) {
+                                DialogUtils.showSuccessDialog(this, 
+                                    getString(R.string.success_delete_reservation), 
+                                    R.drawable.ic_delete_success);
+                            }
+                            break;
+                        case ReservationConstants.OPERATION_NOTIFY_CLIENT:
+                            notifyClient(reservationId);
+                            break;
+                        default:
+                            Toast.makeText(this, getString(R.string.error_unknown_operation), 
+                                Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+
+                    if (result == -1) {
+                        throw new Exception("Operation failed");
+                    }
+
+                } catch (Exception e) {
+                    Log.e("ReservationFeedActivity", "Error in operation: " + e.getMessage());
+                    DialogUtils.showErrorDialog(this, 
+                        getString(R.string.error_operation_failed, e.getMessage()));
                 }
             }
-            if (loadingDialog.isShowing()) {  // Check if dialog is still showing
+            if (loadingDialog.isShowing()) {
                 loadingDialog.dismiss();
             }
         }, 2000);
@@ -242,104 +275,101 @@ public class ReservationFeedActivity extends BaseActivity {
      * @param extras Bundle con los datos de la nueva reserva
      * @param selectedParcels Lista de parcelas seleccionadas
      */
-    private void insertReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) {
-        try {
-            // Get dates as longs (milliseconds since epoch), consistent with updateReservation
-            long entryDateMillis = extras.getLong(ReservationConstants.ENTRY_DATE);
-            long departureDateMillis = extras.getLong(ReservationConstants.DEPARTURE_DATE);
-            
-            if (entryDateMillis == 0 || departureDateMillis == 0) {
-                throw new IllegalArgumentException("Fechas no válidas");
-            }
-            
-            Date entryDate = new Date(entryDateMillis);
-            Date departureDate = new Date(departureDateMillis);
-            double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
-
-            Reserva reservation = new Reserva(
-                    Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
-                    entryDate,
-                    departureDate,
-                    Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE)),
-                    price
-            );
-
-            // Insert the reservation and get its ID
-            long newReservationId = reservaViewModel.insert(reservation);
-
-            // Insert associated parcels
-            assert selectedParcels != null;
-            for (ParcelaOccupancy parcelaOccupancy : selectedParcels) {
-                ParcelaReservada parcelaReservada = new ParcelaReservada(
-                    parcelaOccupancy.getParcela().getNombre(),
-                    newReservationId,
-                    parcelaOccupancy.getOccupancy()
-                );
-                parcelaReservadaViewModel.insert(parcelaReservada);
-            }
-
-            DialogUtils.showSuccessDialog(this, getString(R.string.success_create_reservation), R.drawable.ic_create_success);
-
-        } catch (Exception e) {
-            Log.e("ReservationFeedActivity", "Error creating reservation: " + e.getMessage());
-            DialogUtils.showErrorDialog(this, "Error al crear la reserva: " + e.getMessage());
+    private long insertReservation(Bundle extras, ArrayList<ParcelaOccupancy> selectedParcels) throws Exception {
+        long entryDateMillis = extras.getLong(ReservationConstants.ENTRY_DATE);
+        long departureDateMillis = extras.getLong(ReservationConstants.DEPARTURE_DATE);
+        
+        if (entryDateMillis == 0 || departureDateMillis == 0) {
+            throw new IllegalArgumentException("Fechas no válidas");
         }
+        
+        Date entryDate = new Date(entryDateMillis);
+        Date departureDate = new Date(departureDateMillis);
+        double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
+
+        Reserva reservation = new Reserva(
+                Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME)),
+                entryDate,
+                departureDate,
+                Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE)),
+                price
+        );
+
+        // Insert the reservation and get its ID
+        long newReservationId = reservaViewModel.insert(reservation);
+        if (newReservationId == -1) {
+            throw new Exception("Failed to insert reservation");
+        }
+
+        // Insert associated parcels
+        assert selectedParcels != null;
+        for (ParcelaOccupancy parcelaOccupancy : selectedParcels) {
+            ParcelaReservada parcelaReservada = new ParcelaReservada(
+                parcelaOccupancy.getParcela().getNombre(),
+                newReservationId,
+                parcelaOccupancy.getOccupancy()
+            );
+            if (parcelaReservadaViewModel.insert(parcelaReservada) == -1) {
+                throw new Exception("Failed to insert associated parcel");
+            }
+        }
+
+        return newReservationId;
     }
 
     /**
      * Actualiza una reserva existente.
      * @param extras Bundle con los datos actualizados
      */
-    private void updateReservation(Bundle extras) {
+    private long updateReservation(Bundle extras) throws Exception {
         if (extras == null) {
-            Log.e("RESERVATION_UPDATE", getString(R.string.error_reservation_data));
-            Toast.makeText(this, getString(R.string.error_reservation_data), 
-                Toast.LENGTH_SHORT).show();
-            return;
+            throw new IllegalArgumentException(getString(R.string.error_reservation_data));
         }
 
-        try {
-            long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
-            String clientName = Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME));
-            String clientPhone = Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE));
-            
-            // The dates are coming as longs (milliseconds since epoch)
-            long entryDateMillis = extras.getLong(ReservationConstants.ENTRY_DATE);
-            long departureDateMillis = extras.getLong(ReservationConstants.DEPARTURE_DATE);
-            
-            Date entryDate = new Date(entryDateMillis);
-            Date departureDate = new Date(departureDateMillis);
-            
-            // Get price from extras
-            double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
-            
-            Reserva updatedReservation = new Reserva(clientName, entryDate, departureDate, clientPhone, price);
-            updatedReservation.setId(reservationId);
+        long reservationId = extras.getLong(ReservationConstants.RESERVATION_ID);
+        String clientName = Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_NAME));
+        String clientPhone = Objects.requireNonNull(extras.getString(ReservationConstants.CLIENT_PHONE));
+        
+        long entryDateMillis = extras.getLong(ReservationConstants.ENTRY_DATE);
+        long departureDateMillis = extras.getLong(ReservationConstants.DEPARTURE_DATE);
+        
+        Date entryDate = new Date(entryDateMillis);
+        Date departureDate = new Date(departureDateMillis);
+        
+        double price = extras.getDouble(ReservationConstants.RESERVATION_PRICE, 0.0);
+        
+        Reserva updatedReservation = new Reserva(clientName, entryDate, departureDate, clientPhone, price);
+        updatedReservation.setId(reservationId);
 
-            // Update the reservation
-            reservaViewModel.update(updatedReservation);
+        // Update the reservation
+        long result = reservaViewModel.update(updatedReservation);
+        if (result == -1) {
+            throw new Exception("Failed to update reservation");
+        }
 
-            // Update ParcelasReservadas
-            ArrayList<ParcelaOccupancy> selectedParcels = extras.getParcelableArrayList(ReservationConstants.SELECTED_PARCELS);
-            if (selectedParcels != null) {
-                List<ParcelaReservada> parcelasReservadas = selectedParcels.stream()
-                    .map(po -> new ParcelaReservada(
-                        po.getParcela().getNombre(),
-                        reservationId,
-                        po.getOccupancy()
-                    ))
-                    .collect(Collectors.toList());
-                parcelaReservadaViewModel.updateParcelasForReservation(reservationId, parcelasReservadas);
+        // Update ParcelasReservadas
+        ArrayList<ParcelaOccupancy> selectedParcels;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            selectedParcels = extras.getParcelableArrayList(ReservationConstants.SELECTED_PARCELS, ParcelaOccupancy.class);
+        } else {
+            @SuppressWarnings("deprecation")
+            ArrayList<ParcelaOccupancy> parcels = extras.getParcelableArrayList(ReservationConstants.SELECTED_PARCELS);
+            selectedParcels = parcels;
+        }
+        if (selectedParcels != null) {
+            List<ParcelaReservada> parcelasReservadas = selectedParcels.stream()
+                .map(po -> new ParcelaReservada(
+                    po.getParcela().getNombre(),
+                    reservationId,
+                    po.getOccupancy()
+                ))
+                .collect(Collectors.toList());
+            if (!parcelaReservadaViewModel.updateParcelasForReservation(reservationId, parcelasReservadas)) {
+                throw new Exception("Failed to update associated parcels");
             }
-
-            DialogUtils.showSuccessDialog(this, 
-                getString(R.string.success_update_reservation), 
-                R.drawable.ic_update_success);
-        } catch (Exception e) {
-            Log.e("ReservationFeedActivity", "Error updating reservation: " + e.getMessage(), e);
-            DialogUtils.showErrorDialog(this, 
-                getString(R.string.error_update_reservation, e.getMessage()));
         }
+
+        return result;
     }
 
     /**

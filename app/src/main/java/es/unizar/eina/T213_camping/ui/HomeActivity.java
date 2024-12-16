@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
+import android.os.Looper;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -163,7 +164,7 @@ public class HomeActivity extends BaseActivity {
                                 R.drawable.ic_warning,
                                 () -> {
                                     final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, getString(R.string.dialog_loading_volume));
-                                    new android.os.Handler().postDelayed(() -> {
+                                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                                         boolean result = VolumeTests.volumeTest(this, parcelaViewModel, reservaViewModel);
                                         loadingDialog.dismiss();
                                         if (result) {
@@ -184,7 +185,7 @@ public class HomeActivity extends BaseActivity {
                                 R.drawable.ic_warning,
                                 () -> {
                                     final Dialog loadingDialog = DialogUtils.showLoadingDialog(this, getString(R.string.dialog_loading_stress));
-                                    new android.os.Handler().postDelayed(() -> {
+                                    new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                                         boolean result = StressTests.stressTest(getApplication(), parcelaViewModel);
                                         loadingDialog.dismiss();
                                         if (result) {
@@ -777,7 +778,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return "Home";
+        return getString(R.string.home_title);
     }
 
     private int getTestTypeStringResource(String type) {

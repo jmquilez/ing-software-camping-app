@@ -2,7 +2,10 @@ package es.unizar.eina.T213_camping.ui.reservas.gestion;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.lifecycle.ViewModelProvider;
 
 import es.unizar.eina.T213_camping.database.models.Parcela;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.ParcelaReservada;
 import es.unizar.eina.T213_camping.utils.DateUtils;
 import es.unizar.eina.T213_camping.utils.PriceUtils;
@@ -150,9 +153,12 @@ public class ModifyReservationActivity extends BaseActivity {
             checkOutDate = new Date(checkInDate.getTime() + 86400000);
         }
 
-        selectedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
-        if (selectedParcels == null) {
-            selectedParcels = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            selectedParcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS, ParcelaOccupancy.class);
+        } else {
+            @SuppressWarnings("deprecation")
+            List<ParcelaOccupancy> parcels = getIntent().getParcelableArrayListExtra(ReservationConstants.SELECTED_PARCELS);
+            selectedParcels = parcels;
         }
 
         clientNameInput.setText(clientName);
@@ -213,6 +219,8 @@ public class ModifyReservationActivity extends BaseActivity {
         ImageButton nextButton = findViewById(R.id.modify_reservation_next_button);
         prevButton.setOnClickListener(v -> navigateToPrevious());
         nextButton.setOnClickListener(v -> validateAndProceed());
+
+        setupInputValidation();
     }
 
     /**
@@ -290,16 +298,38 @@ public class ModifyReservationActivity extends BaseActivity {
      * Muestra mensajes de error si la validación falla.
      */
     private void validateAndProceed() {
-        if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
-            DialogUtils.showErrorDialog(this, "Por favor, complete todos los campos.");
-            return;
+        // Collect all validation errors
+        List<String> errors = new ArrayList<>();
+        
+        // Validate client name
+        if (clientNameInput.getText().toString().isEmpty()) {
+//            errors.add(getString(R.string.error_empty_client_name));
+        }
+        
+        // Validate phone number
+        String phone = clientPhoneInput.getText().toString();
+        if (phone.isEmpty()) {
+            errors.add(getString(R.string.error_empty_phone));
+        } else if (phone.length() != ReservationConstants.PHONE_LENGTH) {
+            errors.add(getString(R.string.error_invalid_phone_length, ReservationConstants.PHONE_LENGTH));
+        } else if (!phone.matches("\\d*")) {
+            errors.add(getString(R.string.error_phone_digits_only));
         }
 
+        // Check for date-related errors
         if (errorMessage.getVisibility() == View.VISIBLE) {
-            DialogUtils.showErrorDialog(this, errorMessage.getText().toString());
+            errors.add(errorMessage.getText().toString());
+        }
+
+        // If there are errors, show them all in the dialog
+        if (!errors.isEmpty()) {
+            String errorMessage = String.join("\n• ", errors);
+            DialogUtils.showErrorDialog(this, 
+                getString(R.string.error_validation_failed) + "\n\n• " + errorMessage);
             return;
         }
 
+        // If validation passes, proceed
         Intent intent = new Intent(this, ParcelSelectionActivity.class);
         intent.putExtra(ReservationConstants.RESERVATION_ID, reservationId);
         intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
@@ -320,22 +350,57 @@ public class ModifyReservationActivity extends BaseActivity {
      */
     private void confirmReservation() {
         try {
+            // Collect all validation errors
+            List<String> errors = new ArrayList<>();
+
+            // Validate client name
+            if (clientNameInput.getText().toString().isEmpty()) {
+                errors.add(getString(R.string.error_empty_client_name));
+            } else if (clientNameInput.getText().length() > ReservationConstants.MAX_CLIENT_NAME_LENGTH) {
+                errors.add(getString(R.string.error_name_too_long, ReservationConstants.MAX_CLIENT_NAME_LENGTH));
+            }
+
+            // Validate phone number
+            String phone = clientPhoneInput.getText().toString();
+            if (phone.isEmpty()) {
+                errors.add(getString(R.string.error_empty_phone));
+            } else if (phone.length() != ReservationConstants.PHONE_LENGTH) {
+                errors.add(getString(R.string.error_invalid_phone_length, ReservationConstants.PHONE_LENGTH));
+            } else if (!phone.matches("\\d*")) {
+                errors.add(getString(R.string.error_phone_digits_only));
+            }
+
+            // Validate dates
             if (checkInDate == null || checkOutDate == null) {
-                DialogUtils.showErrorDialog(this, "Las fechas no son válidas");
-                return;
+                errors.add(getString(R.string.error_invalid_dates));
+            } else {
+                String dateError = DateUtils.validateDates(checkInDate, checkOutDate);
+                if (dateError != null) {
+                    errors.add(dateError);
+                }
             }
-            
+
+            // Check for any visible error message
             if (errorMessage.getVisibility() == View.VISIBLE) {
-                DialogUtils.showErrorDialog(this, errorMessage.getText().toString());
+                errors.add(errorMessage.getText().toString());
+            }
+
+            // If there are errors, show them all in the dialog
+            if (!errors.isEmpty()) {
+                String errorMessage = String.join("\n• ", errors);
+                DialogUtils.showErrorDialog(this, 
+                    getString(R.string.error_validation_failed) + "\n\n• " + errorMessage);
                 return;
             }
-            
+
+            // If all validations pass, proceed with confirmation
             ReservationUtils.confirmReservation(this, reservationId, 
                 clientNameInput.getText().toString(),
                 clientPhoneInput.getText().toString(), 
-                checkInDate,    // Usamos directamente los objetos Date
-                checkOutDate,   // Usamos directamente los objetos Date
+                checkInDate,
+                checkOutDate,
                 selectedParcels, true);
+
         } catch (Exception e) {
             Log.e("ModifyReservationActivity", "Error al confirmar la reserva: " + e.getMessage(), e);
             DialogUtils.showErrorDialog(this, 
@@ -381,5 +446,57 @@ public class ModifyReservationActivity extends BaseActivity {
      */
     public List<ParcelaOccupancy> getSelectedParcels() {
         return selectedParcels;
+    }
+
+    private void setupInputValidation() {
+        // Client name validation
+        clientNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > ReservationConstants.MAX_CLIENT_NAME_LENGTH) {
+                    s.delete(ReservationConstants.MAX_CLIENT_NAME_LENGTH, s.length());
+                    clientNameInput.setError(getString(R.string.error_name_too_long, 
+                        ReservationConstants.MAX_CLIENT_NAME_LENGTH));
+                }
+            }
+        });
+
+        // Phone validation
+        clientPhoneInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString();
+                
+                // Check for non-digits
+                if (!phone.matches("\\d*")) {
+                    clientPhoneInput.setError(getString(R.string.error_phone_digits_only));
+                }
+                // Truncate if too long
+                else if (phone.length() > ReservationConstants.PHONE_LENGTH) {
+                    s.delete(ReservationConstants.PHONE_LENGTH, s.length());
+                    clientPhoneInput.setError(getString(R.string.error_phone_too_long, 
+                        ReservationConstants.PHONE_LENGTH));
+                }
+                // Check if length is exactly 9
+                else if (phone.length() < ReservationConstants.PHONE_LENGTH) {
+                    clientPhoneInput.setError(getString(R.string.error_phone_too_short, 
+                        ReservationConstants.PHONE_LENGTH));
+                } else {
+                    clientPhoneInput.setError(null);
+                }
+            }
+        });
     }
 }

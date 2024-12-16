@@ -1,5 +1,6 @@
-package es.unizar.eina.T213_camping.database.models;
+package es.unizar.eina.T213_camping.utils.models;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,11 +8,14 @@ import androidx.room.Embedded;
 
 import java.util.Objects;
 
+import es.unizar.eina.T213_camping.database.models.Parcela;
+
 /**
  * Representa una parcela junto con su ocupación actual.
  * Esta clase implementa Parcelable para permitir la transferencia de objetos entre componentes de Android.
  */
 public class ParcelaOccupancy implements Parcelable {
+    
     /**
      * Parcela asociada a esta ocupación.
      * Se utiliza @Embedded para incluir todos los campos de Parcela en esta clase.
@@ -39,7 +43,11 @@ public class ParcelaOccupancy implements Parcelable {
      * @param in Parcel que contiene los datos
      */
     protected ParcelaOccupancy(Parcel in) {
-        parcela = in.readParcelable(Parcela.class.getClassLoader());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            parcela = in.readParcelable(Parcela.class.getClassLoader(), Parcela.class);
+        } else {
+            parcela = in.readParcelable(Parcela.class.getClassLoader());
+        }
         numOcupantes = in.readInt();
     }
 

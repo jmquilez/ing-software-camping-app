@@ -3,6 +3,8 @@ package es.unizar.eina.T213_camping.ui.parcelas.creacion;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.parcelas.ParcelConstants;
 import androidx.lifecycle.ViewModelProvider;
 import es.unizar.eina.T213_camping.ui.view_models.ParcelaViewModel;
+import java.util.Locale;
 
 /**
  * Activity que permite crear una nueva parcela en el sistema.
@@ -45,15 +48,8 @@ public class CreateParcelActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         parcelaViewModel = new ViewModelProvider(this).get(ParcelaViewModel.class);
 
-        parcelNameInput = findViewById(R.id.create_parcel_name_input);
-        maxOccupantsInput = findViewById(R.id.create_parcel_max_occupants_input);
-        pricePerPersonInput = findViewById(R.id.create_parcel_price_input);
-        descriptionInput = findViewById(R.id.create_parcel_description_input);
-        Button confirmParcelButton = findViewById(R.id.create_parcel_submit_button);
-        errorMessage = findViewById(R.id.create_parcel_error_message);
-
-        confirmParcelButton.setOnClickListener(v -> createParcel());
-
+        setupInputs();
+        setupInputValidation();
         setButtonVisibility("back", true);
         setButtonVisibility("home", true);
     }
@@ -66,6 +62,91 @@ public class CreateParcelActivity extends BaseActivity {
     @Override
     protected String getToolbarTitle() {
         return getString(R.string.create_parcel_title);
+    }
+
+    private void setupInputs() {
+        parcelNameInput = findViewById(R.id.create_parcel_name_input);
+        maxOccupantsInput = findViewById(R.id.create_parcel_max_occupants_input);
+        pricePerPersonInput = findViewById(R.id.create_parcel_price_input);
+        descriptionInput = findViewById(R.id.create_parcel_description_input);
+        Button confirmParcelButton = findViewById(R.id.create_parcel_submit_button);
+        errorMessage = findViewById(R.id.create_parcel_error_message);
+
+        confirmParcelButton.setOnClickListener(v -> createParcel());
+    }
+
+    private void setupInputValidation() {
+        // Name length validation
+        parcelNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > ParcelConstants.MAX_NAME_LENGTH) {
+                    s.delete(ParcelConstants.MAX_NAME_LENGTH, s.length());
+                    parcelNameInput.setError(getString(R.string.error_name_too_long, ParcelConstants.MAX_NAME_LENGTH));
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        // Description length validation
+        descriptionInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > ParcelConstants.MAX_DESCRIPTION_LENGTH) {
+                    s.delete(ParcelConstants.MAX_DESCRIPTION_LENGTH, s.length());
+                    descriptionInput.setError(getString(R.string.error_description_too_long, ParcelConstants.MAX_DESCRIPTION_LENGTH));
+                }
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        // Max occupants validation
+        maxOccupantsInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    String input = s.toString();
+                    if (!input.isEmpty()) {
+                        int value = Integer.parseInt(input);
+                        if (value > ParcelConstants.MAX_OCCUPANTS_NUM) {
+                            s.replace(0, s.length(), String.valueOf(ParcelConstants.MAX_OCCUPANTS_NUM));
+                            maxOccupantsInput.setError(getString(R.string.error_occupants_too_high, ParcelConstants.MAX_OCCUPANTS_NUM));
+                        }
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        // Price validation
+        pricePerPersonInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                try {
+                    String input = s.toString();
+                    if (!input.isEmpty()) {
+                        double value = Double.parseDouble(input);
+                        if (value > ParcelConstants.MAX_PRICE) {
+                            s.replace(0, s.length(), String.valueOf(ParcelConstants.MAX_PRICE));
+                            pricePerPersonInput.setError(getString(R.string.error_price_too_high, ParcelConstants.MAX_PRICE));
+                        }
+                    }
+                } catch (NumberFormatException ignored) {}
+            }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
     }
 
     /**

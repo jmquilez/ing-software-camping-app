@@ -2,6 +2,8 @@ package es.unizar.eina.T213_camping.ui.reservas.creacion;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +22,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * Activity que gestiona la primera fase de la creación de una reserva.
@@ -49,6 +52,7 @@ public class CreateReservationActivity extends BaseActivity {
         nextButton = findViewById(R.id.create_reservation_next_button);
         errorMessage = findViewById(R.id.create_reservation_error_message);
 
+        setupInputValidation();
         setupListeners();
         setupNewParcelSelectionLauncher();
 
@@ -137,22 +141,43 @@ public class CreateReservationActivity extends BaseActivity {
      * Valida los datos y procede a la selección de parcelas.
      */
     private void validateAndProceed() {
-        if (clientNameInput.getText().toString().isEmpty() || clientPhoneInput.getText().toString().isEmpty()) {
-            DialogUtils.showErrorDialog(this, getString(R.string.error_complete_fields));
-            return;
+        // Collect all validation errors
+        ArrayList<String> errors = new ArrayList<>();
+        
+        // Validate client name
+        if (clientNameInput.getText().toString().isEmpty()) {
+            errors.add(getString(R.string.error_empty_client_name));
+        }
+        
+        // Validate phone number
+        String phone = clientPhoneInput.getText().toString();
+        if (phone.isEmpty()) {
+            errors.add(getString(R.string.error_empty_phone));
+        } else if (phone.length() != ReservationConstants.PHONE_LENGTH) {
+            errors.add(getString(R.string.error_invalid_phone_length, ReservationConstants.PHONE_LENGTH));
+        } else if (!phone.matches("\\d*")) {
+            errors.add(getString(R.string.error_phone_digits_only));
         }
 
+        // Validate dates
         if (checkInDate == null || checkOutDate == null) {
-            DialogUtils.showErrorDialog(this, getString(R.string.error_select_dates));
+            errors.add(getString(R.string.error_select_dates));
+        } else {
+            String dateError = DateUtils.validateDates(checkInDate, checkOutDate);
+            if (dateError != null) {
+                errors.add(dateError);
+            }
+        }
+
+        // If there are errors, show them all in the dialog
+        if (!errors.isEmpty()) {
+            String errorMessage = String.join("\n• ", errors);
+            DialogUtils.showErrorDialog(this, 
+                getString(R.string.error_validation_failed) + "\n\n• " + errorMessage);
             return;
         }
 
-        String error = DateUtils.validateDates(checkInDate, checkOutDate);
-        if (error != null) {
-            DialogUtils.showErrorDialog(this, error);
-            return;
-        }
-
+        // If validation passes, proceed
         Intent intent = new Intent(this, NewParcelSelectionActivity.class);
         intent.putExtra(ReservationConstants.CLIENT_NAME, clientNameInput.getText().toString());
         intent.putExtra(ReservationConstants.CLIENT_PHONE, clientPhoneInput.getText().toString());
@@ -175,5 +200,71 @@ public class CreateReservationActivity extends BaseActivity {
             errorMessage.setVisibility(View.VISIBLE);
             return null;
         }
+    }
+
+    private void setupInputValidation() {
+        // Client name validation
+        clientNameInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed, but must be implemented
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Not needed, but must be implemented
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > ReservationConstants.MAX_CLIENT_NAME_LENGTH) {
+                    s.delete(ReservationConstants.MAX_CLIENT_NAME_LENGTH, s.length());
+                    clientNameInput.setError(getString(R.string.error_name_too_long, 
+                        ReservationConstants.MAX_CLIENT_NAME_LENGTH));
+                }
+            }
+        });
+
+        // Phone validation
+        clientPhoneInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Not needed, but must be implemented
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Not needed, but must be implemented
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = s.toString();
+                
+                // Check for non-digits
+                if (!phone.matches("\\d*")) {
+                    clientPhoneInput.setError(getString(R.string.error_phone_digits_only));
+                    return;
+                }
+                
+                // Truncate if too long
+                if (phone.length() > ReservationConstants.PHONE_LENGTH) {
+                    s.delete(ReservationConstants.PHONE_LENGTH, s.length());
+                    clientPhoneInput.setError(getString(R.string.error_phone_too_long, 
+                        ReservationConstants.PHONE_LENGTH));
+                    return;
+                }
+                
+                // Check if length is exactly 9
+                if (phone.length() < ReservationConstants.PHONE_LENGTH) {
+                    clientPhoneInput.setError(getString(R.string.error_phone_too_short, 
+                        ReservationConstants.PHONE_LENGTH));
+                    return;
+                }
+                
+                // Clear error if validation passes
+                clientPhoneInput.setError(null);
+            }
+        });
     }
 }

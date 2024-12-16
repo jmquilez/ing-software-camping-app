@@ -15,7 +15,7 @@ import es.send.SendAbstraction;
 import es.send.SendAbstractionImpl;
 import es.send.SendImplementor;
 import es.unizar.eina.T213_camping.R;
-import es.unizar.eina.T213_camping.database.models.ParcelaOccupancy;
+import es.unizar.eina.T213_camping.utils.models.ParcelaOccupancy;
 import es.unizar.eina.T213_camping.database.models.Parcela;
 import es.unizar.eina.T213_camping.ui.BaseActivity;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;

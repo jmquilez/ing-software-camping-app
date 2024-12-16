@@ -14,6 +14,9 @@ import es.unizar.eina.T213_camping.R;
 import es.unizar.eina.T213_camping.database.models.Reserva;
 import es.unizar.eina.T213_camping.ui.reservas.ReservationConstants;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  * Adaptador para mostrar reservas en un RecyclerView.
  * Gestiona la visualización y actualización de la lista de reservas,
@@ -65,11 +68,11 @@ public class ReservationAdapter extends ListAdapter<Reserva, ReservationAdapter.
         // Adjust text size based on the number of digits in the reservation ID
         int idLength = reservationId.length();
         if (idLength <= 2) {
-            holder.itemReservationId.setTextSize(16); // Larger text size for shorter IDs
+            holder.itemReservationId.setTextSize(16);
         } else if (idLength <= 3) {
-            holder.itemReservationId.setTextSize(13); // Medium text size for medium-length IDs
+            holder.itemReservationId.setTextSize(13);
         } else {
-            holder.itemReservationId.setTextSize(10); // Smaller text size for longer IDs
+            holder.itemReservationId.setTextSize(10);
         }
 
         switch (sortingCriteria) {
@@ -80,8 +83,11 @@ public class ReservationAdapter extends ListAdapter<Reserva, ReservationAdapter.
                 holder.itemReservationInfo.setText(reservation.getTelefonoCliente());
                 break;
             case ReservationConstants.SORT_ENTRY_DATE:
+                // Use format "dd/MM/yy" to show year in 2-digit format
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.getDefault());
+                String formattedDate = simpleDateFormat.format(reservation.getFechaEntrada());
                 holder.itemReservationInfo.setText(
-                    context.getString(R.string.reservation_entry_date, reservation.getFechaEntrada()));
+                    context.getString(R.string.reservation_entry_date, formattedDate));
                 break;
             default:
                 holder.itemReservationInfo.setText(reservation.getNombreCliente());
