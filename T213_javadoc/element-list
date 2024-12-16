@@ -1,4 +1,6 @@
+es.send
 es.unizar.eina.T213_camping.database
+es.unizar.eina.T213_camping.database.converters
 es.unizar.eina.T213_camping.database.daos
 es.unizar.eina.T213_camping.database.models
 es.unizar.eina.T213_camping.database.repositories
@@ -14,3 +16,5 @@ es.unizar.eina.T213_camping.ui.reservas.gestion
 es.unizar.eina.T213_camping.ui.reservas.listado
 es.unizar.eina.T213_camping.ui.view_models
 es.unizar.eina.T213_camping.utils
+es.unizar.eina.T213_camping.utils.ModelUtils
+es.unizar.eina.T213_camping.utils.TestUtils

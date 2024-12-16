@@ -39,7 +39,7 @@ public class ReservationUtils {
     /**
      * Muestra un diálogo de confirmación para notificar al cliente.
      * @param context Contexto de la aplicación
-     * @param currentActivity Actividad actual
+     * @param activity Actividad actual
      */
     public static void notifyClient(Context context, Activity activity) {
         // Validate dates first

@@ -23,30 +23,58 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
 
+    sourceSets {
+        main {
+            java {
+                exclude 'module-info.java'
+            }
+        }
+    }
+
     tasks.withType(JavaCompile) {
         options.compilerArgs << "-Xlint:deprecation"
+        exclude 'module-info.java' // New
     }
 
     tasks.withType(Javadoc).configureEach {
-        options.addStringOption('sourcepath', 'src/main/java') // Focus only on Java source files
-        exclude '**/*.kt' // Exclude Kotlin files if they exist
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-        exclude '**/kotlin/**'
-        exclude '**/org.jetbrains.kotlin/**'
-        exclude '**/R.java'
-        exclude '**/BuildConfig.java'
+        // Specify the source directories
+        source = android.sourceSets.main.java.srcDirs
+        
+        // Set classpath to include Android dependencies but exclude sources of dependencies
+        classpath += files(android.bootClasspath.join(File.pathSeparator))
+        classpath += files(android.applicationVariants.collect { variant ->
+            variant.javaCompileProvider.get().classpath
+        })
+        
+        // Exclude unwanted files
+        exclude '**/*.kt' // Exclude Kotlin files if present
+        exclude '**/module-info.java' // Exclude module-info.java
+        exclude '**/R.java' // Exclude generated R.java
+        exclude '**/BuildConfig.java' // Exclude generated BuildConfig.java
+        
+        // Set Javadoc options
+        options.encoding = 'UTF-8'
+        options.memberLevel = JavadocMemberLevel.PUBLIC
+        options.links("https://developer.android.com/reference/")
+        
+        // Add the custom overview page
+        options.overview = file("src/main/java/overview.html")
+        
+        // Suppress warnings and errors that may halt the build
+        options.addBooleanOption('Xdoclint:none', true)
+        options.addStringOption('quiet', '-quiet')
         failOnError false
     }
 }
 
 dependencies {
-
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.20" // Add this line
     implementation libs.appcompat
     implementation libs.material
     implementation libs.activity

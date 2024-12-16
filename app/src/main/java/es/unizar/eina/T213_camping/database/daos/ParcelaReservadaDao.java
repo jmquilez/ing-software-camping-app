@@ -79,7 +79,6 @@ public interface ParcelaReservadaDao {
      * @param fechaInicio Fecha de inicio del intervalo
      * @param fechaFin Fecha de fin del intervalo
      * @return LiveData con la lista de parcelas disponibles
-     * @todo Check margen de solapamiento (1 día o 0 días?)
      */
     @Query("SELECT p.* FROM parcela p " +
            "WHERE p.nombre NOT IN " +

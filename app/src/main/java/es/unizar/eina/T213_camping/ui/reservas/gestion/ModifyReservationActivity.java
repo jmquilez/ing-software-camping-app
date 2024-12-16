@@ -458,7 +458,7 @@ public class ModifyReservationActivity extends BaseActivity {
 
     /**
      * Obtiene la lista de parcelas seleccionadas con sus ocupaciones.
-     * @return List<ParcelaOccupancy> con las parcelas seleccionadas
+     * @return {@link List}{@literal <}{@link ParcelaOccupancy}{@literal >} con las parcelas seleccionadas
      */
     public List<ParcelaOccupancy> getSelectedParcels() {
         return selectedParcels;

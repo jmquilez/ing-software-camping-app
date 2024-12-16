@@ -12,7 +12,7 @@ public class DateConverter {
      * Convierte un valor Long (timestamp) a un objeto Date.
      *
      * @param value timestamp en milisegundos desde epoch, puede ser null
-     * @note See https://betulnecanli.medium.com/how-to-store-date-in-room-database-d06dec3a2d7e
+     * @see "https://betulnecanli.medium.com/how-to-store-date-in-room-database-d06dec3a2d7e"
      * @return objeto Date correspondiente al timestamp, o null si el input es null
      */
     @TypeConverter

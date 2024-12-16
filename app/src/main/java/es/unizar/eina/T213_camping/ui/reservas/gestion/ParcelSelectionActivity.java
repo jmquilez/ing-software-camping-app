@@ -236,7 +236,7 @@ public class ParcelSelectionActivity extends BaseActivity {
 
     /**
      * Obtiene la lista de parcelas añadidas a la reserva.
-     * @return List<ParcelaOccupancy> con las parcelas añadidas y sus ocupaciones
+     * @return {@link List}{@literal <}{@link ParcelaOccupancy}{@literal >} con las parcelas añadidas y sus ocupaciones
      */
     public List<ParcelaOccupancy> getAddedParcels() {
         return addedParcels;
