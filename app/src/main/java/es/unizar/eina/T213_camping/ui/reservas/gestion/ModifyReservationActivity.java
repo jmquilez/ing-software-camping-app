@@ -128,9 +128,6 @@ public class ModifyReservationActivity extends BaseActivity {
             String entryDateStr = getIntent().getStringExtra(ReservationConstants.ENTRY_DATE);
             String departureDateStr = getIntent().getStringExtra(ReservationConstants.DEPARTURE_DATE);
             
-            Log.d("ModifyReservationActivity", "Entry date string: " + entryDateStr);
-            Log.d("ModifyReservationActivity", "Departure date string: " + departureDateStr);
-            
             if (entryDateStr != null && !entryDateStr.isEmpty() && 
                 departureDateStr != null && !departureDateStr.isEmpty()) {
                 
@@ -143,9 +140,6 @@ public class ModifyReservationActivity extends BaseActivity {
                 
                 checkInDatePicker.setText(DateUtils.DATE_FORMAT.format(checkInDate));
                 checkOutDatePicker.setText(DateUtils.DATE_FORMAT.format(checkOutDate));
-                
-                Log.d("ModifyReservationActivity", "Fechas parseadas correctamente - Entry: " + 
-                      checkInDate + ", Departure: " + checkOutDate);
             } else {
                 throw new ParseException("Fechas vacías o nulas", 0);
             }
@@ -221,7 +215,8 @@ public class ModifyReservationActivity extends BaseActivity {
         }));
 
         notifyClient.setOnClickListener(v -> ReservationUtils.notifyClient(this, this));
-        deleteReservation.setOnClickListener(v -> ReservationUtils.deleteReservation(this, this));
+        deleteReservation.setOnClickListener(v -> 
+            ReservationUtils.deleteReservation(this, this, reservationId));
         
         saveChanges.setOnClickListener(v -> confirmReservation());
 

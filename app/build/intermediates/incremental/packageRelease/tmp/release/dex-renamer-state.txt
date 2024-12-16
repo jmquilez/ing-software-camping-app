@@ -1,0 +1,4 @@
+#Mon Nov 11 20:30:41 CET 2024
+base.0=/Users/usuario/AndroidStudioProjects/Camping/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

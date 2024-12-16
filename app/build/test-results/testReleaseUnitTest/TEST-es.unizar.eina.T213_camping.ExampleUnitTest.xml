@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="es.unizar.eina.T213_camping.ExampleUnitTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-11-11T19:30:40" hostname="jquilez17067.technicolor.net" time="0.003">
+  <properties/>
+  <testcase name="addition_isCorrect" classname="es.unizar.eina.T213_camping.ExampleUnitTest" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

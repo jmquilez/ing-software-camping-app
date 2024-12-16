@@ -156,7 +156,8 @@ public class ParcelSelectionActivity extends BaseActivity {
     private void setupListeners() {
         findViewById(R.id.parcel_selection_save_button).setOnClickListener(v -> confirmReservation());
         findViewById(R.id.parcel_selection_notify_button).setOnClickListener(v -> ReservationUtils.notifyClient(this, this));
-        findViewById(R.id.parcel_selection_delete_button).setOnClickListener(v -> ReservationUtils.deleteReservation(this, this));
+        findViewById(R.id.parcel_selection_delete_button).setOnClickListener(v -> 
+            ReservationUtils.deleteReservation(this, this, reservationId));
 
         prevButton.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         nextButton.setOnClickListener(v -> {

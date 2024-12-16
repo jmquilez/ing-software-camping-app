@@ -1,0 +1,212 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="es.unizar.eina.T213_camping"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="24"
+9        android:targetSdkVersion="34" />
+10
+11    <!-- Permissions -->
+12    <uses-permission android:name="android.permission.INTERNET" />
+12-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:6:5-67
+12-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:6:22-64
+13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+13-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:7:5-79
+13-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:7:22-76
+14
+15    <permission
+15-->[androidx.core:core:1.13.0] /Users/usuario/.gradle/caches/8.11/transforms/731f6d79648e946ec610938b3b48b772/transformed/core-1.13.0/AndroidManifest.xml:22:5-24:47
+16        android:name="es.unizar.eina.T213_camping.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+16-->[androidx.core:core:1.13.0] /Users/usuario/.gradle/caches/8.11/transforms/731f6d79648e946ec610938b3b48b772/transformed/core-1.13.0/AndroidManifest.xml:23:9-81
+17        android:protectionLevel="signature" />
+17-->[androidx.core:core:1.13.0] /Users/usuario/.gradle/caches/8.11/transforms/731f6d79648e946ec610938b3b48b772/transformed/core-1.13.0/AndroidManifest.xml:24:9-44
+18
+19    <uses-permission android:name="es.unizar.eina.T213_camping.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+19-->[androidx.core:core:1.13.0] /Users/usuario/.gradle/caches/8.11/transforms/731f6d79648e946ec610938b3b48b772/transformed/core-1.13.0/AndroidManifest.xml:26:5-97
+19-->[androidx.core:core:1.13.0] /Users/usuario/.gradle/caches/8.11/transforms/731f6d79648e946ec610938b3b48b772/transformed/core-1.13.0/AndroidManifest.xml:26:22-94
+20    <!--
+21 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+22        android:maxSdkVersion="28" />
+23    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
+24        android:maxSdkVersion="32" />
+25    -->
+26    <application
+26-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:13:5-55:19
+27        android:allowBackup="true"
+27-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:14:9-35
+28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+28-->[androidx.core:core:1.13.0] /Users/usuario/.gradle/caches/8.11/transforms/731f6d79648e946ec610938b3b48b772/transformed/core-1.13.0/AndroidManifest.xml:28:18-86
+29        android:extractNativeLibs="false"
+30        android:icon="@mipmap/ic_launcher"
+30-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:15:9-43
+31        android:label="@string/app_name"
+31-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:16:9-41
+32        android:roundIcon="@mipmap/ic_launcher_round"
+32-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:17:9-54
+33        android:supportsRtl="true"
+33-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:18:9-35
+34        android:theme="@style/Theme.Camping" >
+34-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:19:9-45
+35
+36        <!-- android:theme="@style/Theme.MaterialComponents.Light.DarkActionBar" -->
+37        <!-- Set InitialActivity as the main entry point -->
+38
+39        <activity
+39-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:24:9-25:39
+40            android:name="es.unizar.eina.T213_camping.ui.BaseActivity"
+40-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:24:19-50
+41            android:exported="false" />
+41-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:25:13-37
+42        <activity
+42-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:26:9-27:39
+43            android:name="es.unizar.eina.T213_camping.ui.HomeActivity"
+43-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:26:19-50
+44            android:exported="false" />
+44-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:27:13-37
+45        <activity
+45-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:28:9-29:39
+46            android:name="es.unizar.eina.T213_camping.ui.parcelas.listado.ParcelFeedActivity"
+46-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:28:19-73
+47            android:exported="false" />
+47-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:29:13-37
+48        <activity
+48-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:30:9-31:39
+49            android:name="es.unizar.eina.T213_camping.ui.parcelas.gestion.ModifyParcelActivity"
+49-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:30:19-75
+50            android:exported="false" />
+50-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:31:13-37
+51        <activity
+51-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:32:9-33:39
+52            android:name="es.unizar.eina.T213_camping.ui.reservas.listado.ReservationFeedActivity"
+52-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:32:19-78
+53            android:exported="false" />
+53-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:33:13-37
+54        <activity
+54-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:34:9-35:39
+55            android:name="es.unizar.eina.T213_camping.ui.reservas.gestion.ModifyReservationActivity"
+55-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:34:19-80
+56            android:exported="false" />
+56-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:35:13-37
+57        <activity
+57-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:36:9-37:39
+58            android:name="es.unizar.eina.T213_camping.ui.reservas.gestion.ParcelSelectionActivity"
+58-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:36:19-78
+59            android:exported="false" />
+59-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:37:13-37
+60        <activity
+60-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:38:9-39:39
+61            android:name="es.unizar.eina.T213_camping.ui.reservas.creacion.CreateReservationActivity"
+61-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:38:19-81
+62            android:exported="false" />
+62-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:39:13-37
+63        <activity
+63-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:40:9-41:39
+64            android:name="es.unizar.eina.T213_camping.ui.parcelas.creacion.CreateParcelActivity"
+64-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:40:19-76
+65            android:exported="false" />
+65-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:41:13-37
+66        <activity
+66-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:42:9-43:39
+67            android:name="es.unizar.eina.T213_camping.ui.reservas.creacion.NewParcelSelectionActivity"
+67-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:42:19-82
+68            android:exported="false" />
+68-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:43:13-37
+69        <!-- Add other activities as needed -->
+70
+71        <activity
+71-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:46:9-53:20
+72            android:name="es.unizar.eina.T213_camping.ui.InitialActivity"
+72-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:47:13-47
+73            android:exported="true" >
+73-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:48:13-36
+74            <intent-filter>
+74-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:49:13-52:29
+75                <action android:name="android.intent.action.MAIN" />
+75-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:50:17-69
+75-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:50:25-66
+76
+77                <category android:name="android.intent.category.LAUNCHER" />
+77-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:51:17-77
+77-->/Users/usuario/AndroidStudioProjects/Camping/app/src/main/AndroidManifest.xml:51:27-74
+78            </intent-filter>
+79        </activity>
+80
+81        <service
+81-->[androidx.room:room-runtime:2.6.1] /Users/usuario/.gradle/caches/8.11/transforms/385e58e068e4cc725d28ae2f6907c620/transformed/room-runtime-2.6.1/AndroidManifest.xml:24:9-28:63
+82            android:name="androidx.room.MultiInstanceInvalidationService"
+82-->[androidx.room:room-runtime:2.6.1] /Users/usuario/.gradle/caches/8.11/transforms/385e58e068e4cc725d28ae2f6907c620/transformed/room-runtime-2.6.1/AndroidManifest.xml:25:13-74
+83            android:directBootAware="true"
+83-->[androidx.room:room-runtime:2.6.1] /Users/usuario/.gradle/caches/8.11/transforms/385e58e068e4cc725d28ae2f6907c620/transformed/room-runtime-2.6.1/AndroidManifest.xml:26:13-43
+84            android:exported="false" />
+84-->[androidx.room:room-runtime:2.6.1] /Users/usuario/.gradle/caches/8.11/transforms/385e58e068e4cc725d28ae2f6907c620/transformed/room-runtime-2.6.1/AndroidManifest.xml:27:13-37
+85
+86        <provider
+86-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+87            android:name="androidx.startup.InitializationProvider"
+87-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
+88            android:authorities="es.unizar.eina.T213_camping.androidx-startup"
+88-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
+89            android:exported="false" >
+89-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
+90            <meta-data
+90-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+91                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+91-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
+92                android:value="androidx.startup" />
+92-->[androidx.emoji2:emoji2:1.2.0] /Users/usuario/.gradle/caches/8.11/transforms/6bfea3bd5397b5441c53c2f729960a5b/transformed/emoji2-1.2.0/AndroidManifest.xml:31:17-49
+93            <meta-data
+93-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/usuario/.gradle/caches/8.11/transforms/a27bd1e602005e5afcc61d2f5edc984f/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:29:13-31:52
+94                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+94-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/usuario/.gradle/caches/8.11/transforms/a27bd1e602005e5afcc61d2f5edc984f/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:30:17-78
+95                android:value="androidx.startup" />
+95-->[androidx.lifecycle:lifecycle-process:2.6.2] /Users/usuario/.gradle/caches/8.11/transforms/a27bd1e602005e5afcc61d2f5edc984f/transformed/lifecycle-process-2.6.2/AndroidManifest.xml:31:17-49
+96            <meta-data
+96-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+97                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+98                android:value="androidx.startup" />
+98-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+99        </provider>
+100
+101        <receiver
+101-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+102            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+102-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+103            android:directBootAware="false"
+103-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+104            android:enabled="true"
+104-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+105            android:exported="true"
+105-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+106            android:permission="android.permission.DUMP" >
+106-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+107            <intent-filter>
+107-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+108                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+108-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+108-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+109            </intent-filter>
+110            <intent-filter>
+110-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+111                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+112            </intent-filter>
+113            <intent-filter>
+113-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+114                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+114-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+114-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+115            </intent-filter>
+116            <intent-filter>
+116-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+117                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+117-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+117-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/usuario/.gradle/caches/8.11/transforms/67a8ed4af0faf5396f9ab04f4a80c0f9/transformed/profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+118            </intent-filter>
+119        </receiver>
+120    </application>
+121
+122</manifest>

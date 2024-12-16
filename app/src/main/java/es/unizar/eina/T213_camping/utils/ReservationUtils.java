@@ -31,7 +31,7 @@ import java.util.Locale;
  * Utilidades para la gestión de reservas.
  * Proporciona métodos para realizar operaciones comunes sobre reservas:
  * - Notificación al cliente
- * - Eliminación de reservas
+ * - Eliminaci��n de reservas
  * - Confirmación de cambios
  */
 public class ReservationUtils {
@@ -149,8 +149,9 @@ public class ReservationUtils {
      * Muestra un diálogo de confirmación para eliminar una reserva.
      * @param context Contexto de la aplicación
      * @param currentActivity Actividad actual
+     * @param reservationId ID de la reserva a eliminar
      */
-    public static void deleteReservation(Context context, AppCompatActivity currentActivity) {
+    public static void deleteReservation(Context context, AppCompatActivity currentActivity, long reservationId) {
         DialogUtils.showConfirmationDialog(
             context, 
             context.getString(R.string.delete_reservation_title),
@@ -159,6 +160,7 @@ public class ReservationUtils {
             () -> {
                 Intent resultIntent = new Intent();
                 resultIntent.putExtra(ReservationConstants.OPERATION_TYPE, ReservationConstants.OPERATION_DELETE);
+                resultIntent.putExtra(ReservationConstants.RESERVATION_ID, reservationId);
                 currentActivity.setResult(RESULT_OK, resultIntent);
                 currentActivity.finish();
             }
@@ -181,7 +183,7 @@ public class ReservationUtils {
                                         List<ParcelaOccupancy> selectedParcels,
                                         boolean isUpdate) {
         double price = PriceUtils.calculateReservationPrice(entryDate, departureDate, selectedParcels);
-        
+
         DialogUtils.showConfirmationDialog(
             activity,
             activity.getString(R.string.confirm_changes_title),

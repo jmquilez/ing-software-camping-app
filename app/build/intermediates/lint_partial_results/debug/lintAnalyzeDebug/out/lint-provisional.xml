@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.7.1" type="conditional_incidents">
+
+    <incident
+        id="RtlSymmetry"
+        severity="warning"
+        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_home.xml"
+            line="47"
+            column="17"
+            startOffset="1774"
+            endLine="47"
+            endColumn="37"
+            endOffset="1794"/>
+        <map>
+            <entry
+                name="applies"
+                int="2"/>
+        </map>
+    </incident>
+
+    <incident
+        id="RtlSymmetry"
+        severity="warning"
+        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry">
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_home.xml"
+            line="67"
+            column="17"
+            startOffset="2636"
+            endLine="67"
+            endColumn="37"
+            endOffset="2656"/>
+        <map>
+            <entry
+                name="applies"
+                int="2"/>
+        </map>
+    </incident>
+
+    <incident
+        id="RtlHardcoded"
+        severity="warning"
+        message="Consider replacing `android:drawableLeft` with `android:drawableStart=&quot;@drawable/ic_parcelas&quot;` to better support right-to-left layouts">
+        <fix-replace
+            description="Replace with android:drawableStart=&quot;@drawable/ic_parcelas&quot;"
+            oldString="drawableLeft"
+            replacement="drawableStart"
+            priority="0"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_home.xml"
+            line="46"
+            column="17"
+            startOffset="1713"
+            endLine="46"
+            endColumn="37"
+            endOffset="1733"/>
+        <map>
+            <entry
+                name="applies"
+                int="10"/>
+        </map>
+    </incident>
+
+    <incident
+        id="RtlHardcoded"
+        severity="warning"
+        message="Consider replacing `android:drawableLeft` with `android:drawableStart=&quot;@drawable/ic_reservas&quot;` to better support right-to-left layouts">
+        <fix-replace
+            description="Replace with android:drawableStart=&quot;@drawable/ic_reservas&quot;"
+            oldString="drawableLeft"
+            replacement="drawableStart"
+            priority="0"/>
+        <location
+            file="${:app*debug*MAIN*sourceProvider*0*resDir*0}/layout/activity_home.xml"
+            line="66"
+            column="17"
+            startOffset="2575"
+            endLine="66"
+            endColumn="37"
+            endOffset="2595"/>
+        <map>
+            <entry
+                name="applies"
+                int="10"/>
+        </map>
+    </incident>
+
+</incidents>

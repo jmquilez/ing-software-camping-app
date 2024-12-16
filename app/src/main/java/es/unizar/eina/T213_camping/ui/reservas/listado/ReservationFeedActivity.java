@@ -212,7 +212,7 @@ public class ReservationFeedActivity extends BaseActivity {
                     switch (operationType) {
                         case ReservationConstants.OPERATION_INSERT:
                             result = insertReservation(extras, finalSelectedParcels);
-                            if (result != -1) {
+                            if (result > 0) {
                                 DialogUtils.showSuccessDialog(this, 
                                     getString(R.string.success_create_reservation), 
                                     R.drawable.ic_create_success);
@@ -220,7 +220,7 @@ public class ReservationFeedActivity extends BaseActivity {
                             break;
                         case ReservationConstants.OPERATION_UPDATE:
                             result = updateReservation(extras);
-                            if (result != -1) {
+                            if (result > 0) {
                                 DialogUtils.showSuccessDialog(this, 
                                     getString(R.string.success_update_reservation), 
                                     R.drawable.ic_update_success);
@@ -228,7 +228,7 @@ public class ReservationFeedActivity extends BaseActivity {
                             break;
                         case ReservationConstants.OPERATION_DELETE:
                             result = reservaViewModel.deleteById(reservationId);
-                            if (result != -1) {
+                            if (result > 0) {
                                 DialogUtils.showSuccessDialog(this, 
                                     getString(R.string.success_delete_reservation), 
                                     R.drawable.ic_delete_success);
@@ -243,7 +243,7 @@ public class ReservationFeedActivity extends BaseActivity {
                             break;
                     }
 
-                    if (result == -1) {
+                    if (result <= 0) {
                         throw new Exception("Operation failed");
                     }
 

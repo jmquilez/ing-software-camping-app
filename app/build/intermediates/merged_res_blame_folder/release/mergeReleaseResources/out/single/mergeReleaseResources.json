@@ -1,0 +1,302 @@
+[
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_dialog_parcel_details.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/dialog_parcel_details.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_lightitalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_lightitalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_arrow_left.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_arrow_left.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_dialog_background.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/dialog_background.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_semibold.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_semibold.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_item_added_parcel.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/item_added_parcel.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_item_parcel.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/item_parcel.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_bolditalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_bolditalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_item_available_parcel.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/item_available_parcel.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_extralight.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_extralight.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_home.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_home.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_glass_card_background.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/glass_card_background.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_semibolditalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_semibolditalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_camping_logo.png.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/camping_logo.png"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_rounded_button.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/rounded_button.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_modify_parcel.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_modify_parcel.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_initial_background_gradient.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/initial_background_gradient.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_custom_toolbar.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/custom_toolbar.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_create_reservation.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_create_reservation.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_loading_popup.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/loading_popup.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_glass_gradient_background.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/glass_gradient_background.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_checkmark.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_checkmark.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_parcel_feed.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_parcel_feed.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_notify.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_notify.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_launcher_background.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_reservas.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_reservas.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_create_parcel.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_create_parcel.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_home.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_home.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_modify_reservation.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_modify_reservation.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_arrow_right.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_arrow_right.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_item_reservation.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/item_reservation.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_medium.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_medium.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_extralightitalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_extralightitalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_black.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_black.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_default_logo.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/default_logo.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_notify_success.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_notify_success.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/xml_backup_rules.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_camping_background.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/camping_background.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_arrow_back.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_arrow_back.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_confirm_reservation.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_confirm_reservation.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_new_parcel_selection.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_new_parcel_selection.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_mediumitalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_mediumitalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_reservation_feed.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_reservation_feed.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_create_success.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_create_success.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_blackitalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_blackitalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_success_popup.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/success_popup.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_font_family.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_font_family.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_delete_success.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_delete_success.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_extrabold.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_extrabold.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_light.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_light.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_delete_confirm.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_delete_confirm.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_update_success.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_update_success.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_rounded_background.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/rounded_background.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_bold.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_bold.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_camping_background_clean.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/camping_background_clean.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_initial.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_initial.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/layout_activity_parcel_selection.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/layout/activity_parcel_selection.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_italic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_italic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/drawable_ic_parcelas.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/drawable/ic_parcelas.xml"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_extrabolditalic.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_extrabolditalic.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/font_nunito_regular.ttf.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/font/nunito_regular.ttf"
+    },
+    {
+        "merged": "es.unizar.eina.T213_camping.app-release-35:/xml_data_extraction_rules.xml.flat",
+        "source": "es.unizar.eina.T213_camping.app-main-36:/xml/data_extraction_rules.xml"
+    }
+]
