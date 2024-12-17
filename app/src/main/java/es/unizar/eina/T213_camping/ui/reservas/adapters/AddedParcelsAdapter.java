@@ -102,9 +102,14 @@ public class AddedParcelsAdapter extends ListAdapter<ParcelaOccupancy, AddedParc
         MaterialButton confirmButton = dialog.findViewById(R.id.dialog_confirm_changes_button);
 
         title.setText(context.getString(R.string.dialog_parcel_title, addedParcel.getParcela().getNombre()));
-        occupantsPicker.setValue(addedParcel.getOccupancy());
-        occupantsPicker.setMaxValue(addedParcel.getParcela().getMaxOcupantes());
+        
+        // Set min/max values first
         occupantsPicker.setMinValue(1);
+        occupantsPicker.setMaxValue(addedParcel.getParcela().getMaxOcupantes());
+        
+        // Then set the current value (otherwise, the min value would appear
+        // as default since it was originaly the last line to be executed)
+        occupantsPicker.setValue(addedParcel.getOccupancy());
 
         List<ParcelaOccupancy> currentList = new ArrayList<>(getCurrentList());
 

@@ -31,7 +31,7 @@ import java.util.Locale;
  * Utilidades para la gestión de reservas.
  * Proporciona métodos para realizar operaciones comunes sobre reservas:
  * - Notificación al cliente
- * - Eliminaci��n de reservas
+ * - Eliminación de reservas
  * - Confirmación de cambios
  */
 public class ReservationUtils {
@@ -89,6 +89,7 @@ public class ReservationUtils {
         String phoneNumber = "";
         String clientName = "";
         List<ParcelaOccupancy> parcelas = new ArrayList<>();
+        double price = 0.0;
 
         // To make sure dates aren't null
         Date entryDate = new Date();
@@ -101,6 +102,7 @@ public class ReservationUtils {
             parcelas = act.getSelectedParcels();
             entryDate = act.getCheckInDate();
             departureDate = act.getCheckOutDate();
+            price = PriceUtils.calculateReservationPrice(entryDate, departureDate, parcelas);
         } else if (activity instanceof ParcelSelectionActivity) {
             ParcelSelectionActivity act = (ParcelSelectionActivity) activity;
             phoneNumber = act.getClientPhone();
@@ -108,6 +110,7 @@ public class ReservationUtils {
             parcelas = act.getAddedParcels();
             entryDate = act.getCheckInDate();
             departureDate = act.getCheckOutDate();
+            price = PriceUtils.calculateReservationPrice(entryDate, departureDate, parcelas);
         }
         
         // Construir el mensaje
@@ -134,6 +137,10 @@ public class ReservationUtils {
                 }
             }
         }
+        
+        // Añadir el precio total
+        messageBuilder.append("\n\n")
+                     .append(String.format(context.getString(R.string.price_total), price));
         
         String message = messageBuilder.toString();
         
