@@ -1,28 +1,28 @@
 /**
- * Utility classes providing common functionality across the application.
+ * Clases de utilidad que proporcionan funcionalidad común en toda la aplicación.
  * 
- * <h2>Package Contents:</h2>
+ * <h2>Contenido del Paquete:</h2>
  * <ul>
- *   <li>{@link es.unizar.eina.T213_camping.utils.DateUtils} - Date manipulation and validation utilities</li>
- *   <li>{@link es.unizar.eina.T213_camping.utils.DialogUtils} - Dialog creation and management utilities</li>
- *   <li>{@link es.unizar.eina.T213_camping.utils.PriceUtils} - Price calculation and formatting utilities</li>
- *   <li>{@link es.unizar.eina.T213_camping.utils.ReservationUtils} - Reservation management utilities</li>
+ *   <li>{@link es.unizar.eina.T213_camping.utils.DateUtils} - Utilidades de manipulación y validación de fechas</li>
+ *   <li>{@link es.unizar.eina.T213_camping.utils.DialogUtils} - Utilidades de creación y gestión de diálogos</li>
+ *   <li>{@link es.unizar.eina.T213_camping.utils.PriceUtils} - Utilidades de cálculo y formateo de precios</li>
+ *   <li>{@link es.unizar.eina.T213_camping.utils.ReservationUtils} - Utilidades de gestión de reservas</li>
  * </ul>
  * 
- * <h2>Subpackages:</h2>
+ * <h2>Subpaquetes:</h2>
  * <ul>
- *   <li>{@link es.unizar.eina.T213_camping.utils.ModelUtils} - Model-related utility classes</li>
- *   <li>{@link es.unizar.eina.T213_camping.utils.TestUtils} - Testing utility classes</li>
+ *   <li>{@link es.unizar.eina.T213_camping.utils.ModelUtils} - Clases de utilidad relacionadas con modelos</li>
+ *   <li>{@link es.unizar.eina.T213_camping.utils.TestUtils} - Clases de utilidad para pruebas</li>
  * </ul>
  * 
- * These utilities provide reusable functionality for:
+ * Estas utilidades proporcionan funcionalidad reutilizable para:
  * <ul>
- *   <li>Date handling and validation</li>
- *   <li>User interface dialogs</li>
- *   <li>Price calculations</li>
- *   <li>Reservation operations</li>
- *   <li>Model data manipulation</li>
- *   <li>Testing support</li>
+ *   <li>Manejo y validación de fechas</li>
+ *   <li>Diálogos de interfaz de usuario</li>
+ *   <li>Cálculos de precios</li>
+ *   <li>Operaciones de reservas</li>
+ *   <li>Manipulación de datos de modelos</li>
+ *   <li>Soporte para pruebas</li>
  * </ul>
  */
 package es.unizar.eina.T213_camping.utils;

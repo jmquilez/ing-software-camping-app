@@ -1,53 +1,53 @@
 /**
- * Implementation of the Bridge pattern for message sending functionality.
- * Provides abstractions and implementations for sending messages through different channels.
+ * Implementación del patrón Bridge para la funcionalidad de envío de mensajes.
+ * Proporciona abstracciones e implementaciones para enviar mensajes a través de diferentes canales.
  * 
- * <h2>Package Components:</h2>
+ * <h2>Componentes del Paquete:</h2>
  * <ul>
- *   <li>{@link es.send.SendAbstraction} - Interface defining the abstraction:
+ *   <li>{@link es.send.SendAbstraction} - Interfaz que define la abstracción:
  *     <ul>
- *       <li>Defines high-level message sending operations</li>
- *       <li>Implemented by {@link es.send.SendAbstractionImpl}</li>
+ *       <li>Define operaciones de alto nivel para envío de mensajes</li>
+ *       <li>Implementada por {@link es.send.SendAbstractionImpl}</li>
  *     </ul>
  *   </li>
- *   <li>{@link es.send.SendImplementor} - Interface for concrete implementations:
+ *   <li>{@link es.send.SendImplementor} - Interfaz para implementaciones concretas:
  *     <ul>
- *       <li>Defines platform-specific sending operations</li>
- *       <li>Manages source Activity references</li>
- *       <li>Implemented by SMS and WhatsApp concrete classes</li>
- *     </ul>
- *   </li>
- * </ul>
- * 
- * <h2>Concrete Implementors:</h2>
- * <ul>
- *   <li>{@link es.send.SMSImplementor} - SMS messaging implementation:
- *     <ul>
- *       <li>Uses Android's SMS sending Intent</li>
- *       <li>Handles SMS URI formatting</li>
- *     </ul>
- *   </li>
- *   <li>{@link es.send.WhatsAppImplementor} - WhatsApp messaging implementation:
- *     <ul>
- *       <li>Uses WhatsApp's API URL format</li>
- *       <li>Handles package availability checking</li>
- *       <li>Manages phone number formatting</li>
+ *       <li>Define operaciones específicas de la plataforma</li>
+ *       <li>Gestiona referencias a la Activity origen</li>
+ *       <li>Implementada por las clases concretas de SMS y WhatsApp</li>
  *     </ul>
  *   </li>
  * </ul>
  * 
- * <h2>Usage:</h2>
+ * <h2>Implementadores Concretos:</h2>
  * <ul>
- *   <li>Create a {@link es.send.SendAbstractionImpl} instance with desired method ("SMS" or "WhatsApp")</li>
- *   <li>Use the {@code send()} method to send messages through the selected channel</li>
- *   <li>Handles graceful fallback if sending method is unavailable</li>
+ *   <li>{@link es.send.SMSImplementor} - Implementación de mensajería SMS:
+ *     <ul>
+ *       <li>Utiliza el Intent de envío de SMS de Android</li>
+ *       <li>Maneja el formateo de URIs para SMS</li>
+ *     </ul>
+ *   </li>
+ *   <li>{@link es.send.WhatsAppImplementor} - Implementación de mensajería WhatsApp:
+ *     <ul>
+ *       <li>Utiliza el formato de URL de la API de WhatsApp</li>
+ *       <li>Verifica la disponibilidad del paquete</li>
+ *       <li>Gestiona el formateo de números de teléfono</li>
+ *     </ul>
+ *   </li>
  * </ul>
  * 
- * <h2>Design Pattern:</h2>
+ * <h2>Uso:</h2>
  * <ul>
- *   <li>Implements the Bridge pattern to decouple abstraction from implementation</li>
- *   <li>Allows independent variation of sending methods</li>
- *   <li>Facilitates addition of new sending methods without modifying existing code</li>
+ *   <li>Crear una instancia de {@link es.send.SendAbstractionImpl} con el método deseado ("SMS" o "WhatsApp")</li>
+ *   <li>Usar el método {@code send()} para enviar mensajes a través del canal seleccionado</li>
+ *   <li>Maneja la recuperación elegante si el método de envío no está disponible</li>
+ * </ul>
+ * 
+ * <h2>Patrón de Diseño:</h2>
+ * <ul>
+ *   <li>Implementa el patrón Bridge para desacoplar la abstracción de la implementación</li>
+ *   <li>Permite la variación independiente de los métodos de envío</li>
+ *   <li>Facilita la adición de nuevos métodos de envío sin modificar el código existente</li>
  * </ul>
  */
 package es.send;

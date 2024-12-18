@@ -1,41 +1,41 @@
 /**
- * Main package for the T213 Camping application.
+ * Paquete principal para la aplicación T213 Camping.
  * 
- * <h2>Package Organization:</h2>
+ * <h2>Organización del Paquete:</h2>
  * <ul>
- *   <li>{@link es.unizar.eina.T213_camping.database} - Database related components including:
+ *   <li>{@link es.unizar.eina.T213_camping.database} - Componentes relacionados con la base de datos:
  *     <ul>
- *       <li>Data models for camping entities</li>
- *       <li>Data Access Objects (DAOs)</li>
- *       <li>Repository implementations</li>
- *       <li>Database converters</li>
+ *       <li>Modelos de datos para entidades del camping</li>
+ *       <li>Objetos de Acceso a Datos (DAOs)</li>
+ *       <li>Implementaciones de repositorios</li>
+ *       <li>Conversores de base de datos</li>
  *     </ul>
  *   </li>
- *   <li>{@link es.unizar.eina.T213_camping.ui} - User interface components including:
+ *   <li>{@link es.unizar.eina.T213_camping.ui} - Componentes de interfaz de usuario:
  *     <ul>
- *       <li>Parcelas management (creation, listing, modification)</li>
- *       <li>Reservas management (booking, modification, listing)</li>
- *       <li>View models for UI state management</li>
- *       <li>Custom adapters for RecyclerViews</li>
+ *       <li>Gestión de parcelas (creación, listado, modificación)</li>
+ *       <li>Gestión de reservas (reserva, modificación, listado)</li>
+ *       <li>ViewModels para gestión del estado de la UI</li>
+ *       <li>Adaptadores personalizados para RecyclerViews</li>
  *     </ul>
  *   </li>
- *   <li>{@link es.unizar.eina.T213_camping.utils} - Utility classes for:
+ *   <li>{@link es.unizar.eina.T213_camping.utils} - Clases de utilidad para:
  *     <ul>
- *       <li>Date handling and validation</li>
- *       <li>Dialog management</li>
- *       <li>Price calculations</li>
- *       <li>Model utilities</li>
- *       <li>Testing support</li>
+ *       <li>Manejo y validación de fechas</li>
+ *       <li>Gestión de diálogos</li>
+ *       <li>Cálculos de precios</li>
+ *       <li>Utilidades de modelos</li>
+ *       <li>Soporte para pruebas</li>
  *     </ul>
  *   </li>
  * </ul>
  * 
- * <h2>Application Features:</h2>
+ * <h2>Características de la Aplicación:</h2>
  * <ul>
- *   <li>Camping plot management</li>
- *   <li>Reservation system</li>
- *   <li>Occupancy tracking</li>
- *   <li>Client management</li>
+ *   <li>Gestión de parcelas de camping</li>
+ *   <li>Sistema de reservas</li>
+ *   <li>Seguimiento de ocupación</li>
+ *   <li>Gestión de clientes</li>
  * </ul>
  */
 package es.unizar.eina.T213_camping;

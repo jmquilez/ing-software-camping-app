@@ -1,39 +1,39 @@
 /**
- * User interface components for the T213 Camping application.
+ * Componentes de interfaz de usuario para la aplicación T213 Camping.
  * 
- * <h2>Package Organization:</h2>
+ * <h2>Organización del Paquete:</h2>
  * <ul>
- *   <li>{@link es.unizar.eina.T213_camping.ui.parcelas} - Plot management:
+ *   <li>{@link es.unizar.eina.T213_camping.ui.parcelas} - Gestión de parcelas:
  *     <ul>
- *       <li>Creation - New plot creation interface</li>
- *       <li>Listing - Plot listing and filtering</li>
- *       <li>Management - Plot modification and deletion</li>
+ *       <li>Creación - Interfaz de creación de nuevas parcelas</li>
+ *       <li>Listado - Listado y filtrado de parcelas</li>
+ *       <li>Gestión - Modificación y eliminación de parcelas</li>
  *     </ul>
  *   </li>
- *   <li>{@link es.unizar.eina.T213_camping.ui.reservas} - Reservation management:
+ *   <li>{@link es.unizar.eina.T213_camping.ui.reservas} - Gestión de reservas:
  *     <ul>
- *       <li>Creation - New reservation interface</li>
- *       <li>Listing - Reservation browsing and search</li>
- *       <li>Management - Reservation modification and cancellation</li>
- *       <li>Adapters - Custom RecyclerView adapters</li>
+ *       <li>Creación - Interfaz de nuevas reservas</li>
+ *       <li>Listado - Navegación y búsqueda de reservas</li>
+ *       <li>Gestión - Modificación y cancelación de reservas</li>
+ *       <li>Adaptadores - Adaptadores personalizados para RecyclerView</li>
  *     </ul>
  *   </li>
  *   <li>{@link es.unizar.eina.T213_camping.ui.view_models} - ViewModels:
  *     <ul>
- *       <li>State management for UI components</li>
- *       <li>Data operations coordination</li>
- *       <li>LiveData implementation</li>
+ *       <li>Gestión del estado para componentes de UI</li>
+ *       <li>Coordinación de operaciones de datos</li>
+ *       <li>Implementación de LiveData</li>
  *     </ul>
  *   </li>
  * </ul>
  * 
- * <h2>UI Features:</h2>
+ * <h2>Características de la UI:</h2>
  * <ul>
- *   <li>Material Design implementation</li>
- *   <li>RecyclerView-based listings</li>
- *   <li>Form validation</li>
- *   <li>Dialog management</li>
- *   <li>Navigation handling</li>
+ *   <li>Implementación de Material Design</li>
+ *   <li>Listados basados en RecyclerView</li>
+ *   <li>Validación de formularios</li>
+ *   <li>Gestión de diálogos</li>
+ *   <li>Manejo de navegación</li>
  * </ul>
  */
 package es.unizar.eina.T213_camping.ui;
