@@ -245,7 +245,7 @@
     <string name="delete_reservation_title">Eliminar reserva</string>
     <string name="delete_reservation_message">¿Está seguro de que desea eliminar esta reserva?</string>
     <string name="confirm_changes_title">Confirmar cambios</string>
-    <string name="confirm_reservation_message">¿Desea %s esta reserva?\n\nPrecio total: %.2f€</string>
+    <string name="confirm_reservation_message">¿Desea %1$s esta reserva?\n\nPrecio total: %2$.2f€</string>
     <string name="confirm_reservation_update">modificar</string>
     <string name="confirm_reservation_create">crear</string>
     <string name="reservation_greeting">¡Hola, %1$s!</string>
